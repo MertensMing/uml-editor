@@ -12,7 +12,7 @@ import {
 import { activityParser } from "../../../parser/activity";
 
 function draw(diagram: string) {
-  return "https://www.plantuml.com/plantuml/svg/" + encoder.encode(diagram);
+  return "https://pblk.bytedance.com/svg/" + encoder.encode(diagram);
 }
 
 type State = {
