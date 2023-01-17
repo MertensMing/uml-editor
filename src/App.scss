@@ -1,0 +1,7 @@
+.process {
+  .task:hover,
+  .activity:hover {
+    cursor: pointer;
+    user-select: none;
+  }
+}
