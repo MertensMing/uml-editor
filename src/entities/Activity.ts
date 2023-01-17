@@ -140,6 +140,7 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
         while: createTask(TaskType.normal),
         prev: prevTask,
         next: prevTask?.next,
+        endless: false,
       };
     case TaskType.parallel:
       return {

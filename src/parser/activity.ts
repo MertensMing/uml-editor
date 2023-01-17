@@ -60,8 +60,12 @@ export const activityParser = {
       while (${getTaskName(task)})
         ${this.parseTask("", task.while)}
       endwhile\n
-      -[hidden]->
-      detach
+      ${
+        task.endless
+          ? `-[hidden]->
+             detach`
+          : ""
+      }
     `;
   },
   parseTask(uml: string, task: Task): string {

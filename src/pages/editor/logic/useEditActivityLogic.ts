@@ -12,6 +12,7 @@ type Handlers = {
   handleTaskNameChange(taskId: string, name: string): void;
   handleAddCondition(taskId: string): void;
   handleDeleteCondition(taskId: string, index: number): void;
+  handleToggleEndless(taskId: string, bool: boolean): void;
 };
 
 export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
@@ -43,6 +44,9 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
       },
       handleDeleteCondition(taskId, index) {
         activityStore.getState().deleteCondition(taskId, index);
+      },
+      handleToggleEndless(taskId, bool) {
+        activityStore.getState().setEndless(taskId, bool);
       },
     };
   }

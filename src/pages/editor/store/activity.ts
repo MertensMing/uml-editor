@@ -31,6 +31,7 @@ type Actions = {
   addCondition(taskId: string): void;
   deleteCondition(taskId: string, index: number): void;
   setUmlUrl(): void;
+  setEndless(taskId: string, bool: boolean): void;
 };
 
 export type ActivityStore = State & Actions;
@@ -129,6 +130,17 @@ export function createActivityStore(): StoreApi<ActivityStore> {
         const result = findTask(get().activity.start, taskId);
         if (result && result.type === TaskType.switch) {
           result.cases.splice(index, 1);
+          set({
+            activity: {
+              ...get().activity,
+            },
+          });
+        }
+      },
+      setEndless(taskId, bool) {
+        const result = findTask(get().activity.start, taskId);
+        if (result && result.type === TaskType.while) {
+          result.endless = bool;
           set({
             activity: {
               ...get().activity,

@@ -21,6 +21,7 @@ export function Editor() {
     handleDeleteCondition,
     handleTitleChange,
     handleActivityChange,
+    handleToggleEndless,
   } = useEditActivityLogic([activityStore]);
 
   useLayoutEffect(() => {
@@ -58,6 +59,17 @@ export function Editor() {
             />
           </div>
           <div>type: {currentTask.type}</div>
+          {currentTask.type === TaskType.while ? (
+            <div>
+              死循环：
+              <input
+                type="checkbox"
+                onChange={(e) =>
+                  handleToggleEndless(currentTask.id, e.target.checked)
+                }
+              />
+            </div>
+          ) : null}
           {currentTask.type === TaskType.switch ? (
             <div>
               条件：
