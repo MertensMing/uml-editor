@@ -22,17 +22,20 @@ type State = {
 };
 
 type Actions = {
+  // ui
+  setCurrentTask(taskId: string): void;
+  setDiagramUrl(): void;
+  // activity
   initializeActivity(): void;
   setActivityTitle(title: string): void;
-  setCurrentTask(taskId: string): void;
+  activeSwimlanes(bool: boolean): void;
+  // task
   setTaskField(taskId: string, field: string, value: any): void;
   addTask(taskId: string, type?: TaskType): void;
   deleteTask(taskId: string): void;
   addCondition(taskId: string): void;
   deleteCondition(taskId: string, index: number): void;
-  setUmlUrl(): void;
-  setEndless(taskId: string, bool: boolean): void;
-  activeSwimlanes(bool: boolean): void;
+  setInfiniteLoop(taskId: string, bool: boolean): void;
 };
 
 export type ActivityStore = State & Actions;
@@ -42,7 +45,7 @@ export function createActivityStore(): StoreApi<ActivityStore> {
     return {
       activity: undefined,
       url: "",
-      setUmlUrl() {
+      setDiagramUrl() {
         const uml = activityParser.parseActivity(get().activity);
         const url = draw(uml);
         console.log("uml", uml);
@@ -160,7 +163,7 @@ export function createActivityStore(): StoreApi<ActivityStore> {
           });
         }
       },
-      setEndless(taskId, bool) {
+      setInfiniteLoop(taskId, bool) {
         const result = findTask(get().activity.start, taskId);
         if (result && result.type === TaskType.while) {
           result.endless = bool;

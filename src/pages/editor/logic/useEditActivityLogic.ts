@@ -24,7 +24,7 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
         activityStore.getState().initializeActivity();
       },
       handleActivityChange() {
-        activityStore.getState().setUmlUrl();
+        activityStore.getState().setDiagramUrl();
       },
       handleTitleChange(title) {
         activityStore.getState().setActivityTitle(title);
@@ -51,7 +51,7 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
         activityStore.getState().deleteCondition(taskId, index);
       },
       handleToggleEndless(taskId, bool) {
-        activityStore.getState().setEndless(taskId, bool);
+        activityStore.getState().setInfiniteLoop(taskId, bool);
       },
       handleToggleSwimlanes(bool) {
         activityStore.getState().activeSwimlanes(bool);

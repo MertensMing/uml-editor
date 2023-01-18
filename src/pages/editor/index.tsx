@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ReactSVG } from "react-svg";
 import { useStore } from "zustand";
+import shallow from "zustand/shallow";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { createActivityStore } from "./store/activity";
 import { useEditActivityLogic } from "./logic/useEditActivityLogic";
@@ -8,9 +9,11 @@ import { TaskType } from "../../entities/Activity";
 
 export function Editor() {
   const activityStore = useRef(createActivityStore()).current;
-  const activity = useStore(activityStore, (state) => state.activity);
-  const url = useStore(activityStore, (state) => state.url);
-  const currentTask = useStore(activityStore, (state) => state.currentTask);
+  const { currentTask, url, activity } = useStore(
+    activityStore,
+    ({ currentTask, url, activity }) => ({ currentTask, url, activity }),
+    shallow
+  );
   const {
     // init
     handleMount,
@@ -37,7 +40,6 @@ export function Editor() {
 
   useEffect(() => {
     handleActivityChange();
-    console.log(123123, activity);
   }, [activity]);
 
   return (
