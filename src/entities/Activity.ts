@@ -70,6 +70,10 @@ export type Task =
 export type Activity = {
   start: StartTask;
   title?: string;
+  swimlanes?: {
+    color?: string;
+    name: string;
+  }[];
 };
 
 // ======================== actions ========================

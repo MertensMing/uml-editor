@@ -12,15 +12,22 @@ export function Editor() {
   const url = useStore(activityStore, (state) => state.url);
   const currentTask = useStore(activityStore, (state) => state.currentTask);
   const {
+    // init
     handleMount,
+    // activity
+    handleTitleChange,
+    handleActivityChange,
+    handleToggleSwimlanes,
+    // task
     handleAddTask,
     handleDeleteTask,
     handleSelectTask,
     handleTaskNameChange,
+    handleTaskSwimLaneChange,
+    // switch
     handleAddCondition,
     handleDeleteCondition,
-    handleTitleChange,
-    handleActivityChange,
+    // while
     handleToggleEndless,
   } = useEditActivityLogic([activityStore]);
 
@@ -30,6 +37,7 @@ export function Editor() {
 
   useEffect(() => {
     handleActivityChange();
+    console.log(123123, activity);
   }, [activity]);
 
   return (
@@ -42,6 +50,16 @@ export function Editor() {
             handleTitleChange(e.target.value);
           }}
         />
+      </div>
+      <div>
+        是否开启泳道：
+        <input
+          type="checkbox"
+          onChange={(e) => handleToggleSwimlanes(e.target.checked)}
+        />
+        {!!activity?.swimlanes?.length && (
+          <div>{activity.swimlanes.map((item) => item.name)}</div>
+        )}
       </div>
       <div>
         ------------------------------------------------------------------------------------
@@ -59,6 +77,23 @@ export function Editor() {
             />
           </div>
           <div>type: {currentTask.type}</div>
+          {!!activity?.swimlanes?.length && (
+            <div>
+              <select
+                onChange={(e) => {
+                  console.log(123123, e.target.value);
+                  handleTaskSwimLaneChange(currentTask.id, e.target.value);
+                }}
+                value={currentTask.swimlane}
+              >
+                {activity?.swimlanes?.map((item, index) => (
+                  <option key={index} value={item.name}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           {currentTask.type === TaskType.while ? (
             <div>
               死循环：

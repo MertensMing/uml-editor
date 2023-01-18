@@ -10,9 +10,11 @@ type Handlers = {
   handleDeleteTask(taskId: string): void;
   handleSelectTask(taskId: string): void;
   handleTaskNameChange(taskId: string, name: string): void;
+  handleTaskSwimLaneChange(taskId: string, swimlane: string): void;
   handleAddCondition(taskId: string): void;
   handleDeleteCondition(taskId: string, index: number): void;
   handleToggleEndless(taskId: string, bool: boolean): void;
+  handleToggleSwimlanes(bool: boolean): void;
 };
 
 export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
@@ -37,7 +39,10 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
         activityStore.getState().setCurrentTask(taskId);
       },
       handleTaskNameChange(taskId, name) {
-        activityStore.getState().setTaskName(taskId, name);
+        activityStore.getState().setTaskField(taskId, "name", name);
+      },
+      handleTaskSwimLaneChange(taskId, name) {
+        activityStore.getState().setTaskField(taskId, "swimlane", name);
       },
       handleAddCondition(taskId) {
         activityStore.getState().addCondition(taskId);
@@ -47,6 +52,9 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
       },
       handleToggleEndless(taskId, bool) {
         activityStore.getState().setEndless(taskId, bool);
+      },
+      handleToggleSwimlanes(bool) {
+        activityStore.getState().activeSwimlanes(bool);
       },
     };
   }

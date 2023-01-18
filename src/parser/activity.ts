@@ -13,6 +13,10 @@ function getTaskName(task: Task) {
   return `<text class="task" taskId="${task.id}">${task.name}</text>`;
 }
 
+function getSwimlane(task: Task) {
+  return `${task.swimlane ? `|${task.swimlane}|\n` : ""}`;
+}
+
 export const activityParser = {
   parseActivityTitle(activity: Activity): string {
     if (activity?.title) {
@@ -27,6 +31,11 @@ export const activityParser = {
     const uml = `
       @startuml
         ${this.parseActivityTitle(activity)}
+        ${
+          activity.swimlanes?.length
+            ? `|${activity.swimlanes["0"].name}|\n`
+            : ""
+        }
         ${this.parseTask("", activity.start)}
       @enduml
     `;
@@ -34,13 +43,13 @@ export const activityParser = {
   },
   parseNormalTask(task: NormalTask): string {
     return `
-      ${task.swimlane ? `|${task.swimlane}|\n` : ""}
+      ${getSwimlane(task)}
       :${getTaskName(task)};\n
     `;
   },
   parseSwitchTask(task: SwitchTask): string {
     return `
-      ${task.swimlane ? `|${task.swimlane}|\n` : ""}
+      ${getSwimlane(task)}
       switch (${getTaskName(task)})
         ${this.parseCases(task.cases)}
       endswitch\n
@@ -48,7 +57,7 @@ export const activityParser = {
   },
   parseParallelTask(task: ParallelTask): string {
     return `
-      ${task.swimlane ? `|${task.swimlane}|\n` : ""}
+      ${getSwimlane(task)}
       fork 
         ${task.parallel.map((t) => this.parseTask("", t)).join("fork again\n")}
       end fork {${getTaskName(task)}}\n
@@ -56,7 +65,7 @@ export const activityParser = {
   },
   parseWhileTask(task: WhileTask): string {
     return `
-      ${task.swimlane ? `|${task.swimlane}|\n` : ""}
+      ${getSwimlane(task)}
       while (${getTaskName(task)})
         ${this.parseTask("", task.while)}
       endwhile\n

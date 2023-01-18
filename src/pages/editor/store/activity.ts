@@ -25,13 +25,14 @@ type Actions = {
   initializeActivity(): void;
   setActivityTitle(title: string): void;
   setCurrentTask(taskId: string): void;
-  setTaskName(taskId: string, name: string): void;
+  setTaskField(taskId: string, field: string, value: any): void;
   addTask(taskId: string, type?: TaskType): void;
   deleteTask(taskId: string): void;
   addCondition(taskId: string): void;
   deleteCondition(taskId: string, index: number): void;
   setUmlUrl(): void;
   setEndless(taskId: string, bool: boolean): void;
+  activeSwimlanes(bool: boolean): void;
 };
 
 export type ActivityStore = State & Actions;
@@ -44,6 +45,7 @@ export function createActivityStore(): StoreApi<ActivityStore> {
       setUmlUrl() {
         const uml = activityParser.parseActivity(get().activity);
         const url = draw(uml);
+        console.log("uml", uml);
         set({
           url,
         });
@@ -51,10 +53,31 @@ export function createActivityStore(): StoreApi<ActivityStore> {
       initializeActivity() {
         const activity: Activity = {
           start: createTask(TaskType.start) as StartTask,
+          swimlanes: [],
         };
         set({
           activity,
           currentTask: activity.start,
+        });
+      },
+      activeSwimlanes(bool) {
+        const activity = get().activity;
+        if (bool) {
+          activity.swimlanes = [
+            {
+              name: "泳道A",
+            },
+            {
+              name: "泳道B",
+            },
+          ];
+        } else {
+          activity.swimlanes = [];
+        }
+        set({
+          activity: {
+            ...get().activity,
+          },
         });
       },
       setActivityTitle(title) {
@@ -75,10 +98,10 @@ export function createActivityStore(): StoreApi<ActivityStore> {
           });
         }
       },
-      setTaskName(taskId: string, name: string) {
+      setTaskField(taskId, field, value) {
         const result = findTask(get().activity.start, taskId);
         if (result) {
-          result.name = name;
+          result[field] = value;
           set({
             activity: {
               ...get().activity,
