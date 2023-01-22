@@ -10,7 +10,7 @@ export enum TaskType {
 type CommonTask = {
   id: string;
   swimlane?: string;
-  prev?: Task;
+  prev?: Task["id"];
 };
 
 export type StartTask = {
@@ -134,7 +134,7 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
         type: TaskType.stop,
         id: getId(),
         name: "结束",
-        prev: prevTask,
+        prev: prevTask?.id,
       };
     case TaskType.while:
       return {
@@ -142,7 +142,7 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
         id: getId(),
         name: "循环",
         while: createTask(TaskType.normal),
-        prev: prevTask,
+        prev: prevTask?.id,
         next: prevTask?.next,
         infiniteLoop: false,
       };
@@ -152,7 +152,7 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
         id: getId(),
         name: "并行",
         parallel: [createTask(TaskType.normal), createTask(TaskType.normal)],
-        prev: prevTask,
+        prev: prevTask?.id,
         next: prevTask?.next,
       };
     case TaskType.switch:
@@ -161,7 +161,7 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
         id: getId(),
         name: "条件判断",
         cases: [createCase("是"), createCase("否")],
-        prev: prevTask,
+        prev: prevTask?.id,
         next: prevTask?.next,
       };
     case TaskType.normal:
@@ -170,7 +170,7 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
         type: TaskType.normal,
         id: getId(),
         name: "流程",
-        prev: prevTask,
+        prev: prevTask?.id,
         next: prevTask?.next,
       };
   }

@@ -115,7 +115,7 @@ export function Editor() {
             <div>
               并行任务：
               {currentTask.parallel.map((item, index) => (
-                <span>
+                <span key={item.id}>
                   {`并行任务 ${index + 1}（${item.name}）`}
                   <button>x</button>
                 </span>

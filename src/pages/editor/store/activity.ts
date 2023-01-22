@@ -55,6 +55,12 @@ export function createActivityStore(
         });
       },
       initializeActivity() {
+        if (!!get().activity) {
+          set({
+            currentTask: get().activity.start,
+          });
+          return;
+        }
         const activity: Activity = {
           start: createTask(TaskType.start) as StartTask,
           swimlanes: [],
@@ -127,12 +133,14 @@ export function createActivityStore(
       deleteTask(taskId) {
         const task = findTask(get().activity.start, taskId);
         if (task && task.type !== TaskType.start) {
+          const prevTask = findTask(get().activity.start, task.prev);
+          if (!prevTask) return;
           if (task.type === TaskType.stop) {
-            task.prev.next = undefined;
+            prevTask.next = undefined;
           } else {
-            task.prev.next = task.next;
+            prevTask.next = task.next;
             if (task.next) {
-              task.next.prev = task.prev;
+              task.next.prev = prevTask.id;
             }
           }
           set({

@@ -14,10 +14,6 @@ const router = createBrowserRouter([
       </div>
     ),
   },
-  {
-    path: "about",
-    element: <div>About</div>,
-  },
 ]);
 
 const root = ReactDOM.createRoot(

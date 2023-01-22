@@ -24,6 +24,10 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
         activityStore.getState().initializeActivity();
       },
       handleActivityChange() {
+        window.localStorage.setItem(
+          "my_activity",
+          JSON.stringify(activityStore.getState().activity)
+        );
         activityStore.getState().setDiagramUrl();
       },
       handleTitleChange(title) {
