@@ -13,7 +13,7 @@ type Handlers = {
   handleTaskSwimLaneChange(taskId: string, swimlane: string): void;
   handleAddCondition(taskId: string): void;
   handleDeleteCondition(taskId: string, index: number): void;
-  handleToggleEndless(taskId: string, bool: boolean): void;
+  handleToggleInfiniteLoop(taskId: string, bool: boolean): void;
   handleToggleSwimlanes(bool: boolean): void;
 };
 
@@ -50,7 +50,7 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
       handleDeleteCondition(taskId, index) {
         activityStore.getState().deleteCondition(taskId, index);
       },
-      handleToggleEndless(taskId, bool) {
+      handleToggleInfiniteLoop(taskId, bool) {
         activityStore.getState().setInfiniteLoop(taskId, bool);
       },
       handleToggleSwimlanes(bool) {

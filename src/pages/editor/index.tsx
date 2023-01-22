@@ -5,10 +5,15 @@ import shallow from "zustand/shallow";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { createActivityStore } from "./store/activity";
 import { useEditActivityLogic } from "./logic/useEditActivityLogic";
-import { TaskType } from "../../entities/Activity";
+import { Activity, TaskType } from "../../entities/Activity";
 
 export function Editor() {
-  const activityStore = useRef(createActivityStore()).current;
+  const activityStore = useRef(
+    createActivityStore(
+      (JSON.parse(window.localStorage.getItem("my_activity")) as Activity) ??
+        undefined
+    )
+  ).current;
   const { currentTask, url, activity } = useStore(
     activityStore,
     ({ currentTask, url, activity }) => ({ currentTask, url, activity }),
@@ -31,7 +36,7 @@ export function Editor() {
     handleAddCondition,
     handleDeleteCondition,
     // while
-    handleToggleEndless,
+    handleToggleInfiniteLoop,
   } = useEditActivityLogic([activityStore]);
 
   useLayoutEffect(() => {
@@ -83,7 +88,6 @@ export function Editor() {
             <div>
               <select
                 onChange={(e) => {
-                  console.log(123123, e.target.value);
                   handleTaskSwimLaneChange(currentTask.id, e.target.value);
                 }}
                 value={currentTask.swimlane}
@@ -102,9 +106,23 @@ export function Editor() {
               <input
                 type="checkbox"
                 onChange={(e) =>
-                  handleToggleEndless(currentTask.id, e.target.checked)
+                  handleToggleInfiniteLoop(currentTask.id, e.target.checked)
                 }
               />
+            </div>
+          ) : null}
+          {currentTask.type === TaskType.parallel ? (
+            <div>
+              并行任务：
+              {currentTask.parallel.map((item, index) => (
+                <span>
+                  {`并行任务 ${index + 1}（${item.name}）`}
+                  <button>x</button>
+                </span>
+              ))}
+              <div>
+                <button>+ 新增并行任务</button>
+              </div>
             </div>
           ) : null}
           {currentTask.type === TaskType.switch ? (

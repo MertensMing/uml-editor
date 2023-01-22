@@ -40,15 +40,16 @@ type Actions = {
 
 export type ActivityStore = State & Actions;
 
-export function createActivityStore(): StoreApi<ActivityStore> {
+export function createActivityStore(
+  activity?: Activity
+): StoreApi<ActivityStore> {
   return createStore((set, get) => {
     return {
-      activity: undefined,
+      activity,
       url: "",
       setDiagramUrl() {
         const uml = activityParser.parseActivity(get().activity);
         const url = draw(uml);
-        console.log("uml", uml);
         set({
           url,
         });
@@ -92,7 +93,7 @@ export function createActivityStore(): StoreApi<ActivityStore> {
           },
         });
       },
-      setCurrentTask(taskId: string) {
+      setCurrentTask(taskId) {
         const result = findTask(get().activity.start, taskId);
         if (result) {
           console.log("result", result);
@@ -166,7 +167,7 @@ export function createActivityStore(): StoreApi<ActivityStore> {
       setInfiniteLoop(taskId, bool) {
         const result = findTask(get().activity.start, taskId);
         if (result && result.type === TaskType.while) {
-          result.endless = bool;
+          result.infiniteLoop = bool;
           set({
             activity: {
               ...get().activity,

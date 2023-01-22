@@ -70,7 +70,7 @@ export const activityParser = {
         ${this.parseTask("", task.while)}
       endwhile\n
       ${
-        task.endless
+        task.infiniteLoop
           ? `-[hidden]->
              detach`
           : ""

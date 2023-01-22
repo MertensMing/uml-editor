@@ -36,7 +36,7 @@ export type WhileTask = {
   name: string;
   while: Task;
   next?: Task;
-  endless?: boolean;
+  infiniteLoop?: boolean;
 } & CommonTask;
 
 export type Case = {
@@ -144,7 +144,7 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
         while: createTask(TaskType.normal),
         prev: prevTask,
         next: prevTask?.next,
-        endless: false,
+        infiniteLoop: false,
       };
     case TaskType.parallel:
       return {
