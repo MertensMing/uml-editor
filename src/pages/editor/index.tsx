@@ -142,9 +142,44 @@ export function Editor() {
                   ) : null}
                 </span>
               ))}
-              <button onClick={() => handleAddCondition(currentTask.id)}>
-                + 新增条件
-              </button>
+              <div>
+                新增条件：
+                <button
+                  onClick={() =>
+                    handleAddCondition(currentTask.id, TaskType.normal)
+                  }
+                >
+                  +普通流程
+                </button>
+                <button
+                  onClick={() =>
+                    handleAddCondition(currentTask.id, TaskType.switch)
+                  }
+                >
+                  +条件判断
+                </button>
+                <button
+                  onClick={() =>
+                    handleAddCondition(currentTask.id, TaskType.while)
+                  }
+                >
+                  +循环
+                </button>
+                <button
+                  onClick={() =>
+                    handleAddCondition(currentTask.id, TaskType.parallel)
+                  }
+                >
+                  +并行任务
+                </button>
+                <button
+                  onClick={() =>
+                    handleAddCondition(currentTask.id, TaskType.stop)
+                  }
+                >
+                  +结束
+                </button>
+              </div>
             </div>
           ) : null}
           <br />

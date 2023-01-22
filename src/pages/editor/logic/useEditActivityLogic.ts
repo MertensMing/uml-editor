@@ -11,7 +11,7 @@ type Handlers = {
   handleSelectTask(taskId: string): void;
   handleTaskNameChange(taskId: string, name: string): void;
   handleTaskSwimLaneChange(taskId: string, swimlane: string): void;
-  handleAddCondition(taskId: string): void;
+  handleAddCondition(taskId: string, type: TaskType): void;
   handleDeleteCondition(taskId: string, index: number): void;
   handleToggleInfiniteLoop(taskId: string, bool: boolean): void;
   handleToggleSwimlanes(bool: boolean): void;
@@ -48,8 +48,8 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
       handleTaskSwimLaneChange(taskId, name) {
         activityStore.getState().setTaskField(taskId, "swimlane", name);
       },
-      handleAddCondition(taskId) {
-        activityStore.getState().addCondition(taskId);
+      handleAddCondition(taskId, type) {
+        activityStore.getState().addCondition(taskId, type);
       },
       handleDeleteCondition(taskId, index) {
         activityStore.getState().deleteCondition(taskId, index);

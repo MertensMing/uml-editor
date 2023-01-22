@@ -160,7 +160,10 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
         type: TaskType.switch,
         id: getId(),
         name: "条件判断",
-        cases: [createCase("是"), createCase("否")],
+        cases: [
+          createCase("是", TaskType.normal),
+          createCase("否", TaskType.normal),
+        ],
         prev: prevTask?.id,
         next: prevTask?.next,
       };
@@ -176,10 +179,10 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
   }
 }
 
-export function createCase(condition: string) {
+export function createCase(condition: string, type: TaskType) {
   return {
     condition,
-    task: createTask(TaskType.normal),
+    task: createTask(type),
     id: getId(),
   };
 }

@@ -33,7 +33,7 @@ type Actions = {
   setTaskField(taskId: string, field: string, value: any): void;
   addTask(taskId: string, type?: TaskType): void;
   deleteTask(taskId: string): void;
-  addCondition(taskId: string): void;
+  addCondition(taskId: string, type: TaskType): void;
   deleteCondition(taskId: string, index: number): void;
   setInfiniteLoop(taskId: string, bool: boolean): void;
 };
@@ -102,7 +102,6 @@ export function createActivityStore(
       setCurrentTask(taskId) {
         const result = findTask(get().activity.start, taskId);
         if (result) {
-          console.log("result", result);
           set({
             currentTask: result,
           });
@@ -150,10 +149,10 @@ export function createActivityStore(
           });
         }
       },
-      addCondition(taskId) {
+      addCondition(taskId, type) {
         const result = findTask(get().activity.start, taskId);
         if (result && result.type === TaskType.switch) {
-          result.cases.push(createCase("条件" + result.cases.length));
+          result.cases.push(createCase("条件" + result.cases.length, type));
           set({
             activity: {
               ...get().activity,
