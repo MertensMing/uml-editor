@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Editor } from "./pages/editor";
+
+import "tailwindcss/dist/utilities.min.css";
 import "./App.scss";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";

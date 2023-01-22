@@ -28,12 +28,12 @@ type Actions = {
   // ui
   setCurrentTask(taskId: Task["id"]): void;
   setDiagramUrl(): void;
-  undo(): void;
-  redo(): void;
   // activity
   initializeActivity(): void;
   setActivityTitle(title: string): void;
   activeSwimlanes(bool: boolean): void;
+  undo(): void;
+  redo(): void;
   // task
   setTaskField(taskId: Task["id"], field: string, value: any): void;
   addTask(taskId: Task["id"], type?: TaskType): void;
@@ -81,11 +81,11 @@ export function createActivityStore(
       }
     }
     return {
-      // ui
       activity,
       url: "",
       operationQueue: [JSON.stringify(activity)],
       undoIndex: 0,
+      // ui
       setCurrentTask(taskId) {
         const result = findTask(get().activity.start, taskId);
         if (result) {
@@ -94,7 +94,6 @@ export function createActivityStore(
           });
         }
       },
-      // activity
       setDiagramUrl() {
         const uml = activityParser.parseActivity(get().activity);
         const url = draw(uml);
@@ -102,6 +101,7 @@ export function createActivityStore(
           url,
         });
       },
+      // activity
       initializeActivity() {
         if (!!get().activity) {
           set({
