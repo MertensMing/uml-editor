@@ -79,13 +79,22 @@ export function createActivityStore(
           ],
         });
       }
-      console.log("log", get().operationQueue);
     }
     return {
+      // ui
       activity,
       url: "",
       operationQueue: [JSON.stringify(activity)],
       undoIndex: 0,
+      setCurrentTask(taskId) {
+        const result = findTask(get().activity.start, taskId);
+        if (result) {
+          set({
+            currentTask: result,
+          });
+        }
+      },
+      // activity
       setDiagramUrl() {
         const uml = activityParser.parseActivity(get().activity);
         const url = draw(uml);
@@ -131,14 +140,25 @@ export function createActivityStore(
         activity.title = title;
         updateActivity();
       },
-      setCurrentTask(taskId) {
-        const result = findTask(get().activity.start, taskId);
-        if (result) {
+      undo() {
+        const newUndoIndex = get().undoIndex + 1;
+        if (newUndoIndex <= get().operationQueue.length - 1) {
           set({
-            currentTask: result,
+            undoIndex: newUndoIndex,
+            activity: JSON.parse(get().operationQueue[newUndoIndex]),
           });
         }
       },
+      redo() {
+        const newUndoIndex = get().undoIndex - 1;
+        if (newUndoIndex >= 0) {
+          set({
+            undoIndex: newUndoIndex,
+            activity: JSON.parse(get().operationQueue[newUndoIndex]),
+          });
+        }
+      },
+      // task
       setTaskField(taskId, field, value) {
         const result = findTask(get().activity.start, taskId);
         if (result) {
@@ -169,6 +189,7 @@ export function createActivityStore(
           updateActivity();
         }
       },
+      // switch
       addCondition(taskId, type) {
         const result = findTask(get().activity.start, taskId);
         if (result && result.type === TaskType.switch) {
@@ -183,6 +204,7 @@ export function createActivityStore(
           updateActivity();
         }
       },
+      // while
       setInfiniteLoop(taskId, bool) {
         const result = findTask(get().activity.start, taskId);
         if (result && result.type === TaskType.while) {
@@ -190,6 +212,7 @@ export function createActivityStore(
           updateActivity();
         }
       },
+      // parallel
       addParallelTask(taskId, type) {
         const result = findTask(get().activity.start, taskId);
         if (result && result.type === TaskType.parallel) {
@@ -202,29 +225,6 @@ export function createActivityStore(
         if (result && result.type === TaskType.parallel) {
           result.parallel.splice(index, 1);
           updateActivity();
-        }
-      },
-      undo() {
-        const newUndoIndex = get().undoIndex + 1;
-        if (newUndoIndex <= get().operationQueue.length - 1) {
-          console.log(
-            newUndoIndex,
-            get().operationQueue,
-            get().operationQueue[newUndoIndex]
-          );
-          set({
-            undoIndex: newUndoIndex,
-            activity: JSON.parse(get().operationQueue[newUndoIndex]),
-          });
-        }
-      },
-      redo() {
-        const newUndoIndex = get().undoIndex - 1;
-        if (newUndoIndex >= 0) {
-          set({
-            undoIndex: newUndoIndex,
-            activity: JSON.parse(get().operationQueue[newUndoIndex]),
-          });
         }
       },
     };
