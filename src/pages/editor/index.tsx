@@ -37,6 +37,9 @@ export function Editor() {
     handleDeleteCondition,
     // while
     handleToggleInfiniteLoop,
+    // parallel
+    handleAddParallelTask,
+    handleDeleteParallelTask,
   } = useEditActivityLogic([activityStore]);
 
   useLayoutEffect(() => {
@@ -117,11 +120,51 @@ export function Editor() {
               {currentTask.parallel.map((item, index) => (
                 <span key={item.id}>
                   {`并行任务 ${index + 1}（${item.name}）`}
-                  <button>x</button>
+                  {currentTask.parallel.length > 2 && (
+                    <button
+                      onClick={() =>
+                        handleDeleteParallelTask(currentTask.id, index)
+                      }
+                    >
+                      x
+                    </button>
+                  )}
                 </span>
               ))}
               <div>
-                <button>+ 新增并行任务</button>
+                <div>
+                  + 新增并行任务：
+                  <div>
+                    <button
+                      onClick={() =>
+                        handleAddParallelTask(currentTask.id, TaskType.normal)
+                      }
+                    >
+                      +普通流程
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleAddParallelTask(currentTask.id, TaskType.switch)
+                      }
+                    >
+                      +条件判断
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleAddParallelTask(currentTask.id, TaskType.while)
+                      }
+                    >
+                      +循环
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleAddParallelTask(currentTask.id, TaskType.parallel)
+                      }
+                    >
+                      +并行任务
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ) : null}

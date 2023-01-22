@@ -15,6 +15,8 @@ type Handlers = {
   handleDeleteCondition(taskId: string, index: number): void;
   handleToggleInfiniteLoop(taskId: string, bool: boolean): void;
   handleToggleSwimlanes(bool: boolean): void;
+  handleAddParallelTask(taskId: string, type: TaskType): void;
+  handleDeleteParallelTask(taskId: string, index: number): void;
 };
 
 export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
@@ -59,6 +61,12 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
       },
       handleToggleSwimlanes(bool) {
         activityStore.getState().activeSwimlanes(bool);
+      },
+      handleAddParallelTask(taskId, type) {
+        activityStore.getState().addParallelTask(taskId, type);
+      },
+      handleDeleteParallelTask(taskId, index) {
+        activityStore.getState().deleteParallelTask(taskId, index);
       },
     };
   }
