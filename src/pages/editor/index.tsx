@@ -14,9 +14,15 @@ export function Editor() {
         undefined
     )
   ).current;
-  const { currentTask, url, activity } = useStore(
+  const { currentTask, url, activity, allowRedo, allowUndo } = useStore(
     activityStore,
-    ({ currentTask, url, activity }) => ({ currentTask, url, activity }),
+    ({ currentTask, url, activity, undoIndex, operationQueue }) => ({
+      currentTask,
+      url,
+      activity,
+      allowUndo: undoIndex < operationQueue.length - 1,
+      allowRedo: undoIndex !== 0,
+    }),
     shallow
   );
   const {
@@ -26,6 +32,8 @@ export function Editor() {
     handleTitleChange,
     handleActivityChange,
     handleToggleSwimlanes,
+    handleRedo,
+    handleUndo,
     // task
     handleAddTask,
     handleDeleteTask,
@@ -53,6 +61,14 @@ export function Editor() {
   return (
     <div className="p-8">
       <h1>PlantUML Editor</h1>
+      <div>
+        <button disabled={!allowUndo} onClick={handleUndo}>
+          撤销
+        </button>
+        <button disabled={!allowRedo} onClick={handleRedo}>
+          重做
+        </button>
+      </div>
       <div>
         图表名称
         <input

@@ -1,22 +1,24 @@
 import { createLogic } from "../../../common/createLogic";
-import { TaskType } from "../../../entities/Activity";
+import { Task } from "../../../entities/Activity";
 import { ActivityStore } from "../store/activity";
 
 type Handlers = {
   handleMount(): void;
   handleActivityChange(): void;
   handleTitleChange(title: string): void;
-  handleAddTask(taskId: string, type?: TaskType): void;
-  handleDeleteTask(taskId: string): void;
-  handleSelectTask(taskId: string): void;
-  handleTaskNameChange(taskId: string, name: string): void;
-  handleTaskSwimLaneChange(taskId: string, swimlane: string): void;
-  handleAddCondition(taskId: string, type: TaskType): void;
-  handleDeleteCondition(taskId: string, index: number): void;
-  handleToggleInfiniteLoop(taskId: string, bool: boolean): void;
+  handleAddTask(taskId: Task["id"], type?: Task["type"]): void;
+  handleDeleteTask(taskId: Task["id"]): void;
+  handleSelectTask(taskId: Task["id"]): void;
+  handleTaskNameChange(taskId: Task["id"], name: string): void;
+  handleTaskSwimLaneChange(taskId: Task["id"], swimlane: string): void;
+  handleAddCondition(taskId: Task["id"], type: Task["type"]): void;
+  handleDeleteCondition(taskId: Task["id"], index: number): void;
+  handleToggleInfiniteLoop(taskId: Task["id"], bool: boolean): void;
   handleToggleSwimlanes(bool: boolean): void;
-  handleAddParallelTask(taskId: string, type: TaskType): void;
-  handleDeleteParallelTask(taskId: string, index: number): void;
+  handleAddParallelTask(taskId: Task["id"], type: Task["type"]): void;
+  handleDeleteParallelTask(taskId: Task["id"], index: number): void;
+  handleRedo(): void;
+  handleUndo(): void;
 };
 
 export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
@@ -67,6 +69,12 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
       },
       handleDeleteParallelTask(taskId, index) {
         activityStore.getState().deleteParallelTask(taskId, index);
+      },
+      handleRedo() {
+        activityStore.getState().redo();
+      },
+      handleUndo() {
+        activityStore.getState().undo();
       },
     };
   }

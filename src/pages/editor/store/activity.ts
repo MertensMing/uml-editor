@@ -1,5 +1,6 @@
 import { createStore, StoreApi } from "zustand";
 import encoder from "plantuml-encoder";
+import remove from "lodash/remove";
 import {
   Activity,
   Task,
@@ -19,12 +20,16 @@ type State = {
   activity?: Activity;
   currentTask?: Task;
   url: string;
+  operationQueue: string[];
+  undoIndex: number;
 };
 
 type Actions = {
   // ui
   setCurrentTask(taskId: Task["id"]): void;
   setDiagramUrl(): void;
+  undo(): void;
+  redo(): void;
   // activity
   initializeActivity(): void;
   setActivityTitle(title: string): void;
@@ -52,10 +57,35 @@ export function createActivityStore(
           ...get().activity,
         },
       });
+      if (get().operationQueue.length >= 30) {
+        get().operationQueue.pop();
+      }
+      if (get().undoIndex !== 0) {
+        remove(get().operationQueue, (_, index) => {
+          return index < get().undoIndex;
+        });
+        set({
+          undoIndex: 0,
+          operationQueue: [
+            JSON.stringify(get().activity),
+            ...get().operationQueue,
+          ],
+        });
+      } else {
+        set({
+          operationQueue: [
+            JSON.stringify(get().activity),
+            ...get().operationQueue,
+          ],
+        });
+      }
+      console.log("log", get().operationQueue);
     }
     return {
       activity,
       url: "",
+      operationQueue: [JSON.stringify(activity)],
+      undoIndex: 0,
       setDiagramUrl() {
         const uml = activityParser.parseActivity(get().activity);
         const url = draw(uml);
@@ -77,6 +107,7 @@ export function createActivityStore(
         set({
           activity,
           currentTask: activity.start,
+          operationQueue: [JSON.stringify(activity)],
         });
       },
       activeSwimlanes(bool) {
@@ -171,6 +202,29 @@ export function createActivityStore(
         if (result && result.type === TaskType.parallel) {
           result.parallel.splice(index, 1);
           updateActivity();
+        }
+      },
+      undo() {
+        const newUndoIndex = get().undoIndex + 1;
+        if (newUndoIndex <= get().operationQueue.length - 1) {
+          console.log(
+            newUndoIndex,
+            get().operationQueue,
+            get().operationQueue[newUndoIndex]
+          );
+          set({
+            undoIndex: newUndoIndex,
+            activity: JSON.parse(get().operationQueue[newUndoIndex]),
+          });
+        }
+      },
+      redo() {
+        const newUndoIndex = get().undoIndex - 1;
+        if (newUndoIndex >= 0) {
+          set({
+            undoIndex: newUndoIndex,
+            activity: JSON.parse(get().operationQueue[newUndoIndex]),
+          });
         }
       },
     };
