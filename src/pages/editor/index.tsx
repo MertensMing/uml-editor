@@ -77,14 +77,14 @@ export function Editor() {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="flex p-4 items-center border-b-solid border-gray-300 border-px h-16">
+      <div className="flex p-4 items-center border-b-solid border-gray-700 border-px h-16">
         <div className="bg-gray-800 text-white px-4 py-2 rounded">UML</div>
         <div className="ml-4">PlantUML Editor</div>
       </div>
       <div className="flex" style={{ height: `calc(100vh - 64px)` }}>
         <div
           style={{ width: 300 }}
-          className="px-4 py-4 h-full flex-shrink-0 border-r-solid border-gray-300 border-px overflow-auto"
+          className="px-4 py-4 h-full flex-shrink-0 border-r-solid border-gray-700 border-px overflow-auto"
         >
           <FormItem
             label="图表操作"
@@ -304,7 +304,8 @@ export function Editor() {
             </>
           )}
         </div>
-        <div className="h-full w-full overflow-auto">
+        ``
+        <div className="h-full w-full overflow-auto bg-gray-100 p-4">
           <div
             className="process"
             onClick={(e: any) => {
