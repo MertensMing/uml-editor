@@ -14,7 +14,9 @@ function getTaskName(task: Task) {
 }
 
 function getSwimlane(task: Task) {
-  return `${task.swimlane ? `|${task.swimlane}|\n` : ""}`;
+  // 暂不支持多泳道
+  return "";
+  // return `${task.swimlane ? `|${task.swimlane}|\n` : ""}`;
 }
 
 export const activityParser = {
@@ -28,14 +30,21 @@ export const activityParser = {
     if (!activity) {
       return "";
     }
+    // 暂不支持多泳道
+    // const uml = `
+    //   @startuml
+    //     ${this.parseActivityTitle(activity)}
+    //     ${
+    //       activity.swimlanes?.length
+    //         ? `|${activity.swimlanes["0"].name}|\n`
+    //         : ""
+    //     }
+    //     ${this.parseTask("", activity.start)}
+    //   @enduml
+    // `;
     const uml = `
       @startuml
         ${this.parseActivityTitle(activity)}
-        ${
-          activity.swimlanes?.length
-            ? `|${activity.swimlanes["0"].name}|\n`
-            : ""
-        }
         ${this.parseTask("", activity.start)}
       @enduml
     `;

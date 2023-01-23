@@ -8,9 +8,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
-import Checkbox from "@mui/material/Checkbox";
-import Select from "@mui/material/Select";
+import Switch from "@mui/material/Switch";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { createActivityStore } from "./store/activity";
 import { useEditActivityLogic } from "./logic/useEditActivityLogic";
@@ -38,6 +36,7 @@ export function Editor() {
     }),
     shallow
   );
+
   const {
     // init
     handleMount,
@@ -51,10 +50,10 @@ export function Editor() {
     handleDeleteTask,
     handleSelectTask,
     handleTaskNameChange,
-    handleTaskSwimLaneChange,
     // switch
     handleAddCondition,
     handleDeleteCondition,
+    handleConditionTextChange,
     // while
     handleToggleInfiniteLoop,
     // parallel
@@ -112,42 +111,12 @@ export function Editor() {
                       </InputAdornment>
                     }
                     value={currentTask.name}
-                    onChange={(e) => {
+                    onBlur={(e) => {
                       handleTaskNameChange(currentTask.id, e.target.value);
                     }}
                   />
                 }
               />
-              {/* 选择泳道 */}
-              {!!activity?.swimlanes?.length && (
-                <FormItem
-                  label="选择泳道"
-                  content={
-                    <Select
-                      variant="standard"
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <AccountCircle />
-                        </InputAdornment>
-                      }
-                      style={{ width: "199px" }}
-                      value={currentTask.swimlane ?? "undefined"}
-                      onChange={(e: any) =>
-                        handleTaskSwimLaneChange(currentTask.id, e.target.value)
-                      }
-                    >
-                      <MenuItem disabled value={"undefined"}>
-                        未选择
-                      </MenuItem>
-                      {activity?.swimlanes?.map((item, index) => (
-                        <MenuItem key={index} value={item.name}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  }
-                />
-              )}
               {/* 添加节点 */}
               <FormItem
                 label="添加节点"
@@ -210,7 +179,7 @@ export function Editor() {
                 <FormItem
                   label="无限循环"
                   content={
-                    <Checkbox
+                    <Switch
                       value={currentTask.infiniteLoop}
                       onChange={(e) =>
                         handleToggleInfiniteLoop(
@@ -218,7 +187,7 @@ export function Editor() {
                           e.target.checked
                         )
                       }
-                      size="small"
+                      color="default"
                     />
                   }
                 />
@@ -263,23 +232,21 @@ export function Editor() {
                   <FormItem
                     label="编辑条件"
                     content={
-                      <div>
-                        <FormItem
-                          label="并行任务"
-                          content={
-                            <ListOperation
-                              allowDelete={currentTask.cases.length > 2}
-                              allowEdit
-                              values={currentTask.cases.map(
-                                (item) => item.condition
-                              )}
-                              onDelete={(index) =>
-                                handleDeleteCondition(currentTask.id, index)
-                              }
-                            />
-                          }
-                        />
-                      </div>
+                      <ListOperation
+                        allowDelete={currentTask.cases.length > 2}
+                        allowEdit
+                        values={currentTask.cases.map((item) => item.condition)}
+                        onDelete={(index) =>
+                          handleDeleteCondition(currentTask.id, index)
+                        }
+                        onChange={(text, index) => {
+                          handleConditionTextChange(
+                            currentTask.id,
+                            index,
+                            text
+                          );
+                        }}
+                      />
                     }
                   />
                   <FormItem
@@ -304,8 +271,7 @@ export function Editor() {
             </>
           )}
         </div>
-        ``
-        <div className="h-full w-full overflow-auto bg-gray-100 p-4">
+        <div className="h-full w-full overflow-auto bg-gray-100">
           <div
             className="process"
             onClick={(e: any) => {

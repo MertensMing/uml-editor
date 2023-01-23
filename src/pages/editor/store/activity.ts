@@ -1,6 +1,7 @@
 import { createStore, StoreApi } from "zustand";
 import encoder from "plantuml-encoder";
 import remove from "lodash/remove";
+import cloneDeep from "lodash/cloneDeep";
 import {
   Activity,
   Task,
@@ -39,6 +40,7 @@ type Actions = {
   setTaskField(taskId: Task["id"], field: string, value: any): void;
   addTask(taskId: Task["id"], type?: TaskType): void;
   deleteTask(taskId: Task["id"]): void;
+  updateConditionText(taskId: Task["id"], index: number, text: string): void;
   addCondition(taskId: Task["id"], type: TaskType): void;
   deleteCondition(taskId: Task["id"], index: number): void;
   setInfiniteLoop(taskId: Task["id"], bool: boolean): void;
@@ -53,12 +55,6 @@ export function createActivityStore(
 ): StoreApi<ActivityStore> {
   return createStore((set, get) => {
     function updateActivity() {
-      correctTask(get().activity.start);
-      set({
-        activity: {
-          ...get().activity,
-        },
-      });
       if (get().operationQueue.length >= 100) {
         get().operationQueue.pop();
       }
@@ -81,6 +77,10 @@ export function createActivityStore(
           ],
         });
       }
+      correctTask(get().activity.start);
+      set({
+        activity: cloneDeep(get().activity),
+      });
     }
     return {
       activity,
@@ -204,6 +204,13 @@ export function createActivityStore(
         const result = findTask(get().activity.start, taskId);
         if (result && result.type === TaskType.switch) {
           result.cases.splice(index, 1);
+          updateActivity();
+        }
+      },
+      updateConditionText(taskId, index, text) {
+        const result = findTask(get().activity.start, taskId);
+        if (result && result.type === TaskType.switch) {
+          result.cases[index].condition = text;
           updateActivity();
         }
       },

@@ -8,19 +8,21 @@ export function ListOperation(props: {
   allowDelete: boolean;
   allowEdit: boolean;
   onDelete(index: number): void;
+  onChange?: (value: string, index: number) => void;
 }) {
   return (
     <div>
       {props.values.map((value, index) => (
-        <div className="flex items-center" key={value}>
+        <div className="flex items-center" key={index}>
           <Input
             startAdornment={
               <InputAdornment position="start">
                 <AccountCircle />
               </InputAdornment>
             }
-            value={value}
+            defaultValue={value}
             disabled={!props.allowEdit}
+            onBlur={(e) => props.onChange?.(e.target.value, index)}
           />
           {props.allowDelete && (
             <div

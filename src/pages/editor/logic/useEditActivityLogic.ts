@@ -15,6 +15,11 @@ type Handlers = {
   handleTaskSwimLaneChange(taskId: Task["id"], swimlane: string): void;
   handleAddCondition(taskId: Task["id"], type: Task["type"]): void;
   handleDeleteCondition(taskId: Task["id"], index: number): void;
+  handleConditionTextChange(
+    taskId: Task["id"],
+    index: number,
+    text: string
+  ): void;
   handleToggleInfiniteLoop(taskId: Task["id"], bool: boolean): void;
   handleToggleSwimlanes(bool: boolean): void;
   handleAddParallelTask(taskId: Task["id"], type: Task["type"]): void;
@@ -77,6 +82,9 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
       },
       handleUndo() {
         activityStore.getState().undo();
+      },
+      handleConditionTextChange(taskId, index, text) {
+        activityStore.getState().updateConditionText(taskId, index, text);
       },
     };
   }
