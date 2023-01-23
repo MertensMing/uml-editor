@@ -12,9 +12,11 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import { useDebounceCallback } from "@react-hook/debounce";
 import { createActivityStore } from "./store/activity";
 import { useEditActivityLogic } from "./logic/useEditActivityLogic";
 import { Activity, TaskType } from "../../entities/Activity";
+import { OperationButtonGroup } from "./components/OperationButtonGroup";
 
 const typeMap = {
   [TaskType.start]: "起始",
@@ -67,12 +69,17 @@ export function Editor() {
     handleDeleteParallelTask,
   } = useEditActivityLogic([activityStore]);
 
+  const debouncedHandleActivityChange = useDebounceCallback(
+    handleActivityChange,
+    500
+  );
+
   useLayoutEffect(() => {
     handleMount();
   }, []);
 
   useEffect(() => {
-    handleActivityChange();
+    debouncedHandleActivityChange();
   }, [activity]);
 
   return (
@@ -122,23 +129,9 @@ export function Editor() {
           </div>
           {currentTask && (
             <>
-              <br />
+              {/* 节点名称 */}
               <div>
-                <FormControl variant="standard">
-                  <InputLabel>节点类型</InputLabel>
-                  <Input
-                    startAdornment={
-                      <InputAdornment position="start">
-                        <AccountCircle />
-                      </InputAdornment>
-                    }
-                    value={typeMap[currentTask.type]}
-                    disabled
-                  />
-                </FormControl>
-              </div>
-              <br />
-              <div>
+                <br />
                 <FormControl variant="standard">
                   <InputLabel>节点名称</InputLabel>
                   <Input
@@ -154,6 +147,7 @@ export function Editor() {
                   />
                 </FormControl>
               </div>
+              {/* 选择泳道 */}
               {!!activity?.swimlanes?.length && (
                 <div>
                   <br />
@@ -183,6 +177,77 @@ export function Editor() {
                   </FormControl>
                 </div>
               )}
+              {/* 添加节点 */}
+              <div>
+                <br />
+                <div>
+                  <InputLabel
+                    style={{ transform: "translate(0, -1.5px) scale(0.75)" }}
+                  >
+                    添加节点
+                  </InputLabel>
+                  <div>
+                    <OperationButtonGroup
+                      group={[
+                        TaskType.normal,
+                        TaskType.switch,
+                        TaskType.parallel,
+                        TaskType.while,
+                        TaskType.stop,
+                      ]}
+                      onClick={(type) => handleAddTask(currentTask.id, type)}
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* 删除节点 */}
+              <div>
+                <br />
+                <InputLabel
+                  style={{ transform: "translate(0, -1.5px) scale(0.75)" }}
+                >
+                  删除节点
+                </InputLabel>
+                <div>
+                  <ButtonGroup variant="outlined" size="small">
+                    <Button
+                      onClick={() => {
+                        handleDeleteTask(currentTask.id);
+                      }}
+                      disabled={!currentTask.prev}
+                      color="error"
+                    >
+                      删除
+                    </Button>
+                    {currentTask.next?.type === TaskType.stop && (
+                      <Button
+                        onClick={() => {
+                          handleDeleteTask(currentTask.next.id);
+                        }}
+                        color="error"
+                      >
+                        删除下级结束点
+                      </Button>
+                    )}
+                  </ButtonGroup>
+                </div>
+              </div>
+              {/* 节点类型 */}
+              <div>
+                <br />
+                <FormControl variant="standard">
+                  <InputLabel>节点类型</InputLabel>
+                  <Input
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <AccountCircle />
+                      </InputAdornment>
+                    }
+                    value={typeMap[currentTask.type]}
+                    disabled
+                  />
+                </FormControl>
+              </div>
               {currentTask.type === TaskType.while ? (
                 <div>
                   <div>死循环</div>
@@ -241,48 +306,17 @@ export function Editor() {
                         添加并行任务
                       </InputLabel>
                       <div>
-                        <ButtonGroup variant="outlined" size="small">
-                          <Button
-                            onClick={() =>
-                              handleAddParallelTask(
-                                currentTask.id,
-                                TaskType.normal
-                              )
-                            }
-                          >
-                            普通
-                          </Button>
-                          <Button
-                            onClick={() =>
-                              handleAddParallelTask(
-                                currentTask.id,
-                                TaskType.parallel
-                              )
-                            }
-                          >
-                            并行
-                          </Button>
-                          <Button
-                            onClick={() =>
-                              handleAddParallelTask(
-                                currentTask.id,
-                                TaskType.switch
-                              )
-                            }
-                          >
-                            条件
-                          </Button>
-                          <Button
-                            onClick={() =>
-                              handleAddParallelTask(
-                                currentTask.id,
-                                TaskType.while
-                              )
-                            }
-                          >
-                            循环
-                          </Button>
-                        </ButtonGroup>
+                        <OperationButtonGroup
+                          group={[
+                            TaskType.normal,
+                            TaskType.switch,
+                            TaskType.parallel,
+                            TaskType.while,
+                          ]}
+                          onClick={(type) =>
+                            handleAddParallelTask(currentTask.id, type)
+                          }
+                        />
                       </div>
                     </div>
                   </div>
@@ -334,130 +368,22 @@ export function Editor() {
                       添加条件
                     </InputLabel>
                     <div>
-                      <ButtonGroup variant="outlined" size="small">
-                        <Button
-                          onClick={() =>
-                            handleAddCondition(currentTask.id, TaskType.normal)
-                          }
-                        >
-                          普通
-                        </Button>
-                        <Button
-                          onClick={() =>
-                            handleAddCondition(
-                              currentTask.id,
-                              TaskType.parallel
-                            )
-                          }
-                        >
-                          并行
-                        </Button>
-                        <Button
-                          onClick={() =>
-                            handleAddCondition(currentTask.id, TaskType.switch)
-                          }
-                        >
-                          条件
-                        </Button>
-                        <Button
-                          onClick={() =>
-                            handleAddCondition(currentTask.id, TaskType.while)
-                          }
-                        >
-                          循环
-                        </Button>
-                        <Button
-                          onClick={() =>
-                            handleAddCondition(currentTask.id, TaskType.stop)
-                          }
-                        >
-                          结束
-                        </Button>
-                      </ButtonGroup>
+                      <OperationButtonGroup
+                        group={[
+                          TaskType.normal,
+                          TaskType.switch,
+                          TaskType.parallel,
+                          TaskType.while,
+                          TaskType.stop,
+                        ]}
+                        onClick={(type) =>
+                          handleAddCondition(currentTask.id, type)
+                        }
+                      />
                     </div>
                   </div>
                 </div>
               ) : null}
-              <div>
-                <br />
-                <div>
-                  <InputLabel
-                    style={{ transform: "translate(0, -1.5px) scale(0.75)" }}
-                  >
-                    添加节点
-                  </InputLabel>
-                  <div>
-                    <ButtonGroup variant="outlined" size="small">
-                      <Button
-                        onClick={() =>
-                          handleAddTask(currentTask.id, TaskType.normal)
-                        }
-                      >
-                        普通
-                      </Button>
-                      <Button
-                        onClick={() =>
-                          handleAddTask(currentTask.id, TaskType.parallel)
-                        }
-                      >
-                        并行
-                      </Button>
-                      <Button
-                        onClick={() =>
-                          handleAddTask(currentTask.id, TaskType.switch)
-                        }
-                      >
-                        条件
-                      </Button>
-                      <Button
-                        onClick={() =>
-                          handleAddTask(currentTask.id, TaskType.while)
-                        }
-                      >
-                        循环
-                      </Button>
-                      <Button
-                        onClick={() =>
-                          handleAddTask(currentTask.id, TaskType.stop)
-                        }
-                      >
-                        结束
-                      </Button>
-                    </ButtonGroup>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <br />
-                <InputLabel
-                  style={{ transform: "translate(0, -1.5px) scale(0.75)" }}
-                >
-                  删除节点
-                </InputLabel>
-                <div>
-                  <ButtonGroup variant="outlined" size="small">
-                    <Button
-                      onClick={() => {
-                        handleDeleteTask(currentTask.id);
-                      }}
-                      disabled={!currentTask.prev}
-                      color="error"
-                    >
-                      删除
-                    </Button>
-                    {currentTask.next?.type === TaskType.stop && (
-                      <Button
-                        onClick={() => {
-                          handleDeleteTask(currentTask.next.id);
-                        }}
-                        color="error"
-                      >
-                        删除下级结束点
-                      </Button>
-                    )}
-                  </ButtonGroup>
-                </div>
-              </div>
             </>
           )}
         </div>
