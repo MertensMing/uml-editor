@@ -96,6 +96,7 @@ export function createActivityStore(
       },
       setDiagramUrl() {
         const uml = activityParser.parseActivity(get().activity);
+        console.log("get().activity", get().activity);
         const url = draw(uml);
         set({
           url,
@@ -175,19 +176,20 @@ export function createActivityStore(
       },
       deleteTask(taskId) {
         const task = findTask(get().activity.start, taskId);
-        if (task && task.type !== TaskType.start) {
-          const prevTask = findTask(get().activity.start, task.prev);
-          if (!prevTask) return;
-          if (task.type === TaskType.stop) {
-            prevTask.next = undefined;
-          } else {
-            prevTask.next = task.next;
-            if (task.next) {
-              task.next.prev = prevTask.id;
-            }
-          }
+        if (!task) return;
+        if (task.type === TaskType.start) return;
+        const prevTask = findTask(get().activity.start, task.prev);
+        if (!prevTask) return;
+        if (task.type === TaskType.stop) {
+          prevTask.next = undefined;
           updateActivity();
+          return;
         }
+        if (task.next) {
+          task.next.prev = prevTask.id;
+        }
+        prevTask.next = task.next;
+        updateActivity();
       },
       // switch
       addCondition(taskId, type) {
