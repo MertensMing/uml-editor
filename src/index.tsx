@@ -1,11 +1,34 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  experimental_extendTheme as extendTheme,
+} from "@mui/material/styles";
 import { Editor } from "./pages/editor";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import * as colors from "@mui/material/colors";
 
 import "tailwindcss/dist/utilities.min.css";
 import "./App.scss";
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+const theme = extendTheme({
+  colorSchemes: {
+    light: {
+      palette: {
+        primary: {
+          main: colors.grey[900],
+        },
+      },
+    },
+    dark: {
+      palette: {
+        primary: {
+          main: colors.grey[400],
+        },
+      },
+    },
+  },
+});
 
 const router = createBrowserRouter([
   {
@@ -24,7 +47,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <CssVarsProvider theme={theme}>
+      <RouterProvider router={router} />
+    </CssVarsProvider>
   </React.StrictMode>
 );
 

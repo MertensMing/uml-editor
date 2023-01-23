@@ -1,6 +1,12 @@
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 .process {
@@ -9,4 +15,20 @@ html, body {
     cursor: pointer;
     user-select: none;
   }
+}
+
+.border-t-solid {
+  border-top-style: solid;
+}
+.border-r-solid {
+  border-right-style: solid;
+}
+.border-b-solid {
+  border-bottom-style: solid;
+}
+.border-l-solid {
+  border-left-style: solid;
+}
+.border-px {
+  border-width: 1px;
 }
