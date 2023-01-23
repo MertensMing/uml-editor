@@ -18,6 +18,7 @@ import { Activity, TaskType } from "../../entities/Activity";
 import { OperationButtonGroup } from "./components/OperationButtonGroup";
 import { TYPE_MAP } from "./const";
 import { FormItem } from "./components/FormItem";
+import { ListOperation } from "./components/ListOperation";
 
 export function Editor() {
   const activityStore = useRef(
@@ -227,34 +228,16 @@ export function Editor() {
                   <FormItem
                     label="并行任务"
                     content={
-                      <div>
-                        {currentTask.parallel.map((item, index) => (
-                          <div className="flex items-center" key={item.id}>
-                            <Input
-                              startAdornment={
-                                <InputAdornment position="start">
-                                  <AccountCircle />
-                                </InputAdornment>
-                              }
-                              value={`任务 ${index + 1}（${item.name}）`}
-                              disabled
-                            />
-                            {currentTask.parallel.length > 2 && (
-                              <div
-                                onClick={() =>
-                                  handleDeleteParallelTask(
-                                    currentTask.id,
-                                    index
-                                  )
-                                }
-                                className="ml-1 cursor-pointer text-xs hover:bg-gray-200 px-2 py-1 rounded"
-                              >
-                                删除
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
+                      <ListOperation
+                        allowDelete={currentTask.parallel.length > 2}
+                        allowEdit={false}
+                        values={currentTask.parallel.map(
+                          (item, index) => `任务 ${index + 1}（${item.name}）`
+                        )}
+                        onDelete={(index) =>
+                          handleDeleteParallelTask(currentTask.id, index)
+                        }
+                      />
                     }
                   />
                   <FormItem
@@ -281,34 +264,21 @@ export function Editor() {
                     label="编辑条件"
                     content={
                       <div>
-                        {currentTask.cases.map((item, index) => (
-                          <div className="flex items-center" key={index}>
-                            <Input
-                              startAdornment={
-                                <InputAdornment position="start">
-                                  <AccountCircle />
-                                </InputAdornment>
+                        <FormItem
+                          label="并行任务"
+                          content={
+                            <ListOperation
+                              allowDelete={currentTask.cases.length > 2}
+                              allowEdit
+                              values={currentTask.cases.map(
+                                (item) => item.condition
+                              )}
+                              onDelete={(index) =>
+                                handleDeleteCondition(currentTask.id, index)
                               }
-                              value={item.condition}
-                              onChange={(e) => {
-                                handleTaskNameChange(
-                                  currentTask.id,
-                                  e.target.value
-                                );
-                              }}
                             />
-                            {currentTask.cases.length > 2 ? (
-                              <div
-                                onClick={() =>
-                                  handleDeleteCondition(currentTask.id, index)
-                                }
-                                className="ml-1 cursor-pointer text-xs hover:bg-gray-200 px-2 py-1 rounded"
-                              >
-                                删除
-                              </div>
-                            ) : null}
-                          </div>
-                        ))}
+                          }
+                        />
                       </div>
                     }
                   />
