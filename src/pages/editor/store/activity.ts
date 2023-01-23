@@ -1,7 +1,6 @@
 import { createStore, StoreApi } from "zustand";
 import encoder from "plantuml-encoder";
 import remove from "lodash/remove";
-import cloneDeep from "lodash/cloneDeep";
 import {
   Activity,
   Task,
@@ -79,7 +78,9 @@ export function createActivityStore(
       }
       correctTask(get().activity.start);
       set({
-        activity: cloneDeep(get().activity),
+        activity: {
+          ...get().activity,
+        },
       });
     }
     return {

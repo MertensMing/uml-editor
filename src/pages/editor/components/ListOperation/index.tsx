@@ -20,9 +20,9 @@ export function ListOperation(props: {
                 <AccountCircle />
               </InputAdornment>
             }
-            defaultValue={value}
+            value={value}
             disabled={!props.allowEdit}
-            onBlur={(e) => props.onChange?.(e.target.value, index)}
+            onChange={(e) => props.onChange?.(e.target.value, index)}
           />
           {props.allowDelete && (
             <div

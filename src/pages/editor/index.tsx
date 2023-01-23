@@ -77,8 +77,7 @@ export function Editor() {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex p-4 items-center border-b-solid border-gray-700 border-px h-16">
-        <div className="bg-gray-800 text-white px-4 py-2 rounded">UML</div>
-        <div className="ml-4">PlantUML Editor</div>
+        <div className="font-bold">PlantUML Editor</div>
       </div>
       <div className="flex" style={{ height: `calc(100vh - 64px)` }}>
         <div
@@ -101,22 +100,24 @@ export function Editor() {
           {currentTask && (
             <>
               {/* 节点名称 */}
-              <FormItem
-                label="节点名称"
-                content={
-                  <Input
-                    startAdornment={
-                      <InputAdornment position="start">
-                        <AccountCircle />
-                      </InputAdornment>
-                    }
-                    value={currentTask.name}
-                    onBlur={(e) => {
-                      handleTaskNameChange(currentTask.id, e.target.value);
-                    }}
-                  />
-                }
-              />
+              {currentTask.type !== TaskType.start && (
+                <FormItem
+                  label="节点名称"
+                  content={
+                    <Input
+                      startAdornment={
+                        <InputAdornment position="start">
+                          <AccountCircle />
+                        </InputAdornment>
+                      }
+                      value={currentTask.name}
+                      onChange={(e) => {
+                        handleTaskNameChange(currentTask.id, e.target.value);
+                      }}
+                    />
+                  }
+                />
+              )}
               {/* 添加节点 */}
               <FormItem
                 label="添加节点"
