@@ -114,6 +114,32 @@ export function findTask(task: Task, taskId: string): Task | void {
   }
 }
 
+export function correctTask(task: Task, prevTaskId?: Task["id"]): Task | void {
+  task.prev = prevTaskId;
+  if (task.type === TaskType.switch) {
+    for (const item of task.cases) {
+      correctTask(item.task);
+    }
+    if (task.next) {
+      correctTask(task.next, task.id);
+    }
+  } else if (task.type === TaskType.parallel) {
+    for (const item of task.parallel) {
+      correctTask(item);
+    }
+    if (task.next) {
+      correctTask(task.next, task.id);
+    }
+  } else if (task.type === TaskType.while) {
+    correctTask(task.while);
+    if (task.next) {
+      correctTask(task.next, task.id);
+    }
+  } else if (task.type !== TaskType.stop && task.next) {
+    correctTask(task.next, task.id);
+  }
+}
+
 function getId() {
   return `${Date.now()}${Math.random()}`;
 }

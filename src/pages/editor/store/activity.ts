@@ -9,6 +9,7 @@ import {
   createTask,
   StartTask,
   createCase,
+  correctTask,
 } from "../../../entities/Activity";
 import { activityParser } from "../../../parser/activity";
 
@@ -52,12 +53,13 @@ export function createActivityStore(
 ): StoreApi<ActivityStore> {
   return createStore((set, get) => {
     function updateActivity() {
+      correctTask(get().activity.start);
       set({
         activity: {
           ...get().activity,
         },
       });
-      if (get().operationQueue.length >= 30) {
+      if (get().operationQueue.length >= 100) {
         get().operationQueue.pop();
       }
       if (get().undoIndex !== 0) {
@@ -96,7 +98,6 @@ export function createActivityStore(
       },
       setDiagramUrl() {
         const uml = activityParser.parseActivity(get().activity);
-        console.log("get().activity", get().activity);
         const url = draw(uml);
         set({
           url,
