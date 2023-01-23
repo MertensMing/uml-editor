@@ -4,13 +4,12 @@ import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import Input from "@mui/material/Input";
-import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
-import FormControl from "@mui/material/FormControl";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
+import Checkbox from "@mui/material/Checkbox";
 import Select from "@mui/material/Select";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { createActivityStore } from "./store/activity";
@@ -18,6 +17,7 @@ import { useEditActivityLogic } from "./logic/useEditActivityLogic";
 import { Activity, TaskType } from "../../entities/Activity";
 import { OperationButtonGroup } from "./components/OperationButtonGroup";
 import { TYPE_MAP } from "./const";
+import { FormItem } from "./components/FormItem";
 
 export function Editor() {
   const activityStore = useRef(
@@ -41,7 +41,7 @@ export function Editor() {
     // init
     handleMount,
     // activity
-    handleTitleChange,
+    // handleTitleChange,
     handleActivityChange,
     handleRedo,
     handleUndo,
@@ -85,13 +85,9 @@ export function Editor() {
           style={{ width: 300 }}
           className="px-4 py-4 h-full flex-shrink-0 border-r-solid border-gray-300 border-px overflow-auto"
         >
-          <div>
-            <InputLabel
-              style={{ transform: "translate(0, -1.5px) scale(0.75)" }}
-            >
-              图表操作
-            </InputLabel>
-            <div>
+          <FormItem
+            label="图表操作"
+            content={
               <ButtonGroup variant="outlined" size="small">
                 <Button disabled={!allowUndo} onClick={handleUndo}>
                   撤销
@@ -100,32 +96,14 @@ export function Editor() {
                   恢复
                 </Button>
               </ButtonGroup>
-            </div>
-          </div>
-          <br />
-          <div>
-            <FormControl variant="standard">
-              <InputLabel>图表名称</InputLabel>
-              <Input
-                startAdornment={
-                  <InputAdornment position="start">
-                    <AccountCircle />
-                  </InputAdornment>
-                }
-                value={activity.title}
-                onChange={(e) => {
-                  handleTitleChange(e.target.value);
-                }}
-              />
-            </FormControl>
-          </div>
+            }
+          />
           {currentTask && (
             <>
               {/* 节点名称 */}
-              <div>
-                <br />
-                <FormControl variant="standard">
-                  <InputLabel>节点名称</InputLabel>
+              <FormItem
+                label="节点名称"
+                content={
                   <Input
                     startAdornment={
                       <InputAdornment position="start">
@@ -137,15 +115,15 @@ export function Editor() {
                       handleTaskNameChange(currentTask.id, e.target.value);
                     }}
                   />
-                </FormControl>
-              </div>
+                }
+              />
               {/* 选择泳道 */}
               {!!activity?.swimlanes?.length && (
-                <div>
-                  <br />
-                  <FormControl variant="standard">
-                    <InputLabel>选择泳道</InputLabel>
+                <FormItem
+                  label="选择泳道"
+                  content={
                     <Select
+                      variant="standard"
                       startAdornment={
                         <InputAdornment position="start">
                           <AccountCircle />
@@ -166,41 +144,29 @@ export function Editor() {
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
-                </div>
+                  }
+                />
               )}
               {/* 添加节点 */}
-              <div>
-                <br />
-                <div>
-                  <InputLabel
-                    style={{ transform: "translate(0, -1.5px) scale(0.75)" }}
-                  >
-                    添加节点
-                  </InputLabel>
-                  <div>
-                    <OperationButtonGroup
-                      group={[
-                        TaskType.normal,
-                        TaskType.switch,
-                        TaskType.parallel,
-                        TaskType.while,
-                        TaskType.stop,
-                      ]}
-                      onClick={(type) => handleAddTask(currentTask.id, type)}
-                    />
-                  </div>
-                </div>
-              </div>
+              <FormItem
+                label="添加节点"
+                content={
+                  <OperationButtonGroup
+                    group={[
+                      TaskType.normal,
+                      TaskType.switch,
+                      TaskType.parallel,
+                      TaskType.while,
+                      TaskType.stop,
+                    ]}
+                    onClick={(type) => handleAddTask(currentTask.id, type)}
+                  />
+                }
+              />
               {/* 删除节点 */}
-              <div>
-                <br />
-                <InputLabel
-                  style={{ transform: "translate(0, -1.5px) scale(0.75)" }}
-                >
-                  删除节点
-                </InputLabel>
-                <div>
+              <FormItem
+                label="删除节点"
+                content={
                   <ButtonGroup variant="outlined" size="small">
                     <Button
                       onClick={() => {
@@ -222,13 +188,12 @@ export function Editor() {
                       </Button>
                     )}
                   </ButtonGroup>
-                </div>
-              </div>
+                }
+              />
               {/* 节点类型 */}
-              <div>
-                <br />
-                <FormControl variant="standard">
-                  <InputLabel>节点类型</InputLabel>
+              <FormItem
+                label="节点类型"
+                content={
                   <Input
                     startAdornment={
                       <InputAdornment position="start">
@@ -238,128 +203,118 @@ export function Editor() {
                     value={TYPE_MAP[currentTask.type]}
                     disabled
                   />
-                </FormControl>
-              </div>
+                }
+              />
               {currentTask.type === TaskType.while ? (
+                <FormItem
+                  label="无限循环"
+                  content={
+                    <Checkbox
+                      value={currentTask.infiniteLoop}
+                      onChange={(e) =>
+                        handleToggleInfiniteLoop(
+                          currentTask.id,
+                          e.target.checked
+                        )
+                      }
+                      size="small"
+                    />
+                  }
+                />
+              ) : null}
+              {currentTask.type === TaskType.parallel ? (
                 <div>
-                  <div>死循环</div>
-                  <input
-                    type="checkbox"
-                    onChange={(e) =>
-                      handleToggleInfiniteLoop(currentTask.id, e.target.checked)
+                  <FormItem
+                    label="并行任务"
+                    content={
+                      <div>
+                        {currentTask.parallel.map((item, index) => (
+                          <div className="flex items-center" key={item.id}>
+                            <Input
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  <AccountCircle />
+                                </InputAdornment>
+                              }
+                              value={`任务 ${index + 1}（${item.name}）`}
+                              disabled
+                            />
+                            {currentTask.parallel.length > 2 && (
+                              <div
+                                onClick={() =>
+                                  handleDeleteParallelTask(
+                                    currentTask.id,
+                                    index
+                                  )
+                                }
+                                className="ml-1 cursor-pointer text-xs hover:bg-gray-200 px-2 py-1 rounded"
+                              >
+                                删除
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    }
+                  />
+                  <FormItem
+                    label="添加并行任务"
+                    content={
+                      <OperationButtonGroup
+                        group={[
+                          TaskType.normal,
+                          TaskType.switch,
+                          TaskType.parallel,
+                          TaskType.while,
+                        ]}
+                        onClick={(type) =>
+                          handleAddParallelTask(currentTask.id, type)
+                        }
+                      />
                     }
                   />
                 </div>
               ) : null}
-              {currentTask.type === TaskType.parallel ? (
-                <div>
-                  <div>
-                    <br />
-                    <InputLabel
-                      style={{ transform: "translate(0, -1.5px) scale(0.75)" }}
-                    >
-                      并行任务
-                    </InputLabel>
-                    <div>
-                      {currentTask.parallel.map((item, index) => (
-                        <div className="flex items-center" key={item.id}>
-                          <Input
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <AccountCircle />
-                              </InputAdornment>
-                            }
-                            value={`任务 ${index + 1}（${item.name}）`}
-                            disabled
-                          />
-                          {currentTask.parallel.length > 2 && (
-                            <div
-                              onClick={() =>
-                                handleDeleteParallelTask(currentTask.id, index)
-                              }
-                              className="ml-1 cursor-pointer text-xs hover:bg-gray-200 px-2 py-1 rounded"
-                            >
-                              删除
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <div>
-                      <br />
-                      <InputLabel
-                        style={{
-                          transform: "translate(0, -1.5px) scale(0.75)",
-                        }}
-                      >
-                        添加并行任务
-                      </InputLabel>
-                      <div>
-                        <OperationButtonGroup
-                          group={[
-                            TaskType.normal,
-                            TaskType.switch,
-                            TaskType.parallel,
-                            TaskType.while,
-                          ]}
-                          onClick={(type) =>
-                            handleAddParallelTask(currentTask.id, type)
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
               {currentTask.type === TaskType.switch ? (
                 <div>
-                  <div>
-                    <br />
-                    <InputLabel
-                      style={{ transform: "translate(0, -1.5px) scale(0.75)" }}
-                    >
-                      编辑条件
-                    </InputLabel>
-                    {currentTask.cases.map((item, index) => (
-                      <div className="flex items-center" key={index}>
-                        <Input
-                          startAdornment={
-                            <InputAdornment position="start">
-                              <AccountCircle />
-                            </InputAdornment>
-                          }
-                          value={item.condition}
-                          onChange={(e) => {
-                            handleTaskNameChange(
-                              currentTask.id,
-                              e.target.value
-                            );
-                          }}
-                        />
-                        {currentTask.cases.length > 2 ? (
-                          <div
-                            onClick={() =>
-                              handleDeleteCondition(currentTask.id, index)
-                            }
-                            className="ml-1 cursor-pointer text-xs hover:bg-gray-200 px-2 py-1 rounded"
-                          >
-                            删除
+                  <FormItem
+                    label="编辑条件"
+                    content={
+                      <div>
+                        {currentTask.cases.map((item, index) => (
+                          <div className="flex items-center" key={index}>
+                            <Input
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  <AccountCircle />
+                                </InputAdornment>
+                              }
+                              value={item.condition}
+                              onChange={(e) => {
+                                handleTaskNameChange(
+                                  currentTask.id,
+                                  e.target.value
+                                );
+                              }}
+                            />
+                            {currentTask.cases.length > 2 ? (
+                              <div
+                                onClick={() =>
+                                  handleDeleteCondition(currentTask.id, index)
+                                }
+                                className="ml-1 cursor-pointer text-xs hover:bg-gray-200 px-2 py-1 rounded"
+                              >
+                                删除
+                              </div>
+                            ) : null}
                           </div>
-                        ) : null}
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                  <div>
-                    <br />
-                    <InputLabel
-                      style={{ transform: "translate(0, -1.5px) scale(0.75)" }}
-                    >
-                      添加条件
-                    </InputLabel>
-                    <div>
+                    }
+                  />
+                  <FormItem
+                    label="添加条件"
+                    content={
                       <OperationButtonGroup
                         group={[
                           TaskType.normal,
@@ -372,8 +327,8 @@ export function Editor() {
                           handleAddCondition(currentTask.id, type)
                         }
                       />
-                    </div>
-                  </div>
+                    }
+                  />
                 </div>
               ) : null}
             </>
