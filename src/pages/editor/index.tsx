@@ -17,15 +17,7 @@ import { createActivityStore } from "./store/activity";
 import { useEditActivityLogic } from "./logic/useEditActivityLogic";
 import { Activity, TaskType } from "../../entities/Activity";
 import { OperationButtonGroup } from "./components/OperationButtonGroup";
-
-const typeMap = {
-  [TaskType.start]: "起始",
-  [TaskType.normal]: "普通流程",
-  [TaskType.parallel]: "并行",
-  [TaskType.switch]: "条件",
-  [TaskType.while]: "循环",
-  [TaskType.stop]: "结束",
-};
+import { TYPE_MAP } from "./const";
 
 export function Editor() {
   const activityStore = useRef(
@@ -243,7 +235,7 @@ export function Editor() {
                         <AccountCircle />
                       </InputAdornment>
                     }
-                    value={typeMap[currentTask.type]}
+                    value={TYPE_MAP[currentTask.type]}
                     disabled
                   />
                 </FormControl>
