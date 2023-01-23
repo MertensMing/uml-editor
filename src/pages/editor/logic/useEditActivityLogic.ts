@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useCallback } from "react";
 import { createLogic } from "../../../common/createLogic";
 import { Task } from "../../../entities/Activity";
 import { ActivityStore } from "../store/activity";
@@ -27,13 +29,13 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
       handleMount() {
         activityStore.getState().initializeActivity();
       },
-      handleActivityChange() {
+      handleActivityChange: useCallback(() => {
         window.localStorage.setItem(
           "my_activity",
           JSON.stringify(activityStore.getState().activity)
         );
         activityStore.getState().setDiagramUrl();
-      },
+      }, []),
       handleTitleChange(title) {
         activityStore.getState().setActivityTitle(title);
       },
