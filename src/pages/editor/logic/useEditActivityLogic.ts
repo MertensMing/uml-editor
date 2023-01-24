@@ -2,17 +2,16 @@
 import { useCallback } from "react";
 import { createLogic } from "../../../common/createLogic";
 import { Task } from "../../../entities/Activity";
+import { activityStorage } from "../../../storage/activity";
 import { ActivityStore } from "../store/activity";
 
 type Handlers = {
   handleMount(): void;
   handleActivityChange(): void;
-  handleTitleChange(title: string): void;
   handleAddTask(taskId: Task["id"], type?: Task["type"]): void;
   handleDeleteTask(taskId: Task["id"]): void;
   handleSelectTask(taskId: Task["id"]): void;
   handleTaskNameChange(taskId: Task["id"], name: string): void;
-  handleTaskSwimLaneChange(taskId: Task["id"], swimlane: string): void;
   handleAddCondition(taskId: Task["id"], type: Task["type"]): void;
   handleDeleteCondition(taskId: Task["id"], index: number): void;
   handleConditionTextChange(
@@ -34,15 +33,9 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
         activityStore.getState().initializeActivity();
       },
       handleActivityChange: useCallback(() => {
-        window.localStorage.setItem(
-          "my_activity",
-          JSON.stringify(activityStore.getState().activity)
-        );
-        activityStore.getState().setDiagramUrl();
+        activityStore.getState().updateDiagramUrl();
+        activityStorage.set(activityStore.getState().activity);
       }, []),
-      handleTitleChange(title) {
-        activityStore.getState().setActivityTitle(title);
-      },
       handleAddTask(taskId, type) {
         activityStore.getState().addTask(taskId, type);
       },
@@ -54,9 +47,6 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
       },
       handleTaskNameChange(taskId, name) {
         activityStore.getState().setTaskField(taskId, "name", name);
-      },
-      handleTaskSwimLaneChange(taskId, name) {
-        activityStore.getState().setTaskField(taskId, "swimlane", name);
       },
       handleAddCondition(taskId, type) {
         activityStore.getState().addCondition(taskId, type);

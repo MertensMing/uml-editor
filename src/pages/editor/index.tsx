@@ -11,28 +11,34 @@ import Button from "@mui/material/Button";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { createActivityStore } from "./store/activity";
 import { useEditActivityLogic } from "./logic/useEditActivityLogic";
-import { Activity, TaskType } from "../../entities/Activity";
+import { findTask, TaskType } from "../../entities/Activity";
 import { OperationButtonGroup } from "./components/OperationButtonGroup";
 import { TYPE_MAP } from "./const";
 import { FormItem } from "./components/FormItem";
 import { ListOperation } from "./components/ListOperation";
+import { activityStorage } from "../../storage/activity";
+import { CopyButtonGroup } from "./components/CopyButtonGroup";
 
 export function Editor() {
   const activityStore = useRef(
-    createActivityStore(
-      (JSON.parse(window.localStorage.getItem("my_activity")) as Activity) ??
-        undefined
-    )
+    createActivityStore(activityStorage.get() ?? undefined)
   ).current;
-  const { currentTask, url, activity, allowRedo, allowUndo } = useStore(
+  const { url, activity, allowRedo, allowUndo, pngUrl, uml } = useStore(
     activityStore,
-    ({ currentTask, url, activity, undoIndex, operationQueue }) => ({
-      currentTask,
+    ({ url, pngUrl, uml, activity, undoIndex, operationQueue }) => ({
       url,
       activity,
       allowUndo: undoIndex < operationQueue.length - 1,
       allowRedo: undoIndex !== 0,
+      operationQueue,
+      pngUrl,
+      uml,
     }),
+    shallow
+  );
+  const currentTask = useStore(
+    activityStore,
+    ({ currentTask, activity }) => findTask(activity.start, currentTask?.id),
     shallow
   );
 
@@ -75,13 +81,14 @@ export function Editor() {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="flex p-4 items-center border-b-solid border-gray-700 border-px h-16">
-        <div className="font-bold">PlantUML Editor</div>
+      <div className="flex p-4 items-center border-b-solid border-gray-700 border-b-2 h-16 justify-between">
+        <div className="font-bold text-xl">PlantUML Editor</div>
+        <CopyButtonGroup uml={uml} png={pngUrl} svg={url} />
       </div>
       <div className="flex" style={{ height: `calc(100vh - 64px)` }}>
         <div
           style={{ width: 300 }}
-          className="px-4 py-4 h-full flex-shrink-0 border-r-solid border-gray-700 border-px overflow-auto"
+          className="px-4 py-4 h-full flex-shrink-0 border-r-solid border-gray-700 border-r-2 overflow-auto"
         >
           <FormItem
             label="图表操作"
@@ -98,6 +105,21 @@ export function Editor() {
           />
           {currentTask && (
             <>
+              {/* 节点类型 */}
+              <FormItem
+                label="节点类型"
+                content={
+                  <Input
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <AccountCircle />
+                      </InputAdornment>
+                    }
+                    value={TYPE_MAP[currentTask.type]}
+                    disabled
+                  />
+                }
+              />
               {/* 节点名称 */}
               {currentTask.type !== TaskType.start && (
                 <FormItem
@@ -158,21 +180,6 @@ export function Editor() {
                       </Button>
                     )}
                   </ButtonGroup>
-                }
-              />
-              {/* 节点类型 */}
-              <FormItem
-                label="节点类型"
-                content={
-                  <Input
-                    startAdornment={
-                      <InputAdornment position="start">
-                        <AccountCircle />
-                      </InputAdornment>
-                    }
-                    value={TYPE_MAP[currentTask.type]}
-                    disabled
-                  />
                 }
               />
               {currentTask.type === TaskType.while ? (
@@ -259,7 +266,7 @@ export function Editor() {
                     label="编辑条件"
                     content={
                       <ListOperation
-                        allowDelete={currentTask.cases.length > 2}
+                        allowDelete={currentTask.cases.length > 1}
                         allowEdit
                         values={currentTask.cases.map((item) => item.condition)}
                         onDelete={(index) =>
