@@ -10,10 +10,11 @@ body {
 }
 
 .process {
+  user-select: none;
   .task:hover,
   .activity:hover {
-    cursor: pointer;
-    user-select: none;
+    cursor: grab;
+    fill: blueviolet;
   }
 }
 

@@ -111,7 +111,7 @@ export const activityParser = {
     return cases
       .map((item) => {
         return `
-          case (<text class="task" caseid="${item.id}">${item.condition}</text>)
+          case (<text caseid="${item.id}">${item.condition}</text>)
             ${this.parseTask("", item.task)}
         `;
       })
