@@ -18,8 +18,6 @@ export function CopyButtonGroup(props: Props) {
     <div>
       <Snackbar
         open={open}
-        autoHideDuration={1500}
-        onClose={() => setOpen(false)}
         anchorOrigin={{
           horizontal: "center",
           vertical: "top",
@@ -30,13 +28,15 @@ export function CopyButtonGroup(props: Props) {
       <Button
         variant="text"
         size="small"
-        onClick={() =>
-          copy(props.uml, {
-            onCopy() {
-              setOpen(true);
-            },
-          })
-        }
+        onClick={() => {
+          const success = copy(props.uml);
+          if (success) {
+            setOpen(true);
+            setTimeout(() => {
+              setOpen(false);
+            }, 1500);
+          }
+        }}
       >
         复制 PlantUML
       </Button>
