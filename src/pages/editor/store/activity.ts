@@ -13,14 +13,20 @@ import {
 } from "../../../entities/Activity";
 import { activityParser } from "../../../parser/activity";
 
-function draw(diagram: string) {
+function drawSvg(diagram: string) {
   return "https://pblk.bytedance.com/svg/" + encoder.encode(diagram);
+}
+
+function drawPng(diagram: string) {
+  return "https://pblk.bytedance.com/png/" + encoder.encode(diagram);
 }
 
 type State = {
   activity?: Activity;
   currentTask?: Task;
   url: string;
+  uml: string;
+  pngUrl: string;
   operationQueue: string[];
   undoIndex: number;
 };
@@ -28,7 +34,7 @@ type State = {
 type Actions = {
   // ui
   setCurrentTask(taskId: Task["id"]): void;
-  setDiagramUrl(): void;
+  updateDiagramUrl(): void;
   // activity
   initializeActivity(): void;
   setActivityTitle(title: string): void;
@@ -82,9 +88,16 @@ export function createActivityStore(
         },
       });
     }
+    function resetCurrentTask() {
+      set({
+        currentTask: get().activity.start,
+      });
+    }
     return {
       activity,
       url: "",
+      uml: "",
+      pngUrl: "",
       operationQueue: [JSON.stringify(activity)],
       undoIndex: 0,
       // ui
@@ -96,11 +109,12 @@ export function createActivityStore(
           });
         }
       },
-      setDiagramUrl() {
+      updateDiagramUrl() {
         const uml = activityParser.parseActivity(get().activity);
-        const url = draw(uml);
         set({
-          url,
+          url: drawSvg(uml),
+          uml,
+          pngUrl: drawPng(uml),
         });
       },
       // activity
@@ -132,6 +146,7 @@ export function createActivityStore(
             undoIndex: newUndoIndex,
             activity: JSON.parse(get().operationQueue[newUndoIndex]),
           });
+          resetCurrentTask();
         }
       },
       redo() {
@@ -141,6 +156,7 @@ export function createActivityStore(
             undoIndex: newUndoIndex,
             activity: JSON.parse(get().operationQueue[newUndoIndex]),
           });
+          resetCurrentTask();
         }
       },
       // task
@@ -167,6 +183,7 @@ export function createActivityStore(
         if (task.type === TaskType.stop) {
           prevTask.next = undefined;
           updateActivity();
+          resetCurrentTask();
           return;
         }
         if (task.next) {
@@ -174,6 +191,7 @@ export function createActivityStore(
         }
         prevTask.next = task.next;
         updateActivity();
+        resetCurrentTask();
       },
       // switch
       addCondition(taskId, type) {

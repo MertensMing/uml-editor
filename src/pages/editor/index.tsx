@@ -36,6 +36,7 @@ export function Editor() {
     }),
     shallow
   );
+
   const currentTask = useStore(
     activityStore,
     ({ currentTask, activity }) => findTask(activity.start, currentTask?.id),
