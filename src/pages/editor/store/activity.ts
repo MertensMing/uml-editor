@@ -98,7 +98,7 @@ export function createActivityStore(
       url: "",
       uml: "",
       pngUrl: "",
-      operationQueue: [JSON.stringify(activity)],
+      operationQueue: activity ? [JSON.stringify(activity)] : [],
       undoIndex: 0,
       // ui
       setCurrentTask(taskId) {
