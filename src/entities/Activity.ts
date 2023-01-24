@@ -9,34 +9,33 @@ export enum TaskType {
 
 type CommonTask = {
   id: string;
-  swimlane?: string;
   prev?: Task["id"];
+  name?: string;
 };
 
 export type StartTask = {
   type: TaskType.start;
   next?: Task;
-  name?: string;
 } & CommonTask;
 
 export type StopTask = {
   type: TaskType.stop;
-  name?: string;
   next?: Task;
 } & CommonTask;
 
 export type NormalTask = {
   type: TaskType.normal;
-  name: string;
   next?: Task;
 } & CommonTask;
 
 export type WhileTask = {
   type: TaskType.while;
-  name: string;
   while: Task;
   next?: Task;
-  infiniteLoop?: boolean;
+  condition?: {
+    yes: string;
+    no: string;
+  };
 } & CommonTask;
 
 export type Case = {
@@ -47,7 +46,6 @@ export type Case = {
 
 export type SwitchTask = {
   type: TaskType.switch;
-  name: string;
   cases: Case[];
   next?: Task;
 } & CommonTask;
@@ -56,7 +54,6 @@ export type ParallelTask = {
   type: TaskType.parallel;
   parallel: Task[];
   next?: Task;
-  name: string;
 } & CommonTask;
 
 export type Task =
@@ -72,7 +69,6 @@ export type Activity = {
   title?: string;
   swimlanes?: {
     color?: string;
-    name: string;
   }[];
 };
 
@@ -170,7 +166,6 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
         while: createTask(TaskType.normal),
         prev: prevTask?.id,
         next: prevTask?.next,
-        infiniteLoop: false,
       };
     case TaskType.parallel:
       return {

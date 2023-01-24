@@ -51,10 +51,7 @@ export const activityParser = {
     return uml;
   },
   parseNormalTask(task: NormalTask): string {
-    return `
-      ${getSwimlane(task)}
-      :${getTaskName(task)};\n
-    `;
+    return `:${getTaskName(task)};\n`;
   },
   parseSwitchTask(task: SwitchTask): string {
     return `
@@ -73,17 +70,12 @@ export const activityParser = {
     `;
   },
   parseWhileTask(task: WhileTask): string {
+    const yes = task.condition?.yes || "yes";
+    const no = task.condition?.no || "no";
     return `
       ${getSwimlane(task)}
-      while (${getTaskName(task)})
-        ${this.parseTask("", task.while)}
-      endwhile\n
-      ${
-        task.infiniteLoop
-          ? `-[hidden]->
-             detach`
-          : ""
-      }
+      repeat ${this.parseTask("", task.while)}
+      repeat while (${getTaskName(task)}) is (${yes}) not (${no})\n
     `;
   },
   parseTask(uml: string, task: Task): string {

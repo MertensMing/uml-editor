@@ -20,12 +20,11 @@ type Handlers = {
     index: number,
     text: string
   ): void;
-  handleToggleInfiniteLoop(taskId: Task["id"], bool: boolean): void;
-  handleToggleSwimlanes(bool: boolean): void;
   handleAddParallelTask(taskId: Task["id"], type: Task["type"]): void;
   handleDeleteParallelTask(taskId: Task["id"], index: number): void;
   handleRedo(): void;
   handleUndo(): void;
+  handleWhileConditionChange(taskId: Task["id"], yes: string, no: string): void;
 };
 
 export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
@@ -65,12 +64,6 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
       handleDeleteCondition(taskId, index) {
         activityStore.getState().deleteCondition(taskId, index);
       },
-      handleToggleInfiniteLoop(taskId, bool) {
-        activityStore.getState().setInfiniteLoop(taskId, bool);
-      },
-      handleToggleSwimlanes(bool) {
-        activityStore.getState().activeSwimlanes(bool);
-      },
       handleAddParallelTask(taskId, type) {
         activityStore.getState().addParallelTask(taskId, type);
       },
@@ -85,6 +78,9 @@ export const useEditActivityLogic = createLogic<[ActivityStore], Handlers>(
       },
       handleConditionTextChange(taskId, index, text) {
         activityStore.getState().updateConditionText(taskId, index, text);
+      },
+      handleWhileConditionChange(taskId, yes, no) {
+        activityStore.getState().setWhileCondition(taskId, yes, no);
       },
     };
   }

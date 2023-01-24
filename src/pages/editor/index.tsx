@@ -8,7 +8,6 @@ import InputAdornment from "@mui/material/InputAdornment";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
-import Switch from "@mui/material/Switch";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { createActivityStore } from "./store/activity";
 import { useEditActivityLogic } from "./logic/useEditActivityLogic";
@@ -55,7 +54,7 @@ export function Editor() {
     handleDeleteCondition,
     handleConditionTextChange,
     // while
-    handleToggleInfiniteLoop,
+    handleWhileConditionChange,
     // parallel
     handleAddParallelTask,
     handleDeleteParallelTask,
@@ -178,18 +177,44 @@ export function Editor() {
               />
               {currentTask.type === TaskType.while ? (
                 <FormItem
-                  label="无限循环"
+                  label="循环条件"
                   content={
-                    <Switch
-                      value={currentTask.infiniteLoop}
-                      onChange={(e) =>
-                        handleToggleInfiniteLoop(
-                          currentTask.id,
-                          e.target.checked
-                        )
-                      }
-                      color="default"
-                    />
+                    <div>
+                      <Input
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <AccountCircle />
+                            <div className=" ml-1 text-xs">循环条件</div>
+                          </InputAdornment>
+                        }
+                        value={currentTask?.condition?.yes}
+                        onChange={(e) =>
+                          handleWhileConditionChange(
+                            currentTask.id,
+                            e.target.value,
+                            currentTask.condition?.no ?? ""
+                          )
+                        }
+                        placeholder="yes"
+                      />
+                      <Input
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <AccountCircle />
+                            <div className=" ml-1 text-xs">退出条件</div>
+                          </InputAdornment>
+                        }
+                        value={currentTask?.condition?.no}
+                        onChange={(e) =>
+                          handleWhileConditionChange(
+                            currentTask.id,
+                            currentTask.condition?.yes ?? "",
+                            e.target.value
+                          )
+                        }
+                        placeholder="no"
+                      />
+                    </div>
                   }
                 />
               ) : null}

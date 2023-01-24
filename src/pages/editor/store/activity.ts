@@ -32,7 +32,6 @@ type Actions = {
   // activity
   initializeActivity(): void;
   setActivityTitle(title: string): void;
-  activeSwimlanes(bool: boolean): void;
   undo(): void;
   redo(): void;
   // task
@@ -42,7 +41,7 @@ type Actions = {
   updateConditionText(taskId: Task["id"], index: number, text: string): void;
   addCondition(taskId: Task["id"], type: TaskType): void;
   deleteCondition(taskId: Task["id"], index: number): void;
-  setInfiniteLoop(taskId: Task["id"], bool: boolean): void;
+  setWhileCondition(taskId: Task["id"], yes: string, no: string): void;
   addParallelTask(taskId: Task["id"], type: TaskType): void;
   deleteParallelTask(taskId: Task["id"], index: number): void;
 };
@@ -114,29 +113,12 @@ export function createActivityStore(
         }
         const activity: Activity = {
           start: createTask(TaskType.start) as StartTask,
-          swimlanes: [],
         };
         set({
           activity,
           currentTask: activity.start,
           operationQueue: [JSON.stringify(activity)],
         });
-      },
-      activeSwimlanes(bool) {
-        const activity = get().activity;
-        if (bool) {
-          activity.swimlanes = [
-            {
-              name: "泳道A",
-            },
-            {
-              name: "泳道B",
-            },
-          ];
-        } else {
-          activity.swimlanes = [];
-        }
-        updateActivity();
       },
       setActivityTitle(title) {
         const activity = get().activity;
@@ -216,10 +198,13 @@ export function createActivityStore(
         }
       },
       // while
-      setInfiniteLoop(taskId, bool) {
+      setWhileCondition(taskId, yes, no) {
         const result = findTask(get().activity.start, taskId);
         if (result && result.type === TaskType.while) {
-          result.infiniteLoop = bool;
+          result.condition = {
+            yes,
+            no,
+          };
           updateActivity();
         }
       },
