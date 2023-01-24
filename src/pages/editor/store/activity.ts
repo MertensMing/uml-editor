@@ -1,7 +1,5 @@
 import { createStore, StoreApi } from "zustand";
 import encoder from "plantuml-encoder";
-import remove from "lodash/remove";
-import debounce from "lodash/debounce";
 import {
   Activity,
   Task,
@@ -28,19 +26,16 @@ type State = {
   url: string;
   uml: string;
   pngUrl: string;
-  operationQueue: string[];
-  undoIndex: number;
 };
 
 type Actions = {
   // ui
   setCurrentTask(taskId: Task["id"]): void;
+  resetCurrentTask(): void;
   updateDiagramUrl(): void;
   // activity
   initializeActivity(): void;
-  setActivityTitle(title: string): void;
-  undo(): void;
-  redo(): void;
+  setActivity(activity: Activity): void;
   // task
   setTaskField(taskId: Task["id"], field: string, value: any): void;
   addTask(taskId: Task["id"], type?: TaskType): void;
@@ -59,33 +54,7 @@ export function createActivityStore(
   activity?: Activity
 ): StoreApi<ActivityStore> {
   return createStore((set, get) => {
-    const saveOperationQueue = debounce(() => {
-      if (get().operationQueue.length >= 100) {
-        get().operationQueue.pop();
-      }
-      if (get().undoIndex !== 0) {
-        remove(get().operationQueue, (_, index) => {
-          return index < get().undoIndex;
-        });
-        set({
-          undoIndex: 0,
-          operationQueue: [
-            JSON.stringify(get().activity),
-            ...get().operationQueue,
-          ],
-        });
-      } else {
-        set({
-          operationQueue: [
-            JSON.stringify(get().activity),
-            ...get().operationQueue,
-          ],
-        });
-      }
-    }, 800);
-
     function updateActivity() {
-      saveOperationQueue();
       correctTask(get().activity.start);
       set({
         activity: {
@@ -94,17 +63,11 @@ export function createActivityStore(
       });
     }
 
-    function resetCurrentTask() {
-      set({
-        currentTask: get().activity.start,
-      });
-    }
     return {
       activity,
       url: "",
       uml: "",
       pngUrl: "",
-      operationQueue: activity ? [JSON.stringify(activity)] : [],
       undoIndex: 0,
       // ui
       setCurrentTask(taskId) {
@@ -123,6 +86,11 @@ export function createActivityStore(
           pngUrl: drawPng(uml),
         });
       },
+      resetCurrentTask() {
+        set({
+          currentTask: get().activity.start,
+        });
+      },
       // activity
       initializeActivity() {
         if (!!get().activity) {
@@ -137,33 +105,12 @@ export function createActivityStore(
         set({
           activity,
           currentTask: activity.start,
-          operationQueue: [JSON.stringify(activity)],
         });
       },
-      setActivityTitle(title) {
-        const activity = get().activity;
-        activity.title = title;
-        updateActivity();
-      },
-      undo() {
-        const newUndoIndex = get().undoIndex + 1;
-        if (newUndoIndex <= get().operationQueue.length - 1) {
-          set({
-            undoIndex: newUndoIndex,
-            activity: JSON.parse(get().operationQueue[newUndoIndex]),
-          });
-          resetCurrentTask();
-        }
-      },
-      redo() {
-        const newUndoIndex = get().undoIndex - 1;
-        if (newUndoIndex >= 0) {
-          set({
-            undoIndex: newUndoIndex,
-            activity: JSON.parse(get().operationQueue[newUndoIndex]),
-          });
-          resetCurrentTask();
-        }
+      setActivity(activity) {
+        set({
+          activity,
+        });
       },
       // task
       setTaskField(taskId, field, value) {
@@ -189,7 +136,7 @@ export function createActivityStore(
         if (task.type === TaskType.stop) {
           prevTask.next = undefined;
           updateActivity();
-          resetCurrentTask();
+          get().resetCurrentTask();
           return;
         }
         if (task.next) {
@@ -197,7 +144,7 @@ export function createActivityStore(
         }
         prevTask.next = task.next;
         updateActivity();
-        resetCurrentTask();
+        get().resetCurrentTask();
       },
       // switch
       addCondition(taskId, type) {

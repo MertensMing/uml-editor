@@ -11,36 +11,38 @@ import Button from "@mui/material/Button";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { createActivityStore } from "./store/activity";
 import { useEditActivityLogic } from "./logic/useEditActivityLogic";
-import { findTask, TaskType } from "../../entities/Activity";
+import { Activity, findTask, TaskType } from "../../entities/Activity";
 import { OperationButtonGroup } from "./components/OperationButtonGroup";
 import { TYPE_MAP } from "./const";
 import { FormItem } from "./components/FormItem";
 import { ListOperation } from "./components/ListOperation";
 import { activityStorage } from "../../storage/activity";
 import { CopyButtonGroup } from "./components/CopyButtonGroup";
+import { createUndoStore } from "./store/undo";
 
 export function Editor() {
   const activityStore = useRef(
-    createActivityStore(activityStorage.get() ?? undefined)
+    createActivityStore(activityStorage.get())
   ).current;
-  const { url, activity, allowRedo, allowUndo, pngUrl, uml } = useStore(
+  const undoStore = useRef(createUndoStore<Activity>()).current;
+  const { url, activity, pngUrl, uml, currentTask } = useStore(
     activityStore,
-    ({ url, pngUrl, uml, activity, undoIndex, operationQueue }) => ({
+    ({ url, pngUrl, uml, activity, currentTask }) => ({
       url,
       activity,
-      allowUndo: undoIndex < operationQueue.length - 1,
-      allowRedo: undoIndex !== 0,
-      operationQueue,
       pngUrl,
       uml,
+      currentTask:
+        activity?.start && findTask(activity?.start, currentTask?.id),
     }),
     shallow
   );
-
-  const currentTask = useStore(
-    activityStore,
-    ({ currentTask, activity }) =>
-      !activity ? undefined : findTask(activity?.start, currentTask?.id),
+  const { allowRedo, allowUndo } = useStore(
+    undoStore,
+    (state) => ({
+      allowUndo: state.undoIndex < state.queue.length - 1,
+      allowRedo: state.undoIndex !== 0,
+    }),
     shallow
   );
 
@@ -48,7 +50,6 @@ export function Editor() {
     // init
     handleMount,
     // activity
-    // handleTitleChange,
     handleActivityChange,
     handleRedo,
     handleUndo,
@@ -66,7 +67,7 @@ export function Editor() {
     // parallel
     handleAddParallelTask,
     handleDeleteParallelTask,
-  } = useEditActivityLogic([activityStore]);
+  } = useEditActivityLogic([activityStore, undoStore]);
 
   const debouncedHandleActivityChange = useDebounceCallback(
     handleActivityChange,
