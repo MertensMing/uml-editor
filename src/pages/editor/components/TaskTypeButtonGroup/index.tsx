@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import { TaskType } from "../../../../entities/Activity";
 import { TYPE_MAP } from "../../const";
 
-export function OperationButtonGroup(props: {
+export function TaskTypeButtonGroup(props: {
   group: TaskType[];
   onClick(type: TaskType): void;
 }) {

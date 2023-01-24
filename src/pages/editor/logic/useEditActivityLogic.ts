@@ -32,73 +32,70 @@ export const useEditActivityLogic = createLogic<
   [ActivityStore, UndoStore<Activity>],
   Handlers
 >(([activityStore, undoStore]) => {
-  const undoSave = () => {
-    undoStore.getState().save(cloneDeep(activityStore.getState().activity));
+  const activityStoreState = activityStore.getState();
+  const undoStoreState = undoStore.getState();
+
+  const saveChanged = () => {
+    undoStoreState.save(cloneDeep(activityStoreState.activity));
   };
 
   return {
     handleMount() {
-      activityStore.getState().initializeActivity();
-      undoStore
-        .getState()
-        .initialize([cloneDeep(activityStore.getState().activity)]);
+      activityStoreState.initializeActivity();
+      undoStoreState.initialize([cloneDeep(activityStoreState.activity)]);
     },
     handleSelectTask(taskId) {
-      activityStore.getState().setCurrentTask(taskId);
+      activityStoreState.setCurrentTask(taskId);
     },
     handleActivityChange: useCallback(() => {
-      activityStore.getState().updateDiagramUrl();
-      activityStorage.set(activityStore.getState().activity);
+      activityStoreState.updateDiagramUrl();
+      activityStorage.set(activityStoreState.activity);
     }, []),
     handleAddTask(taskId, type) {
-      activityStore.getState().addTask(taskId, type);
-      undoSave();
+      activityStoreState.addTask(taskId, type);
+      saveChanged();
     },
     handleDeleteTask(taskId) {
-      activityStore.getState().deleteTask(taskId);
-      undoSave();
+      activityStoreState.deleteTask(taskId);
+      saveChanged();
     },
     handleTaskNameChange(taskId, name) {
-      activityStore.getState().setTaskField(taskId, "name", name);
-      undoSave();
+      activityStoreState.setTaskField(taskId, "name", name);
+      saveChanged();
     },
     handleAddCondition(taskId, type) {
-      activityStore.getState().addCondition(taskId, type);
-      undoSave();
+      activityStoreState.addCondition(taskId, type);
+      saveChanged();
     },
     handleDeleteCondition(taskId, index) {
-      activityStore.getState().deleteCondition(taskId, index);
-      undoSave();
+      activityStoreState.deleteCondition(taskId, index);
+      saveChanged();
     },
     handleAddParallelTask(taskId, type) {
-      activityStore.getState().addParallelTask(taskId, type);
-      undoSave();
+      activityStoreState.addParallelTask(taskId, type);
+      saveChanged();
     },
     handleDeleteParallelTask(taskId, index) {
-      activityStore.getState().deleteParallelTask(taskId, index);
-      undoSave();
+      activityStoreState.deleteParallelTask(taskId, index);
+      saveChanged();
     },
     handleRedo() {
-      undoStore.getState().redo();
-      activityStore
-        .getState()
-        .setActivity(cloneDeep(undoStore.getState().current));
-      activityStore.getState().resetCurrentTask();
+      undoStoreState.redo();
+      activityStoreState.setActivity(cloneDeep(undoStoreState.current));
+      activityStoreState.resetCurrentTask();
     },
     handleUndo() {
-      undoStore.getState().undo();
-      activityStore
-        .getState()
-        .setActivity(cloneDeep(undoStore.getState().current));
-      activityStore.getState().resetCurrentTask();
+      undoStoreState.undo();
+      activityStoreState.setActivity(cloneDeep(undoStoreState.current));
+      activityStoreState.resetCurrentTask();
     },
     handleConditionTextChange(taskId, index, text) {
-      activityStore.getState().updateConditionText(taskId, index, text);
-      undoSave();
+      activityStoreState.updateConditionText(taskId, index, text);
+      saveChanged();
     },
     handleWhileConditionChange(taskId, yes, no) {
-      activityStore.getState().setWhileCondition(taskId, yes, no);
-      undoSave();
+      activityStoreState.setWhileCondition(taskId, yes, no);
+      saveChanged();
     },
   };
 });

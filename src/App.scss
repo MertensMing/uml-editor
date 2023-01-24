@@ -13,7 +13,7 @@ body {
   user-select: none;
   .task:hover,
   .activity:hover {
-    cursor: grab;
+    cursor: pointer;
     fill: blueviolet;
   }
 }
