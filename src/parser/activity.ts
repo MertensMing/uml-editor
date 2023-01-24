@@ -70,8 +70,8 @@ export const activityParser = {
     `;
   },
   parseWhileTask(task: WhileTask): string {
-    const yes = task.condition?.yes || "yes";
-    const no = task.condition?.no || "no";
+    const yes = task.condition?.yes || "是";
+    const no = task.condition?.no || "否";
     return `
       ${getSwimlane(task)}
       repeat ${this.parseTask("", task.while)}

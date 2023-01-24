@@ -162,7 +162,7 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
       return {
         type: TaskType.while,
         id: getId(),
-        name: "循环",
+        name: "循环条件",
         while: createTask(TaskType.normal),
         prev: prevTask?.id,
         next: prevTask?.next,

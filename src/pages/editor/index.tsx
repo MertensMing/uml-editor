@@ -86,7 +86,7 @@ export function Editor() {
           <FormItem
             label="图表操作"
             content={
-              <ButtonGroup variant="outlined" size="small">
+              <ButtonGroup size="small">
                 <Button disabled={!allowUndo} onClick={handleUndo}>
                   撤销
                 </Button>
@@ -195,7 +195,7 @@ export function Editor() {
                             currentTask.condition?.no ?? ""
                           )
                         }
-                        placeholder="yes"
+                        placeholder="是"
                       />
                       <Input
                         startAdornment={
@@ -212,7 +212,7 @@ export function Editor() {
                             e.target.value
                           )
                         }
-                        placeholder="no"
+                        placeholder="否"
                       />
                     </div>
                   }
