@@ -32,7 +32,7 @@ const theme = extendTheme({
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/plantuml-editor/",
     element: (
       <div>
         <Editor />
