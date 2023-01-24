@@ -1,6 +1,7 @@
 import { createStore, StoreApi } from "zustand";
 import encoder from "plantuml-encoder";
 import remove from "lodash/remove";
+import debounce from "lodash/debounce";
 import {
   Activity,
   Task,
@@ -58,7 +59,7 @@ export function createActivityStore(
   activity?: Activity
 ): StoreApi<ActivityStore> {
   return createStore((set, get) => {
-    function updateActivity() {
+    const saveOperationQueue = debounce(() => {
       if (get().operationQueue.length >= 100) {
         get().operationQueue.pop();
       }
@@ -81,6 +82,10 @@ export function createActivityStore(
           ],
         });
       }
+    }, 800);
+
+    function updateActivity() {
+      saveOperationQueue();
       correctTask(get().activity.start);
       set({
         activity: {
@@ -88,6 +93,7 @@ export function createActivityStore(
         },
       });
     }
+
     function resetCurrentTask() {
       set({
         currentTask: get().activity.start,
