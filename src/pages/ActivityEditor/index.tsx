@@ -14,11 +14,11 @@ import { useEditActivityLogic } from "./logic/useEditActivityLogic";
 import { Activity, findTask, TaskType } from "../../entities/Activity";
 import { TaskTypeButtonGroup } from "./components/TaskTypeButtonGroup";
 import { TYPE_MAP } from "./const";
-import { FormItem } from "./components/FormItem";
+import { FormItem } from "../../components/FormItem";
 import { ListOperation } from "./components/ListOperation";
 import { activityStorage } from "../../storage/activity";
 import { createUndoStore } from "./store/undo";
-import { EditorLayout } from "./components/EditorLayout";
+import { EditorLayout } from "../../components/EditorLayout";
 
 export function Editor() {
   const activityStore = useRef(
@@ -88,6 +88,7 @@ export function Editor() {
         uml={uml}
         pngUrl={pngUrl}
         svgUrl={url}
+        currentDiagram="activity"
         diagram={
           <div
             className="process"

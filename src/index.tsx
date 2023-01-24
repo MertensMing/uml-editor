@@ -4,8 +4,8 @@ import {
   Experimental_CssVarsProvider as CssVarsProvider,
   experimental_extendTheme as extendTheme,
 } from "@mui/material/styles";
-import { Editor } from "./pages/editor";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Editor as ActivityEditor } from "./pages/ActivityEditor";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import * as colors from "@mui/material/colors";
 
 import "tailwindcss/dist/utilities.min.css";
@@ -30,14 +30,10 @@ const theme = extendTheme({
   },
 });
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
-    path: "/plantuml-editor/",
-    element: (
-      <div>
-        <Editor />
-      </div>
-    ),
+    path: "/activity",
+    element: <ActivityEditor />,
   },
 ]);
 
