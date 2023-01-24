@@ -35,7 +35,7 @@
   },
   "scripts": {
     "start": "REACT_APP_DISABLE_LIVE_RELOAD=true react-scripts start",
-    "build": "react-scripts build",
+    "build": "PUBLIC_URL=/plantuml-editor/ react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
