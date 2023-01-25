@@ -16,7 +16,7 @@ import { TaskTypeButtonGroup } from "./components/TaskTypeButtonGroup";
 import { TYPE_MAP } from "./const";
 import { FormItem } from "../../shared/components/FormItem";
 import { ListOperation } from "./components/ListOperation";
-import { activityStorage } from "../../storage/activity";
+import { activityStorage } from "../../shared/storage/activity";
 import { createUndoStore } from "../../shared/store/undo";
 import { EditorLayout } from "../../shared/components/EditorLayout";
 import { pick } from "../../shared/utils/pick";

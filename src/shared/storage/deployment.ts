@@ -1,5 +1,5 @@
 import { createStorage } from ".";
-import { Deployment } from "../core/entities/Deployment";
+import { Deployment } from "../../core/entities/Deployment";
 
 const DEPLOYMENT_STORAGE_KEY = "DEPLOYMENT_STORAGE_KEY";
 
