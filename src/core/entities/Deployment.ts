@@ -84,7 +84,8 @@ export function findObject(
   }
   for (const item of container.children) {
     if (item.isContainer) {
-      return findObject(item, target);
+      const result = findObject(item, target);
+      if (result) return result;
     }
     if (item.id === target) {
       return item;
