@@ -1,11 +1,24 @@
 import remove from "lodash/remove";
+import uniqBy from "lodash/uniqBy";
+
+export enum RelationType {
+  dependency = "dependency",
+}
+
+export type Relation = {
+  type: RelationType;
+  to: BaseObject["id"];
+  id: string;
+  name: string;
+  origin: BaseObject["id"];
+};
 
 export type Deployment = {
-  objects: {
-    [key: BaseObject["id"]]: NormalObject | ContainerObject;
-  };
   root: ContainerObject;
   last: number;
+  relations: {
+    [k: BaseObject["id"]]: Relation[];
+  };
 };
 
 export enum ObjectType {
@@ -64,9 +77,9 @@ export function createObject(
 export function createDiagram(): Deployment {
   const last = 0;
   return {
-    objects: {},
     root: createContainer("图表名称", ContainerObjectType.diagram, last),
     last,
+    relations: {},
   };
 }
 
@@ -116,4 +129,44 @@ export function insertObject(
   target: ContainerObject | NormalObject
 ) {
   container.children.push(target);
+}
+
+export function createRelation(
+  origin: BaseObject["id"],
+  target: BaseObject["id"],
+  last: number
+): Relation {
+  return {
+    type: RelationType.dependency,
+    origin,
+    to: target,
+    name: "依赖",
+    id: `link_${last}`,
+  };
+}
+
+export function addRelation(
+  diagram: Deployment,
+  origin: BaseObject["id"],
+  target: BaseObject["id"]
+) {
+  if (!diagram.relations) {
+    diagram.relations = {};
+  }
+  if (!diagram.relations[origin]) {
+    diagram.relations[origin] = [];
+  }
+  diagram.relations[origin].push(createRelation(origin, target, diagram.last));
+  diagram.relations[origin] = uniqBy(diagram.relations[origin], "to");
+}
+
+export function removeRelation(
+  diagram: Deployment,
+  origin: BaseObject["id"],
+  target: BaseObject["id"]
+) {
+  if (!diagram.relations[origin]) {
+    diagram.relations[origin] = [];
+  }
+  remove(diagram.relations[origin], (item) => item.to === target);
 }

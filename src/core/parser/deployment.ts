@@ -3,7 +3,10 @@ import {
   NormalObject,
   Deployment as DeploymentType,
   BaseObject,
+  Deployment,
+  Relation,
 } from "../entities/Deployment";
+import forEach from "lodash/forEach";
 
 function getName(object: BaseObject) {
   return `"<text class="object" objectId="${object.id}">${object.name}</text>"`;
@@ -11,6 +14,17 @@ function getName(object: BaseObject) {
 
 class DeploymentParser {
   parseDiagram(diagram: DeploymentType) {
+    console.log(`
+    @startuml
+
+    title ${getName(diagram.root)}
+
+    ${this.parseChildren(diagram.root.children)}
+
+    ${this.parseRelations(diagram)}
+
+    @enduml
+  `);
     return `
       @startuml
 
@@ -18,14 +32,23 @@ class DeploymentParser {
 
       ${this.parseChildren(diagram.root.children)}
 
+      ${this.parseRelations(diagram)}
+
       @enduml
     `;
   }
+  parseRelations(diagram: Deployment) {
+    let result = "";
+    forEach(diagram?.relations, (relationArray) => {
+      forEach(relationArray, (relation: Relation) => {
+        result += `${relation.origin} --> ${relation.to}: ${relation.name}\n`;
+      });
+    });
+    return result;
+  }
   parseObject(object: NormalObject) {
     return `
-      ${this.parseObjectType(object.type)} ${getName(object)} as object_${
-      object.id
-    }
+      ${this.parseObjectType(object.type)} ${getName(object)} as ${object.id}
     `;
   }
   parseObjectType(type: NormalObject["type"]) {
@@ -45,9 +68,9 @@ class DeploymentParser {
   }
   parseContainer(container: ContainerObject) {
     return `
-    ${this.parseContainerType(container.type)} ${getName(
-      container
-    )} as object_${container.id} {
+    ${this.parseContainerType(container.type)} ${getName(container)} as ${
+      container.id
+    } {
         ${this.parseChildren(container.children)}
       }
     `;

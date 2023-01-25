@@ -2,6 +2,7 @@ import { createStore, StoreApi } from "zustand";
 import cloneDeep from "lodash/cloneDeep";
 import {
   addChildObject,
+  addRelation,
   BaseObject,
   ContainerObject,
   createContainer,
@@ -23,6 +24,7 @@ type State = {
   currentObjectId?: BaseObject["id"];
   svgUrl?: string;
   pngUrl?: string;
+  allowDragRelation: boolean;
 };
 
 type Actions = {
@@ -31,6 +33,7 @@ type Actions = {
     containerId: ContainerObject["id"],
     type: NormalObject["type"]
   ): void;
+  deleteObject(id: BaseObject["id"]): void;
   moveObject(
     origin: ContainerObject["id"],
     target: ContainerObject["id"]
@@ -41,6 +44,16 @@ type Actions = {
   ): void;
   updateUmlUrl(): void;
   updateCurrentObject(id: BaseObject["id"]): void;
+  setObjectField(
+    objectId: BaseObject["id"],
+    field: keyof ContainerObject | keyof NormalObject,
+    value: unknown
+  ): void;
+  addRelation(
+    origin: ContainerObject["id"],
+    target: ContainerObject["id"]
+  ): void;
+  toggleAllowDragRelation(allow: boolean): void;
 };
 
 export type DeploymentStore = State & Actions;
@@ -54,11 +67,23 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
       deploymentStorage.set(get().deployment);
     }
 
+    function resetCurrent() {
+      set({
+        currentObjectId: get().deployment.root.id,
+      });
+    }
+
     return {
       deployment: undefined,
       currentObjectId: undefined,
       svgUrl: undefined,
       pngUrl: undefined,
+      allowDragRelation: true,
+
+      addRelation(origin, target) {
+        addRelation(get().deployment, origin, target);
+        updateDiagram();
+      },
       updateUmlUrl() {
         const uml = deploymentParser.parseDiagram(get().deployment);
         set({
@@ -85,6 +110,11 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
             currentObjectId: diagram.root.id,
           });
         }
+      },
+      toggleAllowDragRelation(allow) {
+        set({
+          allowDragRelation: allow,
+        });
       },
       addObject(containerId, type) {
         const container = findObject(
@@ -124,6 +154,18 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         const targetObject = findObject(get().deployment.root, target);
         if (!targetObject || !targetObject?.isContainer) return;
         insertObject(targetObject, removed);
+        updateDiagram();
+      },
+      setObjectField(objectId, field, value) {
+        const object = findObject(get().deployment?.root, objectId);
+        if (!object) return;
+        object[field] = value;
+        updateDiagram();
+      },
+      deleteObject(id) {
+        const removed = removeObject(get().deployment.root, id);
+        if (!removed) return;
+        resetCurrent();
         updateDiagram();
       },
     };

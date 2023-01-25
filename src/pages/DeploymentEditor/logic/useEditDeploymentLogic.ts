@@ -17,8 +17,14 @@ type Handlers = {
     containerId: ContainerObject["id"],
     type: NormalObject["type"]
   ): void;
+  handleObjectNameChange(
+    objectId: BaseObject["id"],
+    name: BaseObject["name"]
+  ): void;
   handleObjectSelect(id: BaseObject["id"]): void;
   handleDrop(origin: BaseObject["id"], target: BaseObject["id"]): void;
+  handleDelete(objectId: BaseObject["id"]): void;
+  handleToggleAllowDragRelation(allow: boolean): void;
 };
 
 export const useEditDeploymentLogic = createLogic<[DeploymentStore], Handlers>(
@@ -40,7 +46,20 @@ export const useEditDeploymentLogic = createLogic<[DeploymentStore], Handlers>(
         deploymentStore.getState().updateCurrentObject(id);
       },
       handleDrop(origin, target) {
-        deploymentStore.getState().moveObject(origin, target);
+        if (deploymentStore.getState().allowDragRelation) {
+          deploymentStore.getState().addRelation(origin, target);
+        } else {
+          deploymentStore.getState().moveObject(origin, target);
+        }
+      },
+      handleObjectNameChange(id, name) {
+        deploymentStore.getState().setObjectField(id, "name", name);
+      },
+      handleDelete(id) {
+        deploymentStore.getState().deleteObject(id);
+      },
+      handleToggleAllowDragRelation(allow) {
+        deploymentStore.getState().toggleAllowDragRelation(allow);
       },
     };
   }

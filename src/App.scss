@@ -16,7 +16,8 @@ body {
   .task:hover,
   .activity:hover {
     cursor: pointer;
-    fill: blueviolet;
+    font-weight: bold;
+    fill: darkgray;
   }
 }
 
