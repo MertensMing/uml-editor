@@ -5,6 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { CopyButtonGroup } from "../CopyButtonGroup";
+import { useNavigate } from "react-router-dom";
 
 export function EditorLayout(props: {
   uml: string;
@@ -14,6 +15,7 @@ export function EditorLayout(props: {
   operation: React.ReactElement;
   diagram: React.ReactElement;
 }) {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col h-screen">
       <div className="flex p-4 items-center border-b-solid border-gray-700 border-b-2 h-16 justify-between">
@@ -25,7 +27,7 @@ export function EditorLayout(props: {
               <Select
                 value={props.currentDiagram}
                 onChange={(e) => {
-                  window.location.href = `/#${e.target.value}`;
+                  navigate(`/${e.target.value}`);
                 }}
               >
                 <MenuItem value={"activity"}>活动图</MenuItem>

@@ -5,6 +5,7 @@ import {
   experimental_extendTheme as extendTheme,
 } from "@mui/material/styles";
 import { Editor as ActivityEditor } from "./pages/ActivityEditor";
+import { DeploymentEditor } from "./pages/DeploymentEditor";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import * as colors from "@mui/material/colors";
 
@@ -34,6 +35,10 @@ const router = createHashRouter([
   {
     path: "/activity",
     element: <ActivityEditor />,
+  },
+  {
+    path: "/deployment",
+    element: <DeploymentEditor />,
   },
 ]);
 

@@ -7,9 +7,8 @@ function set(activity: Activity) {
 }
 
 function get() {
-  return JSON.parse(
-    window.localStorage.getItem(ACTIVITY_STORAGE_KEY)
-  ) as Activity;
+  const data = window.localStorage.getItem(ACTIVITY_STORAGE_KEY);
+  return data && (JSON.parse(data) as Activity);
 }
 
 export const activityStorage = {
