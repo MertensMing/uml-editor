@@ -13,12 +13,6 @@ function getTaskName(task: Task) {
   return `<text class="task" taskId="${task.id}">${task.name}</text>`;
 }
 
-function getSwimlane(task: Task) {
-  // 暂不支持多泳道
-  return "";
-  // return `${task.swimlane ? `|${task.swimlane}|\n` : ""}`;
-}
-
 export const activityParser = {
   parseActivityTitle(activity: Activity): string {
     if (activity?.title) {
@@ -30,18 +24,6 @@ export const activityParser = {
     if (!activity) {
       return "";
     }
-    // 暂不支持多泳道
-    // const uml = `
-    //   @startuml
-    //     ${this.parseActivityTitle(activity)}
-    //     ${
-    //       activity.swimlanes?.length
-    //         ? `|${activity.swimlanes["0"].name}|\n`
-    //         : ""
-    //     }
-    //     ${this.parseTask("", activity.start)}
-    //   @enduml
-    // `;
     const uml = `
       @startuml
         ${this.parseActivityTitle(activity)}
@@ -55,7 +37,6 @@ export const activityParser = {
   },
   parseSwitchTask(task: SwitchTask): string {
     return `
-      ${getSwimlane(task)}
       switch (${getTaskName(task)})
         ${this.parseCases(task.cases)}
       endswitch\n
@@ -63,7 +44,6 @@ export const activityParser = {
   },
   parseParallelTask(task: ParallelTask): string {
     return `
-      ${getSwimlane(task)}
       fork 
         ${task.parallel.map((t) => this.parseTask("", t)).join("fork again\n")}
       end fork {${getTaskName(task)}}\n
@@ -73,7 +53,6 @@ export const activityParser = {
     const yes = task.condition?.yes || "是";
     const no = task.condition?.no || "否";
     return `
-      ${getSwimlane(task)}
       repeat ${this.parseTask("", task.while)}
       repeat while (${getTaskName(task)}) is (${yes}) not (${no})\n
     `;
@@ -110,10 +89,11 @@ export const activityParser = {
   parseCases(cases: Case[]): string {
     return cases
       .map((item) => {
-        return `
-          case (<text caseid="${item.id}">${item.condition}</text>)
-            ${this.parseTask("", item.task)}
-        `;
+        const condition = `
+  case (<text>${item.condition}</text>)
+    ${this.parseTask("", item.task)}
+`;
+        return condition;
       })
       .join("\n");
   },

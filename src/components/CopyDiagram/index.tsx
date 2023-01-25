@@ -11,7 +11,7 @@ type Props = {
   png: string;
 };
 
-export function CopyButtonGroup(props: Props) {
+export function CopyDiagram(props: Props) {
   const [open, setOpen] = React.useState(false);
 
   return (

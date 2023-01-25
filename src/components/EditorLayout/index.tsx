@@ -4,7 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { CopyButtonGroup } from "../CopyButtonGroup";
+import { CopyDiagram } from "../CopyDiagram";
 import { useNavigate } from "react-router-dom";
 
 export function EditorLayout(props: {
@@ -36,11 +36,7 @@ export function EditorLayout(props: {
             </FormControl>
           </div>
         </div>
-        <CopyButtonGroup
-          uml={props.uml}
-          png={props.pngUrl}
-          svg={props.svgUrl}
-        />
+        <CopyDiagram uml={props.uml} png={props.pngUrl} svg={props.svgUrl} />
       </div>
       <div className="flex" style={{ height: `calc(100vh - 64px)` }}>
         <div
