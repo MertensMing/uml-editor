@@ -1,4 +1,4 @@
-import { EditorLayout } from "../../components/EditorLayout";
+import { EditorLayout } from "../../shared/components/EditorLayout";
 
 export function DeploymentEditor() {
   return (

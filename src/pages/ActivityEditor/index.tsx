@@ -11,14 +11,14 @@ import Button from "@mui/material/Button";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { createActivityStore } from "./store/activity";
 import { useEditActivityLogic } from "./logic/useEditActivityLogic";
-import { Activity, findTask, TaskType } from "../../entities/Activity";
+import { Activity, findTask, TaskType } from "../../core/entities/Activity";
 import { TaskTypeButtonGroup } from "./components/TaskTypeButtonGroup";
 import { TYPE_MAP } from "./const";
-import { FormItem } from "../../components/FormItem";
+import { FormItem } from "../../shared/components/FormItem";
 import { ListOperation } from "./components/ListOperation";
-import { activityStorage } from "../../storage/activity";
-import { createUndoStore } from "./store/undo";
-import { EditorLayout } from "../../components/EditorLayout";
+import { activityStorage } from "../../shared/storage/activity";
+import { createUndoStore } from "../../shared/store/undo";
+import { EditorLayout } from "../../shared/components/EditorLayout";
 
 export function Editor() {
   const activityStore = useRef(

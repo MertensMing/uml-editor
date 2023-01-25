@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
-import { TaskType } from "../../../../entities/Activity";
+import { TaskType } from "../../../../core/entities/Activity";
 import { TYPE_MAP } from "../../const";
 
 export function TaskTypeButtonGroup(props: {

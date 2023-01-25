@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback } from "react";
 import cloneDeep from "lodash/cloneDeep";
-import { createLogic } from "../../../utils/createLogic";
-import { Activity, Task } from "../../../entities/Activity";
-import { activityStorage } from "../../../storage/activity";
+import { createLogic } from "../../../shared/utils/createLogic";
+import { Activity, Task } from "../../../core/entities/Activity";
+import { activityStorage } from "../../../shared/storage/activity";
 import { ActivityStore } from "../store/activity";
-import { UndoStore } from "../store/undo";
+import { UndoStore } from "../../../shared/store/undo";
 
 type Handlers = {
   handleMount(): void;

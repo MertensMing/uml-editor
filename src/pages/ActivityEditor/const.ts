@@ -1,4 +1,4 @@
-import { TaskType } from "../../entities/Activity";
+import { TaskType } from "../../core/entities/Activity";
 
 export const TYPE_MAP = {
   [TaskType.start]: "起始",

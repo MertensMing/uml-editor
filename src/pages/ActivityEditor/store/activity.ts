@@ -9,8 +9,8 @@ import {
   StartTask,
   createCase,
   correctTask,
-} from "../../../entities/Activity";
-import { activityParser } from "../../../parser/activity";
+} from "../../../core/entities/Activity";
+import { activityParser } from "../../../core/parser/activity";
 
 function drawSvg(diagram: string) {
   return "https://pblk.bytedance.com/svg/" + encoder.encode(diagram);
