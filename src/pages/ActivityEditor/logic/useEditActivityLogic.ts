@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback } from "react";
 import cloneDeep from "lodash/cloneDeep";
-import { createLogic } from "../../../common/createLogic";
+import { createLogic } from "../../../utils/createLogic";
 import { Activity, Task } from "../../../entities/Activity";
 import { activityStorage } from "../../../storage/activity";
 import { ActivityStore } from "../store/activity";
