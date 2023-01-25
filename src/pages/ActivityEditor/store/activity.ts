@@ -1,5 +1,4 @@
 import { createStore, StoreApi } from "zustand";
-import encoder from "plantuml-encoder";
 import {
   Activity,
   Task,
@@ -11,14 +10,7 @@ import {
   correctTask,
 } from "../../../core/entities/Activity";
 import { activityParser } from "../../../core/parser/activity";
-
-function drawSvg(diagram: string) {
-  return "https://pblk.bytedance.com/svg/" + encoder.encode(diagram);
-}
-
-function drawPng(diagram: string) {
-  return "https://pblk.bytedance.com/png/" + encoder.encode(diagram);
-}
+import { drawPng, drawSvg } from "../../../shared/utils/uml";
 
 type State = {
   activity?: Activity;

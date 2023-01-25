@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import cloneDeep from "lodash/cloneDeep";
 import { createLogic } from "../../../shared/utils/createLogic";
 import { Activity, Task } from "../../../core/entities/Activity";
-import { activityStorage } from "../../../shared/storage/activity";
+import { activityStorage } from "../../../storage/activity";
 import { ActivityStore } from "../store/activity";
 import { UndoStore } from "../../../shared/store/undo";
 

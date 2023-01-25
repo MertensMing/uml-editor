@@ -1,3 +1,5 @@
+import { nanoid } from "nanoid";
+
 export enum TaskType {
   start = "start",
   normal = "normal",
@@ -136,10 +138,6 @@ export function correctTask(task: Task, prevTaskId?: Task["id"]): Task | void {
   }
 }
 
-function getId() {
-  return `${Date.now()}${Math.random()}`;
-}
-
 export function createTask(type: TaskType, prevTask?: Task): Task {
   if (prevTask?.type === TaskType.stop) {
     return;
@@ -148,20 +146,20 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
     case TaskType.start:
       return {
         type: TaskType.start,
-        id: getId(),
+        id: nanoid(),
         name: "开始",
       };
     case TaskType.stop:
       return {
         type: TaskType.stop,
-        id: getId(),
+        id: nanoid(),
         name: "结束",
         prev: prevTask?.id,
       };
     case TaskType.while:
       return {
         type: TaskType.while,
-        id: getId(),
+        id: nanoid(),
         name: "循环条件",
         while: createTask(TaskType.normal),
         prev: prevTask?.id,
@@ -170,7 +168,7 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
     case TaskType.parallel:
       return {
         type: TaskType.parallel,
-        id: getId(),
+        id: nanoid(),
         name: "并行",
         parallel: [createTask(TaskType.normal), createTask(TaskType.normal)],
         prev: prevTask?.id,
@@ -179,7 +177,7 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
     case TaskType.switch:
       return {
         type: TaskType.switch,
-        id: getId(),
+        id: nanoid(),
         name: "条件判断",
         cases: [
           createCase("是", TaskType.normal),
@@ -192,7 +190,7 @@ export function createTask(type: TaskType, prevTask?: Task): Task {
     default:
       return {
         type: TaskType.normal,
-        id: getId(),
+        id: nanoid(),
         name: "流程",
         prev: prevTask?.id,
         next: prevTask?.next,
@@ -204,6 +202,6 @@ export function createCase(condition: string, type: TaskType) {
   return {
     condition,
     task: createTask(type),
-    id: getId(),
+    id: nanoid(),
   };
 }

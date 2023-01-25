@@ -16,9 +16,10 @@ import { TaskTypeButtonGroup } from "./components/TaskTypeButtonGroup";
 import { TYPE_MAP } from "./const";
 import { FormItem } from "../../shared/components/FormItem";
 import { ListOperation } from "./components/ListOperation";
-import { activityStorage } from "../../shared/storage/activity";
+import { activityStorage } from "../../storage/activity";
 import { createUndoStore } from "../../shared/store/undo";
 import { EditorLayout } from "../../shared/components/EditorLayout";
+import { pick } from "../../shared/utils/pick";
 
 export function Editor() {
   const activityStore = useRef(
@@ -27,13 +28,11 @@ export function Editor() {
   const undoStore = useRef(createUndoStore<Activity>()).current;
   const { url, activity, pngUrl, uml, currentTask } = useStore(
     activityStore,
-    ({ url, pngUrl, uml, activity, currentTask }) => ({
-      url,
-      activity,
-      pngUrl,
-      uml,
+    (state) => ({
+      ...pick(state, ["activity", "url", "pngUrl", "uml"]),
       currentTask:
-        activity?.start && findTask(activity?.start, currentTask?.id),
+        state.activity?.start &&
+        findTask(state.activity?.start, state.currentTask?.id),
     }),
     shallow
   );

@@ -9,8 +9,10 @@ body {
   box-sizing: border-box;
 }
 
+.deployment,
 .process {
   user-select: none;
+  .object:hover,
   .task:hover,
   .activity:hover {
     cursor: pointer;
