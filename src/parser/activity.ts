@@ -90,7 +90,7 @@ export const activityParser = {
     return cases
       .map((item) => {
         const condition = `
-  case (<text>${item.condition}</text>)
+  case (<text caseId="${item.condition}">${item.condition}</text>)
     ${this.parseTask("", item.task)}
 `;
         return condition;
