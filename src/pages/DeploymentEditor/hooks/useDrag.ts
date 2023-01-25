@@ -13,6 +13,7 @@ export function useDrag(
     clickOffsetX: 0,
     clickOffsetY: 0,
     text: "",
+    now: 0,
   });
 
   const onEnd = useDebounceCallback(function (id: string) {
@@ -33,7 +34,7 @@ export function useDrag(
         ref.current.clickOffsetX = clickOffsetX;
         ref.current.clickOffsetY = clickOffsetY;
         ref.current.text = e.target.textContent;
-        divRef.current.style.display = "block";
+        ref.current.now = Date.now();
       }
     });
     document.addEventListener("mousemove", function onmousemove(e: any) {
@@ -43,9 +44,14 @@ export function useDrag(
       divRef.current.style.top = `${y}px`;
       divRef.current.style.left = `${x}px`;
       divRef.current.textContent = ref.current.text;
+      divRef.current.style.display = "block";
     });
     document.addEventListener("mouseup", function onmouseup(e: any) {
+      ref.current.isDragging = false;
       divRef.current.style.display = "none";
+      if (Date.now() - ref.current.now < 500) {
+        return;
+      }
       const objectId = e.target?.attributes?.objectId?.value;
       if (objectId) {
         onEnd(objectId);

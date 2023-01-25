@@ -11,6 +11,7 @@ import { AddObject } from "./components/AddObject";
 import { useEditDeploymentLogic } from "./logic/useEditDeploymentLogic";
 import { createDeploymentStore } from "./store/deploymentStore";
 import { useDrag } from "./hooks/useDrag";
+import { findObject } from "../../core/entities/Deployment";
 
 export function DeploymentEditor() {
   const deploymentStore = useRef(createDeploymentStore()).current;
@@ -25,6 +26,14 @@ export function DeploymentEditor() {
   const { currentObjectId, svgUrl, deployment } = useStore(
     deploymentStore,
     (state) => pick(state, ["currentObjectId", "deployment", "svgUrl"]),
+    shallow
+  );
+  const currentObject = useStore(
+    deploymentStore,
+    (state) =>
+      !state.deployment?.root
+        ? undefined
+        : findObject(state.deployment?.root, state.currentObjectId),
     shallow
   );
   const dragElementRef = useRef<HTMLDivElement>();
@@ -63,12 +72,20 @@ export function DeploymentEditor() {
       }
       operation={
         <div>
-          <FormItem label="当前对象" content={currentObjectId} />
+          <FormItem label="当前对象" content={currentObject?.name} />
           <FormItem
             label="添加容器"
             content={
               <AddContainer
                 onClick={(type) => handleAddContainer(currentObjectId, type)}
+              />
+            }
+          />
+          <FormItem
+            label="添加图形"
+            content={
+              <AddObject
+                onClick={(type) => handleAddObject(currentObjectId, type)}
               />
             }
           />
