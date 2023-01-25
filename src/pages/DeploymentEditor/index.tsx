@@ -10,6 +10,7 @@ import { AddContainer } from "./components/AddContainer";
 import { AddObject } from "./components/AddObject";
 import { useEditDeploymentLogic } from "./logic/useEditDeploymentLogic";
 import { createDeploymentStore } from "./store/deploymentStore";
+import { useDrag } from "./hooks/useDrag";
 
 export function DeploymentEditor() {
   const deploymentStore = useRef(createDeploymentStore()).current;
@@ -19,12 +20,15 @@ export function DeploymentEditor() {
     handleAddContainer,
     handleAddObject,
     handleObjectSelect,
+    handleDrop,
   } = useEditDeploymentLogic([deploymentStore]);
   const { currentObjectId, svgUrl, deployment } = useStore(
     deploymentStore,
     (state) => pick(state, ["currentObjectId", "deployment", "svgUrl"]),
     shallow
   );
+  const dragElementRef = useRef<HTMLDivElement>();
+  const { refProps } = useDrag(dragElementRef, handleDrop);
 
   useEffect(() => {
     handleInit();
@@ -41,16 +45,20 @@ export function DeploymentEditor() {
       pngUrl=""
       svgUrl={svgUrl}
       diagram={
-        <div
-          className="deployment"
-          onClick={(e: any) => {
-            const objectId = e.target?.attributes?.objectId?.value;
-            if (objectId) {
-              handleObjectSelect(objectId);
-            }
-          }}
-        >
-          {svgUrl && <ReactSVG src={svgUrl} />}
+        <div>
+          <div {...refProps} ref={dragElementRef} />
+          <div
+            className="deployment"
+            id="deployment-diagram"
+            onClick={(e: any) => {
+              const objectId = e.target?.attributes?.objectId?.value;
+              if (objectId) {
+                handleObjectSelect(objectId);
+              }
+            }}
+          >
+            {svgUrl && <ReactSVG src={svgUrl} />}
+          </div>
         </div>
       }
       operation={

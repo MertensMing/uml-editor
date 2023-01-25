@@ -9,7 +9,9 @@ import {
   createObject,
   Deployment,
   findObject,
+  insertObject,
   NormalObject,
+  removeObject,
 } from "../../../core/entities/Deployment";
 import { deploymentStorage } from "../../../storage/deployment";
 import { deploymentParser } from "../../../core/parser/deployment";
@@ -28,6 +30,10 @@ type Actions = {
   addObject(
     containerId: ContainerObject["id"],
     type: NormalObject["type"]
+  ): void;
+  moveObject(
+    origin: ContainerObject["id"],
+    target: ContainerObject["id"]
   ): void;
   addContainer(
     containerId: ContainerObject["id"],
@@ -81,7 +87,10 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         }
       },
       addObject(containerId, type) {
-        const container = findObject(get().deployment.root, containerId);
+        const container = findObject(
+          get().deployment.root,
+          containerId
+        ) as ContainerObject;
         if (container) {
           get().deployment.last++;
           const target = createObject(
@@ -94,7 +103,10 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         }
       },
       addContainer(containerId, type) {
-        const container = findObject(get().deployment.root, containerId);
+        const container = findObject(
+          get().deployment.root,
+          containerId
+        ) as ContainerObject;
         if (container) {
           get().deployment.last++;
           const target = createContainer(
@@ -105,6 +117,14 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
           addChildObject(container, target);
           updateDiagram();
         }
+      },
+      moveObject(origin, target) {
+        const removed = removeObject(get().deployment.root, origin);
+        if (!removed) return;
+        const targetObject = findObject(get().deployment.root, target);
+        if (!targetObject || !targetObject?.isContainer) return;
+        insertObject(targetObject, removed);
+        updateDiagram();
       },
     };
   });

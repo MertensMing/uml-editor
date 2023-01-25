@@ -1,3 +1,5 @@
+import remove from "lodash/remove";
+
 export type Deployment = {
   objects: {
     [key: BaseObject["id"]]: NormalObject | ContainerObject;
@@ -78,7 +80,7 @@ export function addChildObject(
 export function findObject(
   container: ContainerObject,
   target: BaseObject["id"]
-) {
+): NormalObject | ContainerObject | undefined {
   if (container.id === target) {
     return container;
   }
@@ -91,4 +93,27 @@ export function findObject(
       return item;
     }
   }
+}
+
+export function removeObject(
+  container: ContainerObject,
+  target: BaseObject["id"]
+) {
+  const [removed] = remove(container.children, (item) => item.id === target);
+  if (removed) {
+    return removed;
+  }
+  for (const item of container.children) {
+    if (item.isContainer) {
+      const result = removeObject(item, target);
+      if (result) return result;
+    }
+  }
+}
+
+export function insertObject(
+  container: ContainerObject,
+  target: ContainerObject | NormalObject
+) {
+  container.children.push(target);
 }

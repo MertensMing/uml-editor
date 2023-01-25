@@ -18,6 +18,7 @@ type Handlers = {
     type: NormalObject["type"]
   ): void;
   handleObjectSelect(id: BaseObject["id"]): void;
+  handleDrop(origin: BaseObject["id"], target: BaseObject["id"]): void;
 };
 
 export const useEditDeploymentLogic = createLogic<[DeploymentStore], Handlers>(
@@ -37,6 +38,9 @@ export const useEditDeploymentLogic = createLogic<[DeploymentStore], Handlers>(
       },
       handleObjectSelect(id) {
         deploymentStore.getState().updateCurrentObject(id);
+      },
+      handleDrop(origin, target) {
+        deploymentStore.getState().moveObject(origin, target);
       },
     };
   }
