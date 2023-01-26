@@ -91,7 +91,7 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
       currentObjectId: undefined,
       svgUrl: undefined,
       pngUrl: undefined,
-      allowDragRelation: true,
+      allowDragRelation: false,
 
       addRelation(origin, target) {
         get().deployment.last++;
