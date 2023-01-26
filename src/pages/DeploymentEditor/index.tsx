@@ -14,7 +14,6 @@ import { useDrag } from "./hooks/useDrag";
 import {
   ContainerObjectType,
   findObject,
-  ObjectType,
 } from "../../core/entities/Deployment";
 import { Button, Input, MenuItem, Select, Switch } from "@mui/material";
 import { useDebounceCallback } from "@react-hook/debounce";
@@ -108,7 +107,7 @@ export function DeploymentEditor() {
                     handleToggleAllowDragRelation(e.target.checked)
                   }
                 />
-                <div className="text-xs text-gray text-xs">
+                <div className="text-gray text-xs">
                   {allowDragRelation
                     ? "拖动节点新增对象关系"
                     : "拖动节点修改对象层级"}
@@ -236,6 +235,32 @@ export function DeploymentEditor() {
                               sx={{ m: 1, minWidth: 120 }}
                             >
                               <MenuItem value={"dependency"}>依赖</MenuItem>
+                            </Select>
+                          </div>
+                        </div>
+                        <div className="flex text-sm items-center pb-1">
+                          <span className="mr-3 text-gray text-xs">方向</span>
+                          <div className="-m-2">
+                            <Select
+                              value={item.linkDirection || "-"}
+                              variant="standard"
+                              sx={{ m: 1, minWidth: 120 }}
+                              onChange={(e) => {
+                                handleRelationChange(
+                                  currentObjectId,
+                                  item.id,
+                                  "linkDirection",
+                                  (e.target.value === "-"
+                                    ? ""
+                                    : e.target.value) as any
+                                );
+                              }}
+                            >
+                              <MenuItem value={"up"}>上</MenuItem>
+                              <MenuItem value={"down"}>下</MenuItem>
+                              <MenuItem value={"left"}>左</MenuItem>
+                              <MenuItem value={"right"}>右</MenuItem>
+                              <MenuItem value={"-"}>自动</MenuItem>
                             </Select>
                           </div>
                         </div>

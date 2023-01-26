@@ -51,7 +51,9 @@ class DeploymentParser {
           ? `<color ${textColor}>${relation.name}</color>`
           : relation.name;
         const descText = desc ? `: ${desc}` : "";
-        result += `${relation.origin} --> ${relation.to} ${linkColor}${descText}\n`;
+        result += `${relation.origin} -${relation.linkDirection || ""}-> ${
+          relation.to
+        } ${linkColor}${descText}\n`;
       });
     });
     return result;

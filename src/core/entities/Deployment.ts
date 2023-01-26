@@ -14,6 +14,7 @@ export type Relation = {
   name: string;
   linkColor?: string;
   descColor?: string;
+  linkDirection?: "up" | "down" | "left" | "right";
 };
 
 export type Deployment = {
