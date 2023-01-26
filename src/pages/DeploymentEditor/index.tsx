@@ -78,11 +78,13 @@ export function DeploymentEditor() {
   const isRoot = currentObject?.type === ContainerObjectType.diagram;
 
   const dragElementRef = useRef<HTMLDivElement>();
-  const { refProps } = useDrag(dragElementRef, handleDrop);
+
   const boundHandleDiagramChange = useDebounceCallback(
     handleDiagramChange,
     600
   );
+
+  useDrag(dragElementRef, handleDrop);
 
   useEffect(() => {
     handleInit();
@@ -100,7 +102,7 @@ export function DeploymentEditor() {
       svgUrl={svgUrl}
       diagram={
         <div>
-          <div {...refProps} ref={dragElementRef} />
+          <div ref={dragElementRef} />
           <div
             className="deployment"
             id="deployment-diagram"
@@ -197,7 +199,9 @@ export function DeploymentEditor() {
             label="添加容器"
             content={
               <AddContainer
-                onClick={(type) => handleAddContainer(currentObjectId, type)}
+                onClick={(type) =>
+                  handleAddContainer(deployment?.root?.id, type)
+                }
               />
             }
           />
@@ -205,7 +209,7 @@ export function DeploymentEditor() {
             label="添加图形"
             content={
               <AddObject
-                onClick={(type) => handleAddObject(currentObjectId, type)}
+                onClick={(type) => handleAddObject(deployment?.root?.id, type)}
               />
             }
           />

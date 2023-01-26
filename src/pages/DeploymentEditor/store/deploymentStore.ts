@@ -101,6 +101,9 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         updateDiagram();
       },
       addRelation(origin, target) {
+        if ([origin, target].includes(get().deployment.root.id)) {
+          return;
+        }
         get().deployment.last++;
         addRelation(get().deployment, origin, target);
         updateDiagram();

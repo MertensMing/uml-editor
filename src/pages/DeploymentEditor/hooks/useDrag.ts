@@ -35,6 +35,12 @@ export function useDrag(
       ref.current.clickOffsetY = clickOffsetY;
       ref.current.text = target.textContent;
       ref.current.now = Date.now();
+      divRef.current.style.display = "none";
+      divRef.current.style.position = "fixed";
+      divRef.current.style.top = "0px";
+      divRef.current.style.left = "0px";
+      divRef.current.style.opacity = "0.5";
+      divRef.current.style.pointerEvents = "none";
     }
   }
 
@@ -115,17 +121,4 @@ export function useDrag(
       target.removeEventListener("touchstart", ontouchstart);
     };
   }, []);
-
-  return {
-    refProps: {
-      style: {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        opacity: "0.5",
-        display: "none",
-        pointerEvents: "none",
-      },
-    },
-  } as const;
 }
