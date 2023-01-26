@@ -37,12 +37,13 @@
   },
   "scripts": {
     "start": "REACT_APP_DISABLE_LIVE_RELOAD=true react-scripts start",
-    "build": "PUBLIC_URL=/plantuml-editor/ react-scripts build && yarn cp-build",
+    "build": "PUBLIC_URL=/plantuml-editor/ react-scripts build && yarn cp-build && yarn submit-build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "rm-build": "rm -rf ../plantuml-editor-dist/docs",
     "mkdir-build": "mkdir ../plantuml-editor-dist/docs",
-    "cp-build": "yarn rm-build && yarn mkdir-build && cp -r ./build/* ../plantuml-editor-dist/docs"
+    "cp-build": "yarn rm-build && yarn mkdir-build && cp -r ./build/* ../plantuml-editor-dist/docs",
+    "submit-build": "cd ../plantuml-editor-dist && git add . && git commit -m 'update' && git push origin main"
   },
   "eslintConfig": {
     "extends": [

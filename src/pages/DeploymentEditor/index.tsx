@@ -81,7 +81,7 @@ export function DeploymentEditor() {
   const { refProps } = useDrag(dragElementRef, handleDrop);
   const boundHandleDiagramChange = useDebounceCallback(
     handleDiagramChange,
-    500
+    600
   );
 
   useEffect(() => {
@@ -104,6 +104,9 @@ export function DeploymentEditor() {
           <div
             className="deployment"
             id="deployment-diagram"
+            style={{
+              touchAction: "none",
+            }}
             onClick={(e: any) => {
               const objectId = e.target?.attributes?.objectId?.value;
               if (objectId) {

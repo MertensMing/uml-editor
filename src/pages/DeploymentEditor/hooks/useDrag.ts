@@ -9,63 +9,110 @@ export function useDrag(
 ) {
   const ref = useRef({
     objectId: "",
+    targetObjectId: "",
     isDragging: false,
     clickOffsetX: 0,
     clickOffsetY: 0,
+    overX: 0,
+    overY: 0,
     text: "",
     now: 0,
   });
 
-  const onEnd = useDebounceCallback(function (id: string) {
+  const boundEnd = useDebounceCallback(function (id: string) {
     onDrop?.(ref.current.objectId, id);
   }, 100);
+
+  function onStart(target: any, x: number, y: number) {
+    const objectId = target?.attributes?.objectId?.value;
+    if (objectId) {
+      const { left, top } = target.getBoundingClientRect();
+      const clickOffsetX = x - left;
+      const clickOffsetY = y - top;
+      ref.current.objectId = objectId;
+      ref.current.isDragging = true;
+      ref.current.clickOffsetX = clickOffsetX;
+      ref.current.clickOffsetY = clickOffsetY;
+      ref.current.text = target.textContent;
+      ref.current.now = Date.now();
+    }
+  }
+
+  function onEnd(objectId) {
+    ref.current.isDragging = false;
+    if (divRef.current) {
+      divRef.current.style.display = "none";
+    }
+    if (Date.now() - ref.current.now < 500) {
+      return;
+    }
+    if (objectId) {
+      boundEnd(objectId);
+    }
+  }
+
+  function onMove(clientX, clientY) {
+    if (!ref.current.isDragging) return;
+    const x = clientX - ref.current.clickOffsetX;
+    const y = clientY - ref.current.clickOffsetY;
+    if (divRef.current) {
+      divRef.current.style.top = `${y}px`;
+      divRef.current.style.left = `${x}px`;
+      divRef.current.textContent = ref.current.text;
+      divRef.current.style.display = "block";
+    }
+  }
 
   useLayoutEffect(() => {
     const target = document.getElementById("deployment-diagram");
 
-    target.addEventListener("mousedown", function onmousedown(e: any) {
+    function onmousedown(e: any) {
+      onStart(e.target, e.clientX, e.clientY);
+      document.addEventListener("mousemove", onmousemove);
+      document.addEventListener("mouseup", onmouseup);
+    }
+
+    function onmousemove(e: any) {
+      onMove(e.clientX, e.clientY);
+    }
+
+    function onmouseup(e: any) {
       const objectId = e.target?.attributes?.objectId?.value;
-      if (objectId) {
-        const { left, top } = e.target.getBoundingClientRect();
-        const clickOffsetX = e.clientX - left;
-        const clickOffsetY = e.clientY - top;
-        ref.current.objectId = objectId;
-        ref.current.isDragging = true;
-        ref.current.clickOffsetX = clickOffsetX;
-        ref.current.clickOffsetY = clickOffsetY;
-        ref.current.text = e.target.textContent;
-        ref.current.now = Date.now();
-      }
-    });
-    document.addEventListener("mousemove", function onmousemove(e: any) {
-      if (!ref.current.isDragging) return;
-      const x = e.clientX - ref.current.clickOffsetX;
-      const y = e.clientY - ref.current.clickOffsetY;
-      if (divRef.current) {
-        divRef.current.style.top = `${y}px`;
-        divRef.current.style.left = `${x}px`;
-        divRef.current.textContent = ref.current.text;
-        divRef.current.style.display = "block";
-      }
-    });
-    document.addEventListener("mouseup", function onmouseup(e: any) {
-      ref.current.isDragging = false;
-      if (divRef.current) {
-        divRef.current.style.display = "none";
-      }
-      if (Date.now() - ref.current.now < 500) {
-        return;
-      }
-      const objectId = e.target?.attributes?.objectId?.value;
-      if (objectId) {
-        onEnd(objectId);
-      }
-    });
+      onEnd(objectId);
+      document.removeEventListener("mousemove", onmousemove);
+      document.removeEventListener("mouseup", onmouseup);
+    }
+
+    function ontouchstart(e: any) {
+      onStart(e.touches[0].target, e.touches[0].clientX, e.touches[0].clientY);
+      document.addEventListener("touchmove", ontouchmove);
+      document.addEventListener("touchend", ontouchend);
+    }
+
+    function ontouchmove(e) {
+      const target = e.touches[0];
+      ref.current.overX = target.clientX;
+      ref.current.overY = target.clientY;
+      onMove(target.clientX, target.clientY);
+    }
+
+    function ontouchend() {
+      const hoveredElement = document.elementFromPoint(
+        ref.current.overX,
+        ref.current.overY
+      );
+      const objectId = (hoveredElement as any)?.attributes?.objectId?.value;
+      onEnd(objectId);
+      document.removeEventListener("touchmove", ontouchmove);
+      document.removeEventListener("touchend", ontouchend);
+    }
+
+    target.addEventListener("mousedown", onmousedown);
+    target.addEventListener("touchstart", ontouchstart);
 
     return () => {
-      document.removeEventListener("mouseup", onmouseup);
-      document.removeEventListener("mousemove", onmousemove);
       target.removeEventListener("mousedown", onmousedown);
+      target.removeEventListener("touchstart", ontouchstart);
     };
   }, []);
 
