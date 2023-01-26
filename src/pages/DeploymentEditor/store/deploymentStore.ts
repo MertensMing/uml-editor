@@ -12,6 +12,7 @@ import {
   findObject,
   insertObject,
   NormalObject,
+  Relation,
   removeAllRelation,
   removeObject,
   removeRelation,
@@ -59,6 +60,12 @@ type Actions = {
     origin: ContainerObject["id"],
     target: ContainerObject["id"]
   ): void;
+  updateRelation<T extends keyof Relation>(
+    id: ContainerObject["id"],
+    relationId: Relation["id"],
+    field: T,
+    value: Relation[T]
+  ): void;
   toggleAllowDragRelation(allow: boolean): void;
 };
 
@@ -93,6 +100,13 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
       },
       deleteRelation(origin, target) {
         removeRelation(get().deployment, origin, target);
+        updateDiagram();
+      },
+      updateRelation(id, relationId, field, value) {
+        const relations = get().deployment.relations[id] || [];
+        const relation = relations.find((item) => item.id === relationId);
+        if (!relation) return;
+        relation[field] = value;
         updateDiagram();
       },
       updateUmlUrl() {
@@ -178,7 +192,6 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         if (!removed) return;
         resetCurrent();
         removeAllRelation(get().deployment, id);
-        console.log(get().deployment);
         updateDiagram();
       },
     };

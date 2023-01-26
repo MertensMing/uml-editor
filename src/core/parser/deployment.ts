@@ -45,7 +45,13 @@ class DeploymentParser {
     let result = "";
     forEach(diagram?.relations, (relationArray) => {
       forEach(relationArray, (relation: Relation) => {
-        result += `${relation.origin} --> ${relation.to}: ${relation.name}\n`;
+        const linkColor = relation.linkColor || "";
+        const textColor = relation.descColor || "";
+        const desc = textColor
+          ? `<color ${textColor}>${relation.name}</color>`
+          : relation.name;
+        const descText = desc ? `: ${desc}` : "";
+        result += `${relation.origin} --> ${relation.to} ${linkColor}${descText}\n`;
       });
     });
     return result;

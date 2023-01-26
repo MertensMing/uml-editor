@@ -41,14 +41,18 @@ export function useDrag(
       if (!ref.current.isDragging) return;
       const x = e.clientX - ref.current.clickOffsetX;
       const y = e.clientY - ref.current.clickOffsetY;
-      divRef.current.style.top = `${y}px`;
-      divRef.current.style.left = `${x}px`;
-      divRef.current.textContent = ref.current.text;
-      divRef.current.style.display = "block";
+      if (divRef.current) {
+        divRef.current.style.top = `${y}px`;
+        divRef.current.style.left = `${x}px`;
+        divRef.current.textContent = ref.current.text;
+        divRef.current.style.display = "block";
+      }
     });
     document.addEventListener("mouseup", function onmouseup(e: any) {
       ref.current.isDragging = false;
-      divRef.current.style.display = "none";
+      if (divRef.current) {
+        divRef.current.style.display = "none";
+      }
       if (Date.now() - ref.current.now < 500) {
         return;
       }

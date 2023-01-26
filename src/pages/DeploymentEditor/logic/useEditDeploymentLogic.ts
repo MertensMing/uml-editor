@@ -2,6 +2,7 @@ import {
   BaseObject,
   ContainerObject,
   NormalObject,
+  Relation,
 } from "../../../core/entities/Deployment";
 import { createLogic } from "../../../shared/utils/createLogic";
 import { DeploymentStore } from "../store/deploymentStore";
@@ -31,6 +32,12 @@ type Handlers = {
   handleToggleAllowDragRelation(allow: boolean): void;
   handleSelectObjectBgColor(objectId: BaseObject["id"], color: string): void;
   handleSelectObjectTextColor(objectId: BaseObject["id"], color: string): void;
+  handleRelationChange<T extends keyof Relation>(
+    id: ContainerObject["id"],
+    relationId: Relation["id"],
+    field: T,
+    value: Relation[T]
+  ): void;
 };
 
 export const useEditDeploymentLogic = createLogic<[DeploymentStore], Handlers>(
@@ -75,6 +82,9 @@ export const useEditDeploymentLogic = createLogic<[DeploymentStore], Handlers>(
       },
       handleSelectObjectTextColor(id, color) {
         deploymentStore.getState().setObjectField(id, "textColor", color);
+      },
+      handleRelationChange(id, relationId, field, value) {
+        deploymentStore.getState().updateRelation(id, relationId, field, value);
       },
     };
   }

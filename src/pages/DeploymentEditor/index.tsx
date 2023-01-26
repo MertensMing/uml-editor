@@ -34,7 +34,7 @@ export function DeploymentEditor() {
     handleToggleAllowDragRelation,
     handleDeleteRelation,
     handleSelectObjectBgColor,
-    // handleSelectObjectTextColor,
+    handleRelationChange,
   } = useEditDeploymentLogic([deploymentStore]);
   const { currentObjectId, svgUrl, deployment, allowDragRelation } = useStore(
     deploymentStore,
@@ -108,11 +108,10 @@ export function DeploymentEditor() {
                     handleToggleAllowDragRelation(e.target.checked)
                   }
                 />
-                <div
-                  className="text-xs"
-                  style={{ color: "var(--mui-palette-text-secondary)" }}
-                >
-                  开启后可以拖动节点管理对象关系
+                <div className="text-xs text-gray text-xs">
+                  {allowDragRelation
+                    ? "拖动节点新增对象关系"
+                    : "拖动节点修改对象层级"}
                 </div>
               </div>
             }
@@ -138,7 +137,7 @@ export function DeploymentEditor() {
               content={
                 <div className="flex">
                   <div className="flex text-sm items-center mr-8">
-                    <span className="mr-3">背景</span>{" "}
+                    <span className="mr-3 text-gray text-xs">背景</span>{" "}
                     <ColorPicker
                       color={currentObject?.bgColor}
                       onChange={(color) =>
@@ -183,16 +182,40 @@ export function DeploymentEditor() {
                   {relations.map((item, idx) => {
                     const to = findObject(deployment.root, item.to);
                     return (
-                      <div className="pb-5" key={idx}>
-                        <div className="flex justify-between items-center pb-1">
+                      <div className="pb-5 pt-2" key={idx}>
+                        <div className="flex justify-between items-center pb-2">
                           <div className="flex">
-                            <div className="flex text-sm items-center mr-8">
-                              <span className="mr-3">连线</span>{" "}
-                              <ColorPicker color={item.linkColor} />
+                            <div className="flex text-sm items-center mr-4">
+                              <span className="mr-3 text-gray text-xs">
+                                连线
+                              </span>{" "}
+                              <ColorPicker
+                                color={item.linkColor}
+                                onChange={(color) => {
+                                  handleRelationChange(
+                                    currentObjectId,
+                                    item.id,
+                                    "linkColor",
+                                    color
+                                  );
+                                }}
+                              />
                             </div>
                             <div className="flex text-sm items-center">
-                              <span className="mr-3">文字</span>{" "}
-                              <ColorPicker color={item.descColor} />
+                              <span className="mr-3 text-gray text-xs">
+                                文字
+                              </span>{" "}
+                              <ColorPicker
+                                color={item.descColor}
+                                onChange={(color) => {
+                                  handleRelationChange(
+                                    currentObjectId,
+                                    item.id,
+                                    "descColor",
+                                    color
+                                  );
+                                }}
+                              />
                             </div>
                           </div>
                           <div
@@ -205,7 +228,7 @@ export function DeploymentEditor() {
                           </div>
                         </div>
                         <div className="flex text-sm items-center pb-1">
-                          <span className="mr-3">类型</span>
+                          <span className="mr-3 text-gray text-xs">类型</span>
                           <div className="-m-2">
                             <Select
                               value={item.type}
@@ -217,11 +240,21 @@ export function DeploymentEditor() {
                           </div>
                         </div>
                         <div className="flex text-sm items-center pb-1">
-                          <span className="mr-3">描述</span>{" "}
-                          <Input value={item.name} />
+                          <span className="mr-3 text-gray text-xs">描述</span>{" "}
+                          <Input
+                            value={item.name}
+                            onChange={(e) =>
+                              handleRelationChange(
+                                currentObjectId,
+                                item.id,
+                                "name",
+                                e.target.value
+                              )
+                            }
+                          />
                         </div>
                         <div className="flex text-sm items-center pb-1">
-                          <span className="mr-3">目标</span>{" "}
+                          <span className="mr-3 text-gray text-xs">目标</span>{" "}
                           <Input disabled value={to?.name} />
                         </div>
                       </div>
