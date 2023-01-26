@@ -39,10 +39,7 @@ export function EditorLayout(props: {
         <CopyDiagram uml={props.uml} png={props.pngUrl} svg={props.svgUrl} />
       </div>
       <div className="flex" style={{ height: `calc(100vh - 64px)` }}>
-        <div
-          style={{ width: 300 }}
-          className="px-4 py-4 h-full flex-shrink-0 border-r-solid border-gray-700 border-r-2 overflow-auto"
-        >
+        <div className="px-4 py-4 h-full flex-shrink-0 border-r-solid border-gray-700 border-r-2 overflow-auto">
           {props.operation}
         </div>
         <div className="h-full w-full overflow-auto bg-gray-100">

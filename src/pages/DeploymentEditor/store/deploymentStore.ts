@@ -12,7 +12,9 @@ import {
   findObject,
   insertObject,
   NormalObject,
+  removeAllRelation,
   removeObject,
+  removeRelation,
 } from "../../../core/entities/Deployment";
 import { deploymentStorage } from "../../../shared/storage/deployment";
 import { deploymentParser } from "../../../core/parser/deployment";
@@ -53,6 +55,10 @@ type Actions = {
     origin: ContainerObject["id"],
     target: ContainerObject["id"]
   ): void;
+  deleteRelation(
+    origin: ContainerObject["id"],
+    target: ContainerObject["id"]
+  ): void;
   toggleAllowDragRelation(allow: boolean): void;
 };
 
@@ -81,7 +87,12 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
       allowDragRelation: true,
 
       addRelation(origin, target) {
+        get().deployment.last++;
         addRelation(get().deployment, origin, target);
+        updateDiagram();
+      },
+      deleteRelation(origin, target) {
+        removeRelation(get().deployment, origin, target);
         updateDiagram();
       },
       updateUmlUrl() {
@@ -166,6 +177,8 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         const removed = removeObject(get().deployment.root, id);
         if (!removed) return;
         resetCurrent();
+        removeAllRelation(get().deployment, id);
+        console.log(get().deployment);
         updateDiagram();
       },
     };

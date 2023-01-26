@@ -1,5 +1,6 @@
 import remove from "lodash/remove";
 import uniqBy from "lodash/uniqBy";
+import forEach from "lodash/forEach";
 
 export enum RelationType {
   dependency = "dependency",
@@ -8,9 +9,11 @@ export enum RelationType {
 export type Relation = {
   type: RelationType;
   to: BaseObject["id"];
+  origin: BaseObject["id"];
   id: string;
   name: string;
-  origin: BaseObject["id"];
+  linkColor?: string;
+  descColor?: string;
 };
 
 export type Deployment = {
@@ -34,6 +37,8 @@ export enum ContainerObjectType {
 export type BaseObject = {
   name: string;
   id: string;
+  bgColor?: string;
+  textColor?: string;
 };
 
 export type NormalObject = BaseObject & {
@@ -169,4 +174,10 @@ export function removeRelation(
     diagram.relations[origin] = [];
   }
   remove(diagram.relations[origin], (item) => item.to === target);
+}
+
+export function removeAllRelation(diagram: Deployment, id: BaseObject["id"]) {
+  forEach(diagram.relations, (relations) => {
+    remove(relations, (item) => item.to === id || item.origin === id);
+  });
 }

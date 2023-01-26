@@ -8,23 +8,27 @@ import {
 } from "../entities/Deployment";
 import forEach from "lodash/forEach";
 
+const defaultName = "未命名对象";
+
 function getName(object: BaseObject) {
-  return `"<text class="object" objectId="${object.id}">${object.name}</text>"`;
+  return `"<text class="object" objectId="${object.id}">${
+    object.name || defaultName
+  }</text>"`;
+}
+
+const getColor = (c: string) => `${c}`.replace("#", "");
+
+function getColorText(object: BaseObject) {
+  const colors = [
+    object.bgColor ? getColor(object.bgColor) : "",
+    object.textColor ? `text:${getColor(object.textColor)}` : "",
+  ].filter((i) => !!i);
+  const colorText = colors?.length > 0 ? "#" + colors.join(";") : "";
+  return colorText;
 }
 
 class DeploymentParser {
   parseDiagram(diagram: DeploymentType) {
-    console.log(`
-    @startuml
-
-    title ${getName(diagram.root)}
-
-    ${this.parseChildren(diagram.root.children)}
-
-    ${this.parseRelations(diagram)}
-
-    @enduml
-  `);
     return `
       @startuml
 
@@ -48,7 +52,9 @@ class DeploymentParser {
   }
   parseObject(object: NormalObject) {
     return `
-      ${this.parseObjectType(object.type)} ${getName(object)} as ${object.id}
+      ${this.parseObjectType(object.type)} ${getName(object)} as ${
+      object.id
+    } ${getColorText(object)}
     `;
   }
   parseObjectType(type: NormalObject["type"]) {
@@ -70,7 +76,7 @@ class DeploymentParser {
     return `
     ${this.parseContainerType(container.type)} ${getName(container)} as ${
       container.id
-    } {
+    } ${getColorText(container)} {
         ${this.parseChildren(container.children)}
       }
     `;

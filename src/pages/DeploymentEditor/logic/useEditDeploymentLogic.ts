@@ -23,8 +23,14 @@ type Handlers = {
   ): void;
   handleObjectSelect(id: BaseObject["id"]): void;
   handleDrop(origin: BaseObject["id"], target: BaseObject["id"]): void;
+  handleDeleteRelation(
+    origin: BaseObject["id"],
+    target: BaseObject["id"]
+  ): void;
   handleDelete(objectId: BaseObject["id"]): void;
   handleToggleAllowDragRelation(allow: boolean): void;
+  handleSelectObjectBgColor(objectId: BaseObject["id"], color: string): void;
+  handleSelectObjectTextColor(objectId: BaseObject["id"], color: string): void;
 };
 
 export const useEditDeploymentLogic = createLogic<[DeploymentStore], Handlers>(
@@ -60,6 +66,15 @@ export const useEditDeploymentLogic = createLogic<[DeploymentStore], Handlers>(
       },
       handleToggleAllowDragRelation(allow) {
         deploymentStore.getState().toggleAllowDragRelation(allow);
+      },
+      handleDeleteRelation(origin, to) {
+        deploymentStore.getState().deleteRelation(origin, to);
+      },
+      handleSelectObjectBgColor(id, color) {
+        deploymentStore.getState().setObjectField(id, "bgColor", color);
+      },
+      handleSelectObjectTextColor(id, color) {
+        deploymentStore.getState().setObjectField(id, "textColor", color);
       },
     };
   }

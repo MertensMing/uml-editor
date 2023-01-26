@@ -14,10 +14,11 @@ import { useDrag } from "./hooks/useDrag";
 import {
   ContainerObjectType,
   findObject,
+  ObjectType,
 } from "../../core/entities/Deployment";
-import { Button, Input, InputAdornment, Switch } from "@mui/material";
-import AccountCircle from "@mui/icons-material/AccountCircle";
+import { Button, Input, MenuItem, Select, Switch } from "@mui/material";
 import { useDebounceCallback } from "@react-hook/debounce";
+import { ColorPicker } from "./components/ColorPicker";
 
 export function DeploymentEditor() {
   const deploymentStore = useRef(createDeploymentStore()).current;
@@ -31,6 +32,9 @@ export function DeploymentEditor() {
     handleObjectNameChange,
     handleDelete,
     handleToggleAllowDragRelation,
+    handleDeleteRelation,
+    handleSelectObjectBgColor,
+    // handleSelectObjectTextColor,
   } = useEditDeploymentLogic([deploymentStore]);
   const { currentObjectId, svgUrl, deployment, allowDragRelation } = useStore(
     deploymentStore,
@@ -52,6 +56,7 @@ export function DeploymentEditor() {
     shallow
   );
   const relations = deployment?.relations?.[currentObjectId] ?? [];
+  const isRoot = currentObject?.type === ContainerObjectType.diagram;
 
   const dragElementRef = useRef<HTMLDivElement>();
   const { refProps } = useDrag(dragElementRef, handleDrop);
@@ -118,11 +123,6 @@ export function DeploymentEditor() {
               <div>
                 {currentObject && (
                   <Input
-                    startAdornment={
-                      <InputAdornment position="start">
-                        <AccountCircle />
-                      </InputAdornment>
-                    }
                     value={currentObject?.name}
                     onChange={(e) =>
                       handleObjectNameChange(currentObjectId, e.target.value)
@@ -132,20 +132,33 @@ export function DeploymentEditor() {
               </div>
             }
           />
-          <FormItem
-            label="对象关系"
-            content={
-              <div>
-                {relations.map((item, idx) => {
-                  return (
-                    <div key={idx}>
-                      {item.origin} {item.type} {item.to}
-                    </div>
-                  );
-                })}
-              </div>
-            }
-          />
+          {!isRoot && (
+            <FormItem
+              label="颜色"
+              content={
+                <div className="flex">
+                  <div className="flex text-sm items-center mr-8">
+                    <span className="mr-3">背景</span>{" "}
+                    <ColorPicker
+                      color={currentObject?.bgColor}
+                      onChange={(color) =>
+                        handleSelectObjectBgColor(currentObjectId, color)
+                      }
+                    />
+                  </div>
+                  {/* <div className="flex text-sm items-center">
+                    <span className="mr-3">文字</span>{" "}
+                    <ColorPicker
+                      color={currentObject?.textColor}
+                      onChange={(color) =>
+                        handleSelectObjectTextColor(currentObjectId, color)
+                      }
+                    />
+                  </div> */}
+                </div>
+              }
+            />
+          )}
           <FormItem
             label="添加容器"
             content={
@@ -162,7 +175,62 @@ export function DeploymentEditor() {
               />
             }
           />
-
+          {relations?.length > 0 && (
+            <FormItem
+              label="对象关系"
+              content={
+                <div className="-mb-5">
+                  {relations.map((item, idx) => {
+                    const to = findObject(deployment.root, item.to);
+                    return (
+                      <div className="pb-5" key={idx}>
+                        <div className="flex justify-between items-center pb-1">
+                          <div className="flex">
+                            <div className="flex text-sm items-center mr-8">
+                              <span className="mr-3">连线</span>{" "}
+                              <ColorPicker color={item.linkColor} />
+                            </div>
+                            <div className="flex text-sm items-center">
+                              <span className="mr-3">文字</span>{" "}
+                              <ColorPicker color={item.descColor} />
+                            </div>
+                          </div>
+                          <div
+                            onClick={() =>
+                              handleDeleteRelation(item.origin, item.to)
+                            }
+                            className="cursor-pointer text-red-500 hover:text-red-700 text-xs"
+                          >
+                            删除
+                          </div>
+                        </div>
+                        <div className="flex text-sm items-center pb-1">
+                          <span className="mr-3">类型</span>
+                          <div className="-m-2">
+                            <Select
+                              value={item.type}
+                              variant="standard"
+                              sx={{ m: 1, minWidth: 120 }}
+                            >
+                              <MenuItem value={"dependency"}>依赖</MenuItem>
+                            </Select>
+                          </div>
+                        </div>
+                        <div className="flex text-sm items-center pb-1">
+                          <span className="mr-3">描述</span>{" "}
+                          <Input value={item.name} />
+                        </div>
+                        <div className="flex text-sm items-center pb-1">
+                          <span className="mr-3">目标</span>{" "}
+                          <Input disabled value={to?.name} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              }
+            />
+          )}
           <FormItem
             label="删除操作"
             content={
@@ -172,7 +240,7 @@ export function DeploymentEditor() {
                   size="small"
                   onClick={() => handleDelete(currentObjectId)}
                   color="error"
-                  disabled={currentObject?.type === ContainerObjectType.diagram}
+                  disabled={isRoot}
                 >
                   删除
                 </Button>
