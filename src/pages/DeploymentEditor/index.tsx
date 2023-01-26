@@ -13,14 +13,32 @@ import { createDeploymentStore } from "./store/deploymentStore";
 import { useDrag } from "./hooks/useDrag";
 import {
   ContainerObjectType,
+  Deployment,
   findObject,
 } from "../../core/entities/Deployment";
-import { Button, Input, MenuItem, Select, Switch } from "@mui/material";
+import {
+  Button,
+  ButtonGroup,
+  Input,
+  MenuItem,
+  Select,
+  Switch,
+} from "@mui/material";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { ColorPicker } from "./components/ColorPicker";
+import { createUndoStore } from "../../shared/store/undo";
 
 export function DeploymentEditor() {
   const deploymentStore = useRef(createDeploymentStore()).current;
+  const undoStore = useRef(createUndoStore<Deployment>()).current;
+  const { allowRedo, allowUndo } = useStore(
+    undoStore,
+    (state) => ({
+      allowUndo: state.undoIndex < state.queue.length - 1,
+      allowRedo: state.undoIndex !== 0,
+    }),
+    shallow
+  );
   const {
     handleInit,
     handleDiagramChange,
@@ -34,7 +52,9 @@ export function DeploymentEditor() {
     handleDeleteRelation,
     handleSelectObjectBgColor,
     handleRelationChange,
-  } = useEditDeploymentLogic([deploymentStore]);
+    handleUndo,
+    handleRedo,
+  } = useEditDeploymentLogic([deploymentStore, undoStore]);
   const { currentObjectId, svgUrl, deployment, allowDragRelation } = useStore(
     deploymentStore,
     (state) =>
@@ -97,6 +117,19 @@ export function DeploymentEditor() {
       }
       operation={
         <div>
+          <FormItem
+            label="图表操作"
+            content={
+              <ButtonGroup size="small">
+                <Button disabled={!allowUndo} onClick={handleUndo}>
+                  撤销
+                </Button>
+                <Button disabled={!allowRedo} onClick={handleRedo}>
+                  恢复
+                </Button>
+              </ButtonGroup>
+            }
+          />
           <FormItem
             label="拖拽连线"
             content={

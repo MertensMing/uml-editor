@@ -25,7 +25,6 @@ export function Editor() {
   const activityStore = useRef(
     createActivityStore(activityStorage.get())
   ).current;
-  const undoStore = useRef(createUndoStore<Activity>()).current;
   const { url, activity, pngUrl, uml, currentTask } = useStore(
     activityStore,
     (state) => ({
@@ -36,6 +35,7 @@ export function Editor() {
     }),
     shallow
   );
+  const undoStore = useRef(createUndoStore<Activity>()).current;
   const { allowRedo, allowUndo } = useStore(
     undoStore,
     (state) => ({

@@ -67,6 +67,7 @@ type Actions = {
     value: Relation[T]
   ): void;
   toggleAllowDragRelation(allow: boolean): void;
+  setDiagram(diagram: Deployment): void;
 };
 
 export type DeploymentStore = State & Actions;
@@ -93,6 +94,12 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
       pngUrl: undefined,
       allowDragRelation: false,
 
+      setDiagram(diagram: Deployment) {
+        set({
+          deployment: diagram,
+        });
+        updateDiagram();
+      },
       addRelation(origin, target) {
         get().deployment.last++;
         addRelation(get().deployment, origin, target);
