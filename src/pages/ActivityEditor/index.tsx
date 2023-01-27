@@ -137,7 +137,7 @@ export function Editor() {
                   setRealUrl(url);
                   setTimeout(() => {
                     setLoading(false);
-                  }, 600);
+                  }, 400);
                 }}
               />
             </div>
