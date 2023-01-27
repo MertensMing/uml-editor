@@ -1,8 +1,9 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ReactSVG } from "react-svg";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Input from "@mui/material/Input";
 import InputAdornment from "@mui/material/InputAdornment";
 import AccountCircle from "@mui/icons-material/AccountCircle";
@@ -23,6 +24,8 @@ import { pick } from "../../shared/utils/pick";
 import { useDrag } from "../../shared/hooks/useDrag";
 
 export function Editor() {
+  const [realUrl, setRealUrl] = useState("");
+  const [loading, setLoading] = useState(false);
   const activityStore = useRef(
     createActivityStore(activityStorage.get())
   ).current;
@@ -87,6 +90,10 @@ export function Editor() {
     debouncedHandleActivityChange();
   }, [activity]);
 
+  useEffect(() => {
+    setLoading(true);
+  }, [url]);
+
   return (
     <div>
       <EditorLayout
@@ -113,7 +120,27 @@ export function Editor() {
               }
             }}
           >
-            <div className="p-4">{activity && <ReactSVG src={url} />}</div>
+            <div className="p-4 relative h-screen">
+              {loading && (
+                <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center">
+                  绘制中...
+                </div>
+              )}
+              <div className={`${loading ? "opacity-0" : "opacity-100"}`}>
+                {activity && <ReactSVG src={realUrl} />}
+              </div>
+            </div>
+            <div style={{ position: "fixed", top: "-10000000px" }}>
+              <img
+                src={url}
+                onLoad={() => {
+                  setRealUrl(url);
+                  setTimeout(() => {
+                    setLoading(false);
+                  }, 600);
+                }}
+              />
+            </div>
           </div>
         }
         operation={
