@@ -10,7 +10,7 @@ import { AddContainer } from "./components/AddContainer";
 import { AddObject } from "./components/AddObject";
 import { useEditDeploymentLogic } from "./logic/useEditDeploymentLogic";
 import { createDeploymentStore } from "./store/deploymentStore";
-import { useDrag } from "./hooks/useDrag";
+import { useDrag } from "../../shared/hooks/useDrag";
 import {
   ContainerObjectType,
   Deployment,
@@ -84,7 +84,7 @@ export function DeploymentEditor() {
     600
   );
 
-  useDrag(dragElementRef, handleDrop);
+  useDrag("deployment-diagram", handleDrop);
 
   useEffect(() => {
     handleInit();

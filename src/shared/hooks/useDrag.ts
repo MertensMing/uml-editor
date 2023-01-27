@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { useDebounceCallback } from "@react-hook/debounce";
-import { BaseObject } from "../../../core/entities/Deployment";
+import { BaseObject } from "../../core/entities/Deployment";
 
 export function useDrag(
-  divRef: React.MutableRefObject<HTMLDivElement>,
+  diagramId: string,
   onDrop?: (objectId: BaseObject["id"], targetId: BaseObject["id"]) => void
 ) {
   const ref = useRef({
@@ -18,6 +18,7 @@ export function useDrag(
     text: "",
     now: 0,
   });
+  const divRef = useRef(document.createElement("div"));
 
   const boundEnd = useDebounceCallback(function (id: string) {
     onDrop?.(ref.current.objectId, id);
@@ -70,7 +71,8 @@ export function useDrag(
   }
 
   useLayoutEffect(() => {
-    const target = document.getElementById("deployment-diagram");
+    const target = document.getElementById(diagramId);
+    document.body.appendChild(divRef.current);
 
     function onmousedown(e: any) {
       onStart(e.target, e.clientX, e.clientY);
@@ -119,6 +121,7 @@ export function useDrag(
     return () => {
       target.removeEventListener("mousedown", onmousedown);
       target.removeEventListener("touchstart", ontouchstart);
+      document.body.removeChild(divRef.current);
     };
   }, []);
 }
