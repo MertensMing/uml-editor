@@ -10,7 +10,7 @@ import {
 } from "../entities/Activity";
 
 function getTaskName(task: Task) {
-  return `<text class="task" taskId="${task.id}">${task.name}</text>`;
+  return `<text class="task" taskId="${task.id}" objectId="${task.id}">${task.name}</text>`;
 }
 
 export const activityParser = {

@@ -1,4 +1,5 @@
 import { nanoid } from "nanoid";
+import remove from "lodash/remove";
 
 export enum TaskType {
   start = "start",
@@ -13,6 +14,7 @@ type CommonTask = {
   id: string;
   prev?: Task["id"];
   name?: string;
+  parent?: string;
 };
 
 export type StartTask = {
@@ -116,6 +118,7 @@ export function correctTask(task: Task, prevTaskId?: Task["id"]): Task | void {
   task.prev = prevTaskId;
   if (task.type === TaskType.switch) {
     for (const item of task.cases) {
+      item.task.parent = task.id;
       correctTask(item.task);
     }
     if (task.next) {
@@ -123,12 +126,14 @@ export function correctTask(task: Task, prevTaskId?: Task["id"]): Task | void {
     }
   } else if (task.type === TaskType.parallel) {
     for (const item of task.parallel) {
+      item.parent = task.id;
       correctTask(item);
     }
     if (task.next) {
       correctTask(task.next, task.id);
     }
   } else if (task.type === TaskType.while) {
+    task.while.parent = task.id;
     correctTask(task.while);
     if (task.next) {
       correctTask(task.next, task.id);
@@ -204,4 +209,59 @@ export function createCase(condition: string, type: TaskType) {
     task: createTask(type),
     id: nanoid(),
   };
+}
+
+export function removeTask(activity: Activity, taskId: Task["id"]) {
+  const task = findTask(activity.start, taskId);
+  if (!task) return;
+  if (task.type === TaskType.start) return;
+  if (task.parent) {
+    const parentTask = findTask(activity.start, task.parent);
+    if (parentTask) {
+      if (parentTask.type === TaskType.switch) {
+        const targetCase = parentTask.cases.find(
+          (item) => item.task.id === taskId
+        );
+        if (targetCase && targetCase.task.next) {
+          const removed = targetCase.task;
+          targetCase.task = targetCase.task.next;
+          return removed;
+        } else {
+          return;
+        }
+      } else if (parentTask.type === TaskType.parallel) {
+        const target = parentTask.parallel.find((item) => item.id === taskId);
+        if (target && target.next) {
+          const removed = target;
+          remove(parentTask.parallel, (item) => item.id === taskId);
+          parentTask.parallel.push(target.next);
+          return removed;
+        } else {
+          return;
+        }
+      } else if (parentTask.type === TaskType.while) {
+        if (parentTask.while.next) {
+          const removed = parentTask.while;
+          parentTask.while = parentTask.while.next;
+          return removed;
+        } else {
+          return;
+        }
+      }
+    }
+  } else {
+    const prevTask = findTask(activity.start, task.prev);
+    if (!prevTask) return;
+    if (task.type === TaskType.stop) {
+      prevTask.next = undefined;
+      const removed = task;
+      return removed;
+    }
+    const removed = task;
+    if (task.next) {
+      task.next.prev = prevTask.id;
+    }
+    prevTask.next = task.next;
+    return removed;
+  }
 }

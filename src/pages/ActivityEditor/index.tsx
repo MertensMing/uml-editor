@@ -20,6 +20,7 @@ import { activityStorage } from "../../shared/storage/activity";
 import { createUndoStore } from "../../shared/store/undo";
 import { EditorLayout } from "../../shared/components/EditorLayout";
 import { pick } from "../../shared/utils/pick";
+import { useDrag } from "../../shared/hooks/useDrag";
 
 export function Editor() {
   const activityStore = useRef(
@@ -57,6 +58,7 @@ export function Editor() {
     handleDeleteTask,
     handleSelectTask,
     handleTaskNameChange,
+    handleMove,
     // switch
     handleAddCondition,
     handleDeleteCondition,
@@ -72,6 +74,10 @@ export function Editor() {
     handleActivityChange,
     500
   );
+
+  useDrag("process-diagram", (origin, target) => {
+    handleMove(origin, target);
+  });
 
   useLayoutEffect(() => {
     handleMount();
@@ -91,6 +97,7 @@ export function Editor() {
         diagram={
           <div
             className="process"
+            id="process-diagram"
             onClick={(e: any) => {
               if (
                 e.target.nodeName === "ellipse" &&
@@ -182,7 +189,6 @@ export function Editor() {
                         onClick={() => {
                           handleDeleteTask(currentTask.id);
                         }}
-                        disabled={!currentTask.prev}
                         color="error"
                       >
                         删除
@@ -205,40 +211,44 @@ export function Editor() {
                     label="循环条件"
                     content={
                       <div>
-                        <Input
-                          startAdornment={
-                            <InputAdornment position="start">
-                              <AccountCircle />
-                              <div className=" ml-1 text-xs">循环条件</div>
-                            </InputAdornment>
-                          }
-                          value={currentTask?.condition?.yes}
-                          onChange={(e) =>
-                            handleWhileConditionChange(
-                              currentTask.id,
-                              e.target.value,
-                              currentTask.condition?.no ?? ""
-                            )
-                          }
-                          placeholder="是"
-                        />
-                        <Input
-                          startAdornment={
-                            <InputAdornment position="start">
-                              <AccountCircle />
-                              <div className=" ml-1 text-xs">退出条件</div>
-                            </InputAdornment>
-                          }
-                          value={currentTask?.condition?.no}
-                          onChange={(e) =>
-                            handleWhileConditionChange(
-                              currentTask.id,
-                              currentTask.condition?.yes ?? "",
-                              e.target.value
-                            )
-                          }
-                          placeholder="否"
-                        />
+                        <div>
+                          <Input
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <AccountCircle />
+                                <div className=" ml-1 text-xs">循环条件</div>
+                              </InputAdornment>
+                            }
+                            value={currentTask?.condition?.yes}
+                            onChange={(e) =>
+                              handleWhileConditionChange(
+                                currentTask.id,
+                                e.target.value,
+                                currentTask.condition?.no ?? ""
+                              )
+                            }
+                            placeholder="是"
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <AccountCircle />
+                                <div className=" ml-1 text-xs">退出条件</div>
+                              </InputAdornment>
+                            }
+                            value={currentTask?.condition?.no}
+                            onChange={(e) =>
+                              handleWhileConditionChange(
+                                currentTask.id,
+                                currentTask.condition?.yes ?? "",
+                                e.target.value
+                              )
+                            }
+                            placeholder="否"
+                          />
+                        </div>
                       </div>
                     }
                   />

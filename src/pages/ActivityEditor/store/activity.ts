@@ -8,6 +8,7 @@ import {
   StartTask,
   createCase,
   correctTask,
+  removeTask,
 } from "../../../core/entities/Activity";
 import { activityParser } from "../../../core/parser/activity";
 import { drawPng, drawSvg } from "../../../shared/utils/uml";
@@ -38,6 +39,7 @@ type Actions = {
   setWhileCondition(taskId: Task["id"], yes: string, no: string): void;
   addParallelTask(taskId: Task["id"], type: TaskType): void;
   deleteParallelTask(taskId: Task["id"], index: number): void;
+  moveTask(origin: Task["id"], target: Task["id"]): void;
 };
 
 export type ActivityStore = State & Actions;
@@ -86,6 +88,7 @@ export function createActivityStore(
       // activity
       initializeActivity() {
         if (!!get().activity) {
+          correctTask(get().activity.start);
           set({
             currentTask: get().activity.start,
           });
@@ -94,6 +97,7 @@ export function createActivityStore(
         const activity: Activity = {
           start: createTask(TaskType.start) as StartTask,
         };
+        correctTask(activity.start);
         set({
           activity,
           currentTask: activity.start,
@@ -120,23 +124,11 @@ export function createActivityStore(
         }
       },
       deleteTask(taskId) {
-        const task = findTask(get().activity.start, taskId);
-        if (!task) return;
-        if (task.type === TaskType.start) return;
-        const prevTask = findTask(get().activity.start, task.prev);
-        if (!prevTask) return;
-        if (task.type === TaskType.stop) {
-          prevTask.next = undefined;
+        const removed = removeTask(get().activity, taskId);
+        if (removed) {
           updateActivity();
           get().resetCurrentTask();
-          return;
         }
-        if (task.next) {
-          task.next.prev = prevTask.id;
-        }
-        prevTask.next = task.next;
-        updateActivity();
-        get().resetCurrentTask();
       },
       // switch
       addCondition(taskId, type) {
@@ -184,6 +176,17 @@ export function createActivityStore(
         if (result && result.type === TaskType.parallel) {
           result.parallel.splice(index, 1);
           updateActivity();
+        }
+      },
+      moveTask(origin, target) {
+        const removed = removeTask(get().activity, origin);
+        if (removed) {
+          const targetTask = findTask(get().activity.start, target);
+          if (targetTask && targetTask.type !== TaskType.stop) {
+            removed.next = targetTask.next;
+            targetTask.next = removed;
+            updateActivity();
+          }
         }
       },
     };

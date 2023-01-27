@@ -26,6 +26,7 @@ type Handlers = {
   handleRedo(): void;
   handleUndo(): void;
   handleWhileConditionChange(taskId: Task["id"], yes: string, no: string): void;
+  handleMove(origin: Task["id"], target: Task["id"]): void;
 };
 
 export const useEditActivityLogic = createLogic<
@@ -98,6 +99,10 @@ export const useEditActivityLogic = createLogic<
     },
     handleWhileConditionChange(taskId, yes, no) {
       activityStore.getState().setWhileCondition(taskId, yes, no);
+      saveChanged();
+    },
+    handleMove(origin, target) {
+      activityStore.getState().moveTask(origin, target);
       saveChanged();
     },
   };
