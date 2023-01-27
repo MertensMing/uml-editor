@@ -179,6 +179,17 @@ export function createActivityStore(
         }
       },
       moveTask(origin, target) {
+        const originTask = findTask(get().activity.start, origin);
+
+        if (!originTask) return;
+
+        const targetInOrigin = !!findTask(originTask, target);
+
+        if (targetInOrigin) {
+          window.alert("流程不允许相互嵌套");
+          return;
+        }
+
         const removed = removeTask(get().activity, origin);
         if (removed) {
           const targetTask = findTask(get().activity.start, target);

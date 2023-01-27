@@ -116,6 +116,9 @@ export function findTask(task: Task, taskId: string): Task | void {
 
 export function correctTask(task: Task, prevTaskId?: Task["id"]): Task | void {
   task.prev = prevTaskId;
+  if (task.prev) {
+    task.parent = undefined;
+  }
   if (task.type === TaskType.switch) {
     for (const item of task.cases) {
       item.task.parent = task.id;

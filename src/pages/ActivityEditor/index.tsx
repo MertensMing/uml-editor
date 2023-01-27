@@ -98,6 +98,9 @@ export function Editor() {
           <div
             className="process"
             id="process-diagram"
+            style={{
+              touchAction: "none",
+            }}
             onClick={(e: any) => {
               if (
                 e.target.nodeName === "ellipse" &&
