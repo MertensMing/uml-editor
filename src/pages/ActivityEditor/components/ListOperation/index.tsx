@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Input from "@mui/material/Input";
-import InputAdornment from "@mui/material/InputAdornment";
-import AccountCircle from "@mui/icons-material/AccountCircle";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export function ListOperation(props: {
   values: string[];
@@ -15,21 +15,15 @@ export function ListOperation(props: {
       {props.values.map((value, index) => (
         <div className="flex items-center" key={index}>
           <Input
-            startAdornment={
-              <InputAdornment position="start">
-                <AccountCircle />
-              </InputAdornment>
-            }
             value={value}
             disabled={!props.allowEdit}
             onChange={(e) => props.onChange?.(e.target.value, index)}
           />
           {props.allowDelete && (
-            <div
-              onClick={() => props.onDelete(index)}
-              className="ml-1 cursor-pointer text-xs hover:bg-gray-200 px-2 py-1 rounded"
-            >
-              删除
+            <div className="ml-1">
+              <IconButton size="small" onClick={() => props.onDelete(index)}>
+                <DeleteIcon fontSize="inherit" />
+              </IconButton>
             </div>
           )}
         </div>

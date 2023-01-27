@@ -5,8 +5,6 @@ import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Input from "@mui/material/Input";
-import InputAdornment from "@mui/material/InputAdornment";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
 import { useDebounceCallback } from "@react-hook/debounce";
@@ -22,10 +20,10 @@ import { createUndoStore } from "../../shared/store/undo";
 import { EditorLayout } from "../../shared/components/EditorLayout";
 import { pick } from "../../shared/utils/pick";
 import { useDrag } from "../../shared/hooks/useDrag";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export function Editor() {
-  const [realUrl, setRealUrl] = useState("");
-  const [loading, setLoading] = useState(false);
   const activityStore = useRef(
     createActivityStore(activityStorage.get())
   ).current;
@@ -73,7 +71,7 @@ export function Editor() {
     handleDeleteParallelTask,
   } = useEditActivityLogic([activityStore, undoStore]);
 
-  const debouncedHandleActivityChange = useDebounceCallback(
+  const boundHandleActivityChange = useDebounceCallback(
     handleActivityChange,
     500
   );
@@ -87,12 +85,8 @@ export function Editor() {
   }, []);
 
   useEffect(() => {
-    debouncedHandleActivityChange();
+    boundHandleActivityChange();
   }, [activity]);
-
-  useEffect(() => {
-    setLoading(true);
-  }, [url]);
 
   return (
     <div>
@@ -120,26 +114,8 @@ export function Editor() {
               }
             }}
           >
-            <div className="p-4 relative">
-              {loading && (
-                <div className="absolute top-0 left-0 h-full w-full flex justify-center">
-                  <div className="pt-64">绘制中...</div>
-                </div>
-              )}
-              <div className={`${loading ? "opacity-0" : "opacity-100"}`}>
-                {activity && <ReactSVG src={realUrl} />}
-              </div>
-            </div>
-            <div style={{ position: "fixed", top: "-10000000px" }}>
-              <img
-                src={url}
-                onLoad={() => {
-                  setRealUrl(url);
-                  setTimeout(() => {
-                    setLoading(false);
-                  }, 400);
-                }}
-              />
+            <div className="p-4">
+              <div>{activity && <ReactSVG src={url} />}</div>
             </div>
           </div>
         }
@@ -164,15 +140,7 @@ export function Editor() {
                 <FormItem
                   label="节点类型"
                   content={
-                    <Input
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <AccountCircle />
-                        </InputAdornment>
-                      }
-                      value={TYPE_MAP[currentTask.type]}
-                      disabled
-                    />
+                    <Input value={TYPE_MAP[currentTask.type]} disabled />
                   }
                 />
                 {/* 节点名称 */}
@@ -181,11 +149,6 @@ export function Editor() {
                     label="节点名称"
                     content={
                       <Input
-                        startAdornment={
-                          <InputAdornment position="start">
-                            <AccountCircle />
-                          </InputAdornment>
-                        }
                         value={currentTask.name}
                         onChange={(e) => {
                           handleTaskNameChange(currentTask.id, e.target.value);
@@ -210,30 +173,36 @@ export function Editor() {
                     />
                   }
                 />
-                {/* 删除节点 */}
+                {/* 删除操作 */}
                 <FormItem
-                  label="删除节点"
+                  label="删除操作"
                   content={
-                    <ButtonGroup variant="outlined" size="small">
-                      <Button
-                        onClick={() => {
-                          handleDeleteTask(currentTask.id);
-                        }}
-                        color="error"
-                      >
-                        删除
-                      </Button>
-                      {currentTask.next?.type === TaskType.stop && (
-                        <Button
+                    <div className="text-xs">
+                      <div className="flex items-center">
+                        删除当前节点{" "}
+                        <IconButton
                           onClick={() => {
-                            handleDeleteTask(currentTask.next.id);
+                            handleDeleteTask(currentTask.id);
                           }}
-                          color="error"
+                          size="small"
                         >
-                          删除下级结束点
-                        </Button>
+                          <DeleteIcon fontSize="inherit" />
+                        </IconButton>
+                      </div>
+                      {currentTask.next?.type === TaskType.stop && (
+                        <div className="flex items-center">
+                          删除下级结束点{" "}
+                          <IconButton
+                            onClick={() => {
+                              handleDeleteTask(currentTask.next.id);
+                            }}
+                            size="small"
+                          >
+                            <DeleteIcon fontSize="inherit" />
+                          </IconButton>
+                        </div>
                       )}
-                    </ButtonGroup>
+                    </div>
                   }
                 />
                 {currentTask.type === TaskType.while ? (
@@ -244,10 +213,7 @@ export function Editor() {
                         <div>
                           <Input
                             startAdornment={
-                              <InputAdornment position="start">
-                                <AccountCircle />
-                                <div className=" ml-1 text-xs">循环条件</div>
-                              </InputAdornment>
+                              <div className=" ml-1 text-xs">循环条件</div>
                             }
                             value={currentTask?.condition?.yes}
                             onChange={(e) =>
@@ -263,10 +229,7 @@ export function Editor() {
                         <div>
                           <Input
                             startAdornment={
-                              <InputAdornment position="start">
-                                <AccountCircle />
-                                <div className=" ml-1 text-xs">退出条件</div>
-                              </InputAdornment>
+                              <div className=" ml-1 text-xs">退出条件</div>
                             }
                             value={currentTask?.condition?.no}
                             onChange={(e) =>
