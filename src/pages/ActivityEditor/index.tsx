@@ -120,10 +120,10 @@ export function Editor() {
               }
             }}
           >
-            <div className="p-4 relative h-screen">
+            <div className="p-4 relative">
               {loading && (
-                <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center">
-                  绘制中...
+                <div className="absolute top-0 left-0 h-full w-full flex justify-center">
+                  <div className="pt-64">绘制中...</div>
                 </div>
               )}
               <div className={`${loading ? "opacity-0" : "opacity-100"}`}>
