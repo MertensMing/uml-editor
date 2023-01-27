@@ -230,6 +230,7 @@ export function removeTask(activity: Activity, taskId: Task["id"]) {
           targetCase.task = targetCase.task.next;
           return removed;
         } else {
+          window.alert("条件分支中唯一的任务不允许被删除");
           return;
         }
       } else if (parentTask.type === TaskType.parallel) {
@@ -240,6 +241,7 @@ export function removeTask(activity: Activity, taskId: Task["id"]) {
           parentTask.parallel.push(target.next);
           return removed;
         } else {
+          window.alert("并行流程中唯一的任务不允许被删除");
           return;
         }
       } else if (parentTask.type === TaskType.while) {
@@ -248,6 +250,7 @@ export function removeTask(activity: Activity, taskId: Task["id"]) {
           parentTask.while = parentTask.while.next;
           return removed;
         } else {
+          window.alert("循环流程中唯一的任务不允许被删除");
           return;
         }
       }
