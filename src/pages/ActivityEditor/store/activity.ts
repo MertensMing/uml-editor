@@ -183,11 +183,17 @@ export function createActivityStore(
 
         if (!originTask) return;
 
-        const targetInOrigin = !!findTask(originTask, target);
+        if (
+          [TaskType.while, TaskType.switch, TaskType.parallel].includes(
+            originTask.type
+          )
+        ) {
+          const targetInOrigin = !!findTask(originTask, target);
 
-        if (targetInOrigin) {
-          window.alert("流程不允许相互嵌套");
-          return;
+          if (targetInOrigin) {
+            window.alert("流程不允许相互嵌套");
+            return;
+          }
         }
 
         const removed = removeTask(get().activity, origin);

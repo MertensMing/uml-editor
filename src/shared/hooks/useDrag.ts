@@ -22,6 +22,8 @@ export function useDrag(
 
   const boundEnd = useDebounceCallback(function (id: string) {
     onDrop?.(ref.current.objectId, id);
+    ref.current.objectId = undefined;
+    ref.current.targetObjectId = undefined;
   }, 100);
 
   function onStart(target: any, x: number, y: number) {
