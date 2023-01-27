@@ -27,6 +27,7 @@ type State = {
   currentObjectId?: BaseObject["id"];
   svgUrl?: string;
   pngUrl?: string;
+  uml?: string;
   allowDragRelation: boolean;
 };
 
@@ -124,6 +125,7 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         set({
           svgUrl: drawSvg(uml),
           pngUrl: drawPng(uml),
+          uml,
         });
       },
       updateCurrentObject(id) {

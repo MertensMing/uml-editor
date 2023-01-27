@@ -55,7 +55,14 @@ export function DeploymentEditor() {
     handleUndo,
     handleRedo,
   } = useEditDeploymentLogic([deploymentStore, undoStore]);
-  const { currentObjectId, svgUrl, deployment, allowDragRelation } = useStore(
+  const {
+    currentObjectId,
+    svgUrl,
+    deployment,
+    allowDragRelation,
+    uml,
+    pngUrl,
+  } = useStore(
     deploymentStore,
     (state) =>
       pick(state, [
@@ -63,6 +70,8 @@ export function DeploymentEditor() {
         "deployment",
         "svgUrl",
         "allowDragRelation",
+        "uml",
+        "pngUrl",
       ]),
     shallow
   );
@@ -97,8 +106,8 @@ export function DeploymentEditor() {
   return (
     <EditorLayout
       currentDiagram="deployment"
-      uml=""
-      pngUrl=""
+      uml={uml}
+      pngUrl={pngUrl}
       svgUrl={svgUrl}
       diagram={
         <div>
