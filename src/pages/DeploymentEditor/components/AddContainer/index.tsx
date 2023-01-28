@@ -9,13 +9,13 @@ export function AddContainer(props: {
         className="btn btn-sm btn-outline"
         onClick={() => props.onClick(ContainerObjectType.rectangle)}
       >
-        Rectangle
+        矩形
       </button>
       <button
         className="btn btn-sm btn-outline"
         onClick={() => props.onClick(ContainerObjectType.cloud)}
       >
-        Cloud
+        云
       </button>
     </div>
   );

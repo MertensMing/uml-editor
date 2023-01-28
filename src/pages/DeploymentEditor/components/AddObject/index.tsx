@@ -9,7 +9,7 @@ export function AddObject(props: {
         className="btn btn-sm btn-outline"
         onClick={() => props.onClick(ObjectType.circle)}
       >
-        Circle
+        圆
       </button>
     </div>
   );

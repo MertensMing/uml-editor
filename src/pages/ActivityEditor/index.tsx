@@ -89,246 +89,240 @@ export function Editor() {
   }, [activity]);
 
   return (
-    <div>
-      <EditorLayout
-        uml={uml}
-        pngUrl={pngUrl}
-        svgUrl={url}
-        currentDiagram="activity"
-        diagram={
-          <div
-            className="process"
-            id="process-diagram"
-            style={{
-              touchAction: "none",
-            }}
-            onClick={(e: any) => {
-              if (
-                e.target.nodeName === "ellipse" &&
-                e.target.parentNode.nodeName === "g" &&
-                e.target.parentNode.firstChild === e.target
-              ) {
-                handleSelectTask(activity.start.id);
-              } else if (e.target?.attributes?.taskId?.value) {
-                handleSelectTask(e.target?.attributes?.taskId?.value);
-              }
-            }}
-          >
-            <div className="p-4">
-              <div>{activity && <ReactSVG src={url} />}</div>
-            </div>
+    <EditorLayout
+      uml={uml}
+      pngUrl={pngUrl}
+      svgUrl={url}
+      currentDiagram="activity"
+      diagram={
+        <div
+          className="process"
+          id="process-diagram"
+          style={{
+            touchAction: "none",
+          }}
+          onClick={(e: any) => {
+            if (
+              e.target.nodeName === "ellipse" &&
+              e.target.parentNode.nodeName === "g" &&
+              e.target.parentNode.firstChild === e.target
+            ) {
+              handleSelectTask(activity.start.id);
+            } else if (e.target?.attributes?.taskId?.value) {
+              handleSelectTask(e.target?.attributes?.taskId?.value);
+            }
+          }}
+        >
+          <div className="p-4">
+            <div>{activity && <ReactSVG src={url} />}</div>
           </div>
-        }
-        operation={
-          <>
-            <FormItem
-              label="图表操作"
-              content={
-                <ButtonGroup size="small">
-                  <Button disabled={!allowUndo} onClick={handleUndo}>
-                    撤销
-                  </Button>
-                  <Button disabled={!allowRedo} onClick={handleRedo}>
-                    恢复
-                  </Button>
-                </ButtonGroup>
-              }
-            />
-            {currentTask && (
-              <>
-                {/* 节点类型 */}
+        </div>
+      }
+      operation={
+        <>
+          <FormItem
+            label="图表操作"
+            content={
+              <ButtonGroup size="small">
+                <Button disabled={!allowUndo} onClick={handleUndo}>
+                  撤销
+                </Button>
+                <Button disabled={!allowRedo} onClick={handleRedo}>
+                  恢复
+                </Button>
+              </ButtonGroup>
+            }
+          />
+          {currentTask && (
+            <>
+              {/* 节点类型 */}
+              <FormItem
+                label="节点类型"
+                content={<Input value={TYPE_MAP[currentTask.type]} disabled />}
+              />
+              {/* 节点名称 */}
+              {currentTask.type !== TaskType.start && (
                 <FormItem
-                  label="节点类型"
+                  label="节点名称"
                   content={
-                    <Input value={TYPE_MAP[currentTask.type]} disabled />
-                  }
-                />
-                {/* 节点名称 */}
-                {currentTask.type !== TaskType.start && (
-                  <FormItem
-                    label="节点名称"
-                    content={
-                      <Input
-                        value={currentTask.name}
-                        onChange={(e) => {
-                          handleTaskNameChange(currentTask.id, e.target.value);
-                        }}
-                      />
-                    }
-                  />
-                )}
-                {/* 添加节点 */}
-                <FormItem
-                  label="添加节点"
-                  content={
-                    <TaskTypeButtonGroup
-                      group={[
-                        TaskType.normal,
-                        TaskType.switch,
-                        TaskType.parallel,
-                        TaskType.while,
-                        TaskType.stop,
-                      ]}
-                      onClick={(type) => handleAddTask(currentTask.id, type)}
+                    <Input
+                      value={currentTask.name}
+                      onChange={(e) => {
+                        handleTaskNameChange(currentTask.id, e.target.value);
+                      }}
                     />
                   }
                 />
-                {/* 删除操作 */}
-                <FormItem
-                  label="删除操作"
-                  content={
-                    <div className="text-xs">
+              )}
+              {/* 添加节点 */}
+              <FormItem
+                label="添加节点"
+                content={
+                  <TaskTypeButtonGroup
+                    group={[
+                      TaskType.normal,
+                      TaskType.switch,
+                      TaskType.parallel,
+                      TaskType.while,
+                      TaskType.stop,
+                    ]}
+                    onClick={(type) => handleAddTask(currentTask.id, type)}
+                  />
+                }
+              />
+              {/* 删除操作 */}
+              <FormItem
+                label="删除操作"
+                content={
+                  <div className="text-xs">
+                    <div className="flex items-center">
+                      删除当前节点{" "}
+                      <IconButton
+                        onClick={() => {
+                          handleDeleteTask(currentTask.id);
+                        }}
+                        size="small"
+                      >
+                        <DeleteIcon fontSize="inherit" />
+                      </IconButton>
+                    </div>
+                    {currentTask.next?.type === TaskType.stop && (
                       <div className="flex items-center">
-                        删除当前节点{" "}
+                        删除下级结束点{" "}
                         <IconButton
                           onClick={() => {
-                            handleDeleteTask(currentTask.id);
+                            handleDeleteTask(currentTask.next.id);
                           }}
                           size="small"
                         >
                           <DeleteIcon fontSize="inherit" />
                         </IconButton>
                       </div>
-                      {currentTask.next?.type === TaskType.stop && (
-                        <div className="flex items-center">
-                          删除下级结束点{" "}
-                          <IconButton
-                            onClick={() => {
-                              handleDeleteTask(currentTask.next.id);
-                            }}
-                            size="small"
-                          >
-                            <DeleteIcon fontSize="inherit" />
-                          </IconButton>
-                        </div>
-                      )}
+                    )}
+                  </div>
+                }
+              />
+              {currentTask.type === TaskType.while ? (
+                <FormItem
+                  label="循环条件"
+                  content={
+                    <div>
+                      <div>
+                        <Input
+                          startAdornment={
+                            <div className=" ml-1 text-xs">循环条件</div>
+                          }
+                          value={currentTask?.condition?.yes}
+                          onChange={(e) =>
+                            handleWhileConditionChange(
+                              currentTask.id,
+                              e.target.value,
+                              currentTask.condition?.no ?? ""
+                            )
+                          }
+                          placeholder="是"
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          startAdornment={
+                            <div className=" ml-1 text-xs">退出条件</div>
+                          }
+                          value={currentTask?.condition?.no}
+                          onChange={(e) =>
+                            handleWhileConditionChange(
+                              currentTask.id,
+                              currentTask.condition?.yes ?? "",
+                              e.target.value
+                            )
+                          }
+                          placeholder="否"
+                        />
+                      </div>
                     </div>
                   }
                 />
-                {currentTask.type === TaskType.while ? (
+              ) : null}
+              {currentTask.type === TaskType.parallel ? (
+                <div>
                   <FormItem
-                    label="循环条件"
+                    label="并行任务"
                     content={
-                      <div>
-                        <div>
-                          <Input
-                            startAdornment={
-                              <div className=" ml-1 text-xs">循环条件</div>
-                            }
-                            value={currentTask?.condition?.yes}
-                            onChange={(e) =>
-                              handleWhileConditionChange(
-                                currentTask.id,
-                                e.target.value,
-                                currentTask.condition?.no ?? ""
-                              )
-                            }
-                            placeholder="是"
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            startAdornment={
-                              <div className=" ml-1 text-xs">退出条件</div>
-                            }
-                            value={currentTask?.condition?.no}
-                            onChange={(e) =>
-                              handleWhileConditionChange(
-                                currentTask.id,
-                                currentTask.condition?.yes ?? "",
-                                e.target.value
-                              )
-                            }
-                            placeholder="否"
-                          />
-                        </div>
-                      </div>
+                      <ListOperation
+                        allowDelete={currentTask.parallel.length > 2}
+                        allowEdit={false}
+                        values={currentTask.parallel.map(
+                          (item, index) => `任务 ${index + 1}（${item.name}）`
+                        )}
+                        onDelete={(index) =>
+                          handleDeleteParallelTask(currentTask.id, index)
+                        }
+                      />
                     }
                   />
-                ) : null}
-                {currentTask.type === TaskType.parallel ? (
-                  <div>
-                    <FormItem
-                      label="并行任务"
-                      content={
-                        <ListOperation
-                          allowDelete={currentTask.parallel.length > 2}
-                          allowEdit={false}
-                          values={currentTask.parallel.map(
-                            (item, index) => `任务 ${index + 1}（${item.name}）`
-                          )}
-                          onDelete={(index) =>
-                            handleDeleteParallelTask(currentTask.id, index)
-                          }
-                        />
-                      }
-                    />
-                    <FormItem
-                      label="添加并行任务"
-                      content={
-                        <TaskTypeButtonGroup
-                          group={[
-                            TaskType.normal,
-                            TaskType.switch,
-                            TaskType.parallel,
-                            TaskType.while,
-                          ]}
-                          onClick={(type) =>
-                            handleAddParallelTask(currentTask.id, type)
-                          }
-                        />
-                      }
-                    />
-                  </div>
-                ) : null}
-                {currentTask.type === TaskType.switch ? (
-                  <div>
-                    <FormItem
-                      label="编辑条件"
-                      content={
-                        <ListOperation
-                          allowDelete={currentTask.cases.length > 1}
-                          allowEdit
-                          values={currentTask.cases.map(
-                            (item) => item.condition
-                          )}
-                          onDelete={(index) =>
-                            handleDeleteCondition(currentTask.id, index)
-                          }
-                          onChange={(text, index) => {
-                            handleConditionTextChange(
-                              currentTask.id,
-                              index,
-                              text
-                            );
-                          }}
-                        />
-                      }
-                    />
-                    <FormItem
-                      label="添加条件"
-                      content={
-                        <TaskTypeButtonGroup
-                          group={[
-                            TaskType.normal,
-                            TaskType.switch,
-                            TaskType.parallel,
-                            TaskType.while,
-                            TaskType.stop,
-                          ]}
-                          onClick={(type) =>
-                            handleAddCondition(currentTask.id, type)
-                          }
-                        />
-                      }
-                    />
-                  </div>
-                ) : null}
-              </>
-            )}
-          </>
-        }
-      />
-    </div>
+                  <FormItem
+                    label="添加并行任务"
+                    content={
+                      <TaskTypeButtonGroup
+                        group={[
+                          TaskType.normal,
+                          TaskType.switch,
+                          TaskType.parallel,
+                          TaskType.while,
+                        ]}
+                        onClick={(type) =>
+                          handleAddParallelTask(currentTask.id, type)
+                        }
+                      />
+                    }
+                  />
+                </div>
+              ) : null}
+              {currentTask.type === TaskType.switch ? (
+                <div>
+                  <FormItem
+                    label="编辑条件"
+                    content={
+                      <ListOperation
+                        allowDelete={currentTask.cases.length > 1}
+                        allowEdit
+                        values={currentTask.cases.map((item) => item.condition)}
+                        onDelete={(index) =>
+                          handleDeleteCondition(currentTask.id, index)
+                        }
+                        onChange={(text, index) => {
+                          handleConditionTextChange(
+                            currentTask.id,
+                            index,
+                            text
+                          );
+                        }}
+                      />
+                    }
+                  />
+                  <FormItem
+                    label="添加条件"
+                    content={
+                      <TaskTypeButtonGroup
+                        group={[
+                          TaskType.normal,
+                          TaskType.switch,
+                          TaskType.parallel,
+                          TaskType.while,
+                          TaskType.stop,
+                        ]}
+                        onClick={(type) =>
+                          handleAddCondition(currentTask.id, type)
+                        }
+                      />
+                    }
+                  />
+                </div>
+              ) : null}
+            </>
+          )}
+        </>
+      }
+    />
   );
 }

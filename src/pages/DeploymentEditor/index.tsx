@@ -355,7 +355,7 @@ export function DeploymentEditor() {
             </div>
           )}
           <div className="pb-8">
-            <h3 className="pb-2 font-bold">危险操作</h3>
+            <h3 className="pb-2 font-bold">删除操作</h3>
             <div>
               <button
                 onClick={() => handleDelete(currentObjectId)}

@@ -16,8 +16,8 @@ export function EditorLayout(props: {
 }) {
   const navigate = useNavigate();
   return (
-    <div className="h-full flex flex-col">
-      <div className="navbar bg-base-100">
+    <div className="h-full flex flex-col bg-slate-50">
+      <div className="border-b navbar">
         <div className="flex-none">
           <div className="dropdown">
             <label tabIndex={0} className="btn btn-ghost btn-circle">
@@ -75,7 +75,7 @@ export function EditorLayout(props: {
         </div>
       </div>
       <div className="flex flex-grow overflow-auto">
-        <div className="px-4 py-4 h-full overflow-auto w-80 flex-shrink-0">
+        <div className="px-4 py-4 h-full overflow-auto w-80 flex-shrink-0 border-r">
           {props.operation}
         </div>
         <div className="h-full w-full overflow-auto">
