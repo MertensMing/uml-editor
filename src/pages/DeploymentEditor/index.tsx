@@ -307,7 +307,6 @@ export function DeploymentEditor() {
                                 value={item.linkDirection}
                                 className="select select-bordered select-sm"
                                 onChange={(e) => {
-                                  console.log(12313, e.target.value);
                                   handleRelationChange(
                                     currentObjectId,
                                     item.id,

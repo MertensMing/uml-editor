@@ -16,7 +16,7 @@ export function EditorLayout(props: {
 }) {
   const navigate = useNavigate();
   return (
-    <div className="h-full flex flex-col bg-slate-50">
+    <div data-theme="winter" className="h-full flex flex-col bg-slate-50">
       <div className="border-b navbar">
         <div className="flex-none">
           <div className="dropdown">

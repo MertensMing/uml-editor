@@ -1,6 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Button from "@mui/material/Button";
 import { TaskType } from "../../../../core/entities/Activity";
 import { TYPE_MAP } from "../../const";
 
@@ -9,14 +7,18 @@ export function TaskTypeButtonGroup(props: {
   onClick(type: TaskType): void;
 }) {
   return (
-    <ButtonGroup variant="outlined" size="small">
+    <>
       {props.group.map((type) => {
         return (
-          <Button key={type} onClick={() => props.onClick(type)}>
+          <button
+            className="btn btn-outline btn-sm"
+            key={type}
+            onClick={() => props.onClick(type)}
+          >
             {TYPE_MAP[type]}
-          </Button>
+          </button>
         );
       })}
-    </ButtonGroup>
+    </>
   );
 }

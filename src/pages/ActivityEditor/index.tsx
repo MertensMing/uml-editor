@@ -3,10 +3,8 @@
 import { ReactSVG } from "react-svg";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import Input from "@mui/material/Input";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Button from "@mui/material/Button";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { createActivityStore } from "./store/activity";
 import { useEditActivityLogic } from "./logic/useEditActivityLogic";
@@ -20,8 +18,6 @@ import { createUndoStore } from "../../shared/store/undo";
 import { EditorLayout } from "../../shared/components/EditorLayout";
 import { pick } from "../../shared/utils/pick";
 import { useDrag } from "../../shared/hooks/useDrag";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 export function Editor() {
   const activityStore = useRef(
@@ -120,44 +116,61 @@ export function Editor() {
       }
       operation={
         <>
-          <FormItem
-            label="图表操作"
-            content={
-              <ButtonGroup size="small">
-                <Button disabled={!allowUndo} onClick={handleUndo}>
-                  撤销
-                </Button>
-                <Button disabled={!allowRedo} onClick={handleRedo}>
-                  恢复
-                </Button>
-              </ButtonGroup>
-            }
-          />
+          <div className="pb-8">
+            <h3 className="pb-2 font-bold">图表操作</h3>
+            <div className="space-x-1">
+              <button
+                className="btn btn-sm btn-outline"
+                disabled={!allowUndo}
+                onClick={handleUndo}
+              >
+                撤销
+              </button>
+              <button
+                className="btn btn-sm btn-outline"
+                disabled={!allowRedo}
+                onClick={handleRedo}
+              >
+                恢复
+              </button>
+            </div>
+          </div>
           {currentTask && (
             <>
               {/* 节点类型 */}
-              <FormItem
-                label="节点类型"
-                content={<Input value={TYPE_MAP[currentTask.type]} disabled />}
-              />
+              <div className="pb-8">
+                <h3 className="pb-2 font-bold">节点类型</h3>
+                <div className="space-x-1">
+                  <input
+                    type="text"
+                    value={TYPE_MAP[currentTask.type]}
+                    className="input input-bordered input-sm w-full max-w-xs"
+                    disabled
+                  />
+                </div>
+              </div>
+
               {/* 节点名称 */}
               {currentTask.type !== TaskType.start && (
-                <FormItem
-                  label="节点名称"
-                  content={
-                    <Input
+                <div className="pb-8">
+                  <h3 className="pb-2 font-bold">节点名称</h3>
+                  <div className="space-x-1">
+                    <input
+                      type="text"
                       value={currentTask.name}
+                      className="input input-bordered input-sm w-full max-w-xs"
                       onChange={(e) => {
                         handleTaskNameChange(currentTask.id, e.target.value);
                       }}
                     />
-                  }
-                />
+                  </div>
+                </div>
               )}
+
               {/* 添加节点 */}
-              <FormItem
-                label="添加节点"
-                content={
+              <div className="pb-8">
+                <h3 className="pb-2 font-bold">添加节点</h3>
+                <div className="space-x-1">
                   <TaskTypeButtonGroup
                     group={[
                       TaskType.normal,
@@ -168,50 +181,71 @@ export function Editor() {
                     ]}
                     onClick={(type) => handleAddTask(currentTask.id, type)}
                   />
-                }
-              />
+                </div>
+              </div>
+
               {/* 删除操作 */}
-              <FormItem
-                label="删除操作"
-                content={
-                  <div className="text-xs">
-                    <div className="flex items-center">
-                      删除当前节点{" "}
-                      <IconButton
-                        onClick={() => {
-                          handleDeleteTask(currentTask.id);
-                        }}
-                        size="small"
+              <div className="pb-8">
+                <h3 className="pb-2 font-bold">删除操作</h3>
+                <div className="space-x-1">
+                  <button
+                    onClick={() => {
+                      handleDeleteTask(currentTask.id);
+                    }}
+                    className="btn btn-outline btn-error btn-sm"
+                  >
+                    删除节点
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                  {currentTask.next?.type === TaskType.stop && (
+                    <button
+                      onClick={() => {
+                        handleDeleteTask(currentTask.next.id);
+                      }}
+                      className="btn btn-outline btn-error btn-sm"
+                    >
+                      删除下级结束点
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
                       >
-                        <DeleteIcon fontSize="inherit" />
-                      </IconButton>
-                    </div>
-                    {currentTask.next?.type === TaskType.stop && (
-                      <div className="flex items-center">
-                        删除下级结束点{" "}
-                        <IconButton
-                          onClick={() => {
-                            handleDeleteTask(currentTask.next.id);
-                          }}
-                          size="small"
-                        >
-                          <DeleteIcon fontSize="inherit" />
-                        </IconButton>
-                      </div>
-                    )}
-                  </div>
-                }
-              />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              </div>
+
               {currentTask.type === TaskType.while ? (
-                <FormItem
-                  label="循环条件"
-                  content={
-                    <div>
-                      <div>
-                        <Input
-                          startAdornment={
-                            <div className=" ml-1 text-xs">循环条件</div>
-                          }
+                <div className="pb-8">
+                  <h3 className="pb-2 font-bold">循环条件</h3>
+                  <div>
+                    <div className="form-control pb-2">
+                      <label className="input-group input-group-sm">
+                        <span>循环条件</span>
+                        <input
+                          className="input input-bordered input-sm"
                           value={currentTask?.condition?.yes}
                           onChange={(e) =>
                             handleWhileConditionChange(
@@ -222,12 +256,13 @@ export function Editor() {
                           }
                           placeholder="是"
                         />
-                      </div>
-                      <div>
-                        <Input
-                          startAdornment={
-                            <div className=" ml-1 text-xs">退出条件</div>
-                          }
+                      </label>
+                    </div>
+                    <div className="form-control">
+                      <label className="input-group input-group-sm">
+                        <span>退出条件</span>
+                        <input
+                          className="input input-bordered input-sm"
                           value={currentTask?.condition?.no}
                           onChange={(e) =>
                             handleWhileConditionChange(
@@ -238,16 +273,17 @@ export function Editor() {
                           }
                           placeholder="否"
                         />
-                      </div>
+                      </label>
                     </div>
-                  }
-                />
+                  </div>
+                </div>
               ) : null}
+
               {currentTask.type === TaskType.parallel ? (
                 <div>
-                  <FormItem
-                    label="并行任务"
-                    content={
+                  <div className="pb-8">
+                    <h3 className="pb-2 font-bold">并行任务</h3>
+                    <div className="space-x-1">
                       <ListOperation
                         allowDelete={currentTask.parallel.length > 2}
                         allowEdit={false}
@@ -258,11 +294,12 @@ export function Editor() {
                           handleDeleteParallelTask(currentTask.id, index)
                         }
                       />
-                    }
-                  />
-                  <FormItem
-                    label="添加并行任务"
-                    content={
+                    </div>
+                  </div>
+
+                  <div className="pb-8">
+                    <h3 className="pb-2 font-bold">添加并行任务</h3>
+                    <div className="space-x-1">
                       <TaskTypeButtonGroup
                         group={[
                           TaskType.normal,
@@ -274,15 +311,16 @@ export function Editor() {
                           handleAddParallelTask(currentTask.id, type)
                         }
                       />
-                    }
-                  />
+                    </div>
+                  </div>
                 </div>
               ) : null}
+
               {currentTask.type === TaskType.switch ? (
                 <div>
-                  <FormItem
-                    label="编辑条件"
-                    content={
+                  <div className="pb-8">
+                    <h3 className="pb-2 font-bold">编辑条件</h3>
+                    <div className="space-x-1">
                       <ListOperation
                         allowDelete={currentTask.cases.length > 1}
                         allowEdit
@@ -298,11 +336,12 @@ export function Editor() {
                           );
                         }}
                       />
-                    }
-                  />
-                  <FormItem
-                    label="添加条件"
-                    content={
+                    </div>
+                  </div>
+
+                  <div className="pb-8">
+                    <h3 className="pb-2 font-bold">添加条件</h3>
+                    <div className="space-x-1">
                       <TaskTypeButtonGroup
                         group={[
                           TaskType.normal,
@@ -315,8 +354,8 @@ export function Editor() {
                           handleAddCondition(currentTask.id, type)
                         }
                       />
-                    }
-                  />
+                    </div>
+                  </div>
                 </div>
               ) : null}
             </>
