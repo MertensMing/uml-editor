@@ -11,7 +11,7 @@ export function TaskTypeButtonGroup(props: {
       {props.group.map((type) => {
         return (
           <button
-            className="btn btn-outline btn-sm"
+            className="btn btn-outline btn-xs"
             key={type}
             onClick={() => props.onClick(type)}
           >

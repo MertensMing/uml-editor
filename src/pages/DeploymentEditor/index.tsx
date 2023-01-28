@@ -134,14 +134,14 @@ export function DeploymentEditor() {
             <h3 className="pb-2 font-bold">图表操作</h3>
             <div className="space-x-1">
               <button
-                className="btn btn-sm btn-outline"
+                className="btn btn-xs btn-outline"
                 disabled={!allowUndo}
                 onClick={handleUndo}
               >
                 撤销
               </button>
               <button
-                className="btn btn-sm btn-outline"
+                className="btn btn-xs btn-outline"
                 disabled={!allowRedo}
                 onClick={handleRedo}
               >
@@ -160,7 +160,7 @@ export function DeploymentEditor() {
                   handleToggleAllowDragRelation(e.target.checked)
                 }
               />
-              <div className="text-gray-400 ml-4 text-sm">
+              <div className="text-gray-400 ml-4 text-xs">
                 {allowDragRelation
                   ? "拖动节点新增对象关系"
                   : "拖动节点修改对象层级"}
@@ -171,11 +171,11 @@ export function DeploymentEditor() {
             <h3 className="pb-2 font-bold">连线样式</h3>
             <div className="flex items-center">
               <div className="form-control">
-                <label className="input-group input-group-sm">
+                <label className="input-group input-group-xs">
                   <span>类型</span>
                   <select
                     value={deployment?.linetype}
-                    className="select select-bordered select-sm"
+                    className="select select-bordered select-xs"
                     onChange={(e) => {
                       handleLineTypeChange(e.target.value as LineType);
                     }}
@@ -195,7 +195,7 @@ export function DeploymentEditor() {
                 {currentObject && (
                   <input
                     type="text"
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full input-xs"
                     value={currentObject?.name}
                     onChange={(e) =>
                       handleObjectNameChange(currentObjectId, e.target.value)
@@ -210,8 +210,8 @@ export function DeploymentEditor() {
               <h3 className="pb-2 font-bold">颜色</h3>
               <div>
                 <div className="flex">
-                  <div className="flex text-sm items-center mr-8">
-                    <button className="btn btn-sm btn-outline">
+                  <div className="flex text-xs items-center mr-8">
+                    <button className="btn btn-xs btn-outline">
                       <span className="mr-4">背景色</span>
                       <ColorPicker
                         color={currentObject?.bgColor || "#e5e7eb"}
@@ -253,18 +253,18 @@ export function DeploymentEditor() {
                     <div className="pb-5 pt-2" key={idx}>
                       <div>
                         <div className="form-control pb-2">
-                          <label className="input-group input-group-sm">
+                          <label className="input-group input-group-xs">
                             <span>目标</span>
                             <input
                               type="text"
-                              className="input input-bordered input-sm"
+                              className="input input-bordered input-xs"
                               disabled
                               value={to?.name}
                             />
                           </label>
                         </div>
                         <div className="flex space-x-1 pb-2">
-                          <button className="btn btn-sm btn-outline">
+                          <button className="btn btn-xs btn-outline">
                             <span className="mr-4">连线颜色</span>
                             <ColorPicker
                               color={item.linkColor || "#000000"}
@@ -278,7 +278,7 @@ export function DeploymentEditor() {
                               }}
                             />
                           </button>
-                          <button className="btn btn-sm btn-outline">
+                          <button className="btn btn-xs btn-outline">
                             <span className="mr-4">文字颜色</span>
                             <ColorPicker
                               color={item.descColor || "#000000"}
@@ -294,11 +294,11 @@ export function DeploymentEditor() {
                           </button>
                         </div>
                         <div className="form-control pb-2">
-                          <label className="input-group input-group-sm">
+                          <label className="input-group input-group-xs">
                             <span>描述</span>
                             <input
                               type="text"
-                              className="input input-bordered input-sm"
+                              className="input input-bordered input-xs"
                               value={item.name}
                               onChange={(e) =>
                                 handleRelationChange(
@@ -312,11 +312,11 @@ export function DeploymentEditor() {
                           </label>
                         </div>
                         <div className="form-control pb-2">
-                          <label className="input-group input-group-sm">
+                          <label className="input-group input-group-xs">
                             <span>类型</span>
                             <select
                               value={item.type}
-                              className="select select-bordered select-sm"
+                              className="select select-bordered select-xs"
                               onChange={(e) => {
                                 handleRelationChange(
                                   currentObjectId,
@@ -347,11 +347,11 @@ export function DeploymentEditor() {
                         </div>
                         <div className="flex pb-2">
                           <div className="form-control">
-                            <label className="input-group input-group-sm">
+                            <label className="input-group input-group-xs">
                               <span>方向</span>
                               <select
                                 value={item.linkDirection}
-                                className="select select-bordered select-sm"
+                                className="select select-bordered select-xs"
                                 onChange={(e) => {
                                   handleRelationChange(
                                     currentObjectId,
@@ -375,7 +375,7 @@ export function DeploymentEditor() {
                             onClick={() =>
                               handleDeleteRelation(item.origin, item.to)
                             }
-                            className="btn btn-outline btn-error btn-sm ml-1"
+                            className="btn btn-outline btn-error btn-xs ml-1"
                           >
                             删除
                             <svg
@@ -406,7 +406,7 @@ export function DeploymentEditor() {
             <div>
               <button
                 onClick={() => handleDelete(currentObjectId)}
-                className="btn btn-outline btn-error btn-sm"
+                className="btn btn-outline btn-error btn-xs"
               >
                 移除对象
                 <svg

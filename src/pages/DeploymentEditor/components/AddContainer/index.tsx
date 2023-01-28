@@ -6,13 +6,13 @@ export function AddContainer(props: {
   return (
     <div className="space-x-1">
       <button
-        className="btn btn-sm btn-outline"
+        className="btn btn-xs btn-outline"
         onClick={() => props.onClick(ContainerObjectType.rectangle)}
       >
         矩形
       </button>
       <button
-        className="btn btn-sm btn-outline"
+        className="btn btn-xs btn-outline"
         onClick={() => props.onClick(ContainerObjectType.cloud)}
       >
         云

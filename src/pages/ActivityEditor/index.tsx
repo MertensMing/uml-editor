@@ -120,14 +120,14 @@ export function Editor() {
             <h3 className="pb-2 font-bold">图表操作</h3>
             <div className="space-x-1">
               <button
-                className="btn btn-sm btn-outline"
+                className="btn btn-xs btn-outline"
                 disabled={!allowUndo}
                 onClick={handleUndo}
               >
                 撤销
               </button>
               <button
-                className="btn btn-sm btn-outline"
+                className="btn btn-xs btn-outline"
                 disabled={!allowRedo}
                 onClick={handleRedo}
               >
@@ -144,7 +144,7 @@ export function Editor() {
                   <input
                     type="text"
                     value={TYPE_MAP[currentTask.type]}
-                    className="input input-bordered input-sm w-full max-w-xs"
+                    className="input input-bordered input-xs"
                     disabled
                   />
                 </div>
@@ -158,7 +158,7 @@ export function Editor() {
                     <input
                       type="text"
                       value={currentTask.name}
-                      className="input input-bordered input-sm w-full max-w-xs"
+                      className="input input-bordered input-xs"
                       onChange={(e) => {
                         handleTaskNameChange(currentTask.id, e.target.value);
                       }}
@@ -192,7 +192,7 @@ export function Editor() {
                     onClick={() => {
                       handleDeleteTask(currentTask.id);
                     }}
-                    className="btn btn-outline btn-error btn-sm"
+                    className="btn btn-outline btn-error btn-xs"
                   >
                     删除节点
                     <svg
@@ -215,7 +215,7 @@ export function Editor() {
                       onClick={() => {
                         handleDeleteTask(currentTask.next.id);
                       }}
-                      className="btn btn-outline btn-error btn-sm"
+                      className="btn btn-outline btn-error btn-xs"
                     >
                       删除下级结束点
                       <svg
@@ -242,10 +242,10 @@ export function Editor() {
                   <h3 className="pb-2 font-bold">循环条件</h3>
                   <div>
                     <div className="form-control pb-2">
-                      <label className="input-group input-group-sm">
+                      <label className="input-group input-group-xs">
                         <span>循环条件</span>
                         <input
-                          className="input input-bordered input-sm"
+                          className="input input-bordered input-xs"
                           value={currentTask?.condition?.yes}
                           onChange={(e) =>
                             handleWhileConditionChange(
@@ -259,10 +259,10 @@ export function Editor() {
                       </label>
                     </div>
                     <div className="form-control">
-                      <label className="input-group input-group-sm">
+                      <label className="input-group input-group-xs">
                         <span>退出条件</span>
                         <input
-                          className="input input-bordered input-sm"
+                          className="input input-bordered input-xs"
                           value={currentTask?.condition?.no}
                           onChange={(e) =>
                             handleWhileConditionChange(

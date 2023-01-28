@@ -18,7 +18,7 @@ export function ListOperation(props: {
             value={value}
             disabled={!props.allowEdit}
             onChange={(e) => props.onChange?.(e.target.value, index)}
-            className="input input-bordered input-sm"
+            className="input input-bordered input-xs"
           />
           {props.allowDelete && (
             <button

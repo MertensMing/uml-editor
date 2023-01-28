@@ -1005,6 +1005,12 @@ html {
   line-height: 2rem;
 }
 
+.input-group-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  line-height: 1.625;
+}
+
 .input-group :where(span) {
   display: flex;
   align-items: center;
@@ -2265,6 +2271,15 @@ html {
   padding: 0px;
 }
 
+.input-xs {
+  height: 1.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  line-height: 1.625;
+}
+
 .input-sm {
   height: 2rem;
   padding-left: 0.75rem;
@@ -2284,6 +2299,21 @@ html {
 
 [dir="rtl"] .select-sm {
   padding-right: 0.75rem;
+  padding-left: 2rem;
+}
+
+.select-xs {
+  height: 1.5rem;
+  padding-left: 0.5rem;
+  padding-right: 2rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  line-height: 1.625;
+  min-height: 1.5rem;
+}
+
+[dir="rtl"] .select-xs {
+  padding-right: 0.5rem;
   padding-left: 2rem;
 }
 
@@ -2608,6 +2638,11 @@ html {
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 
 .font-bold {
