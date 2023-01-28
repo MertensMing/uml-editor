@@ -304,9 +304,10 @@ export function DeploymentEditor() {
                             <label className="input-group input-group-sm">
                               <span>方向</span>
                               <select
-                                value={item.type}
+                                value={item.linkDirection}
                                 className="select select-bordered select-sm"
                                 onChange={(e) => {
+                                  console.log(12313, e.target.value);
                                   handleRelationChange(
                                     currentObjectId,
                                     item.id,

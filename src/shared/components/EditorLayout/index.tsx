@@ -75,7 +75,7 @@ export function EditorLayout(props: {
         </div>
       </div>
       <div className="flex flex-grow overflow-auto">
-        <div className="px-4 py-4 h-full overflow-auto w-80 flex-shrink-0 border-r">
+        <div className="px-4 py-4 h-full overflow-auto w-80 flex-shrink-0 border-r scrollbar scrollbar-thumb-gray-300 scrollbar-track-gray-100 scrollbar-w-0.5">
           {props.operation}
         </div>
         <div className="h-full w-full overflow-auto">
