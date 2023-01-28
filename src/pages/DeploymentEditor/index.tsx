@@ -293,6 +293,7 @@ export function DeploymentEditor() {
                             <select
                               value={item.type}
                               className="select select-bordered select-sm"
+                              onChange={() => {}}
                             >
                               <option value={"dependency"}>依赖</option>
                             </select>
