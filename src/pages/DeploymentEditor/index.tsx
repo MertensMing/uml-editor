@@ -5,7 +5,6 @@ import { ReactSVG } from "react-svg";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import { EditorLayout } from "../../shared/components/EditorLayout";
-import { FormItem } from "../../shared/components/FormItem";
 import { pick } from "../../shared/utils/pick";
 import { AddContainer } from "./components/AddContainer";
 import { AddObject } from "./components/AddObject";
@@ -17,14 +16,6 @@ import {
   Deployment,
   findObject,
 } from "../../core/entities/Deployment";
-import {
-  Button,
-  ButtonGroup,
-  Input,
-  MenuItem,
-  Select,
-  Switch,
-} from "@mui/material";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { ColorPicker } from "./components/ColorPicker";
 import { createUndoStore } from "../../shared/store/undo";
