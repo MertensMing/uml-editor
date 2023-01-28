@@ -3,8 +3,15 @@ import uniqBy from "lodash/uniqBy";
 import forEach from "lodash/forEach";
 
 export enum RelationType {
-  dependency = "dependency",
+  association = "association", // 关联
+  dependency = "dependency", // 依赖
+  realize = "realize", // 实现
+  generalization = "generalization", // 继承
+  aggregation = "aggregation", // 聚合
+  composition = "composition", // 组合
 }
+
+export type LineType = "ortho" | "polyline" | "default";
 
 export type Relation = {
   type: RelationType;
@@ -18,6 +25,7 @@ export type Relation = {
 };
 
 export type Deployment = {
+  linetype: LineType;
   root: ContainerObject;
   last: number;
   relations: {
@@ -86,6 +94,7 @@ export function createDiagram(): Deployment {
     root: createContainer("图表名称", ContainerObjectType.diagram, last),
     last,
     relations: {},
+    linetype: "default",
   };
 }
 
@@ -143,10 +152,10 @@ export function createRelation(
   last: number
 ): Relation {
   return {
-    type: RelationType.dependency,
+    type: RelationType.association,
     origin,
     to: target,
-    name: "依赖",
+    name: "",
     id: `link_${last}`,
   };
 }

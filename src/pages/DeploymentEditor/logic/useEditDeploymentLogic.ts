@@ -2,6 +2,7 @@ import {
   BaseObject,
   ContainerObject,
   Deployment,
+  LineType,
   NormalObject,
   Relation,
 } from "../../../core/entities/Deployment";
@@ -9,6 +10,7 @@ import { UndoStore } from "../../../shared/store/undo";
 import { createLogic } from "../../../shared/utils/createLogic";
 import { DeploymentStore } from "../store/deploymentStore";
 import cloneDeep from "lodash/cloneDeep";
+import { useAction } from "../../../shared/hooks/useAction";
 
 type Handlers = {
   handleInit(): void;
@@ -43,6 +45,7 @@ type Handlers = {
   ): void;
   handleRedo(): void;
   handleUndo(): void;
+  handleLineTypeChange(linetype: LineType): void;
 };
 
 export const useEditDeploymentLogic = createLogic<
@@ -52,6 +55,9 @@ export const useEditDeploymentLogic = createLogic<
   const saveChanged = () => {
     undoStore.getState().save(cloneDeep(deploymentStore.getState().deployment));
   };
+
+  const actions = useAction(deploymentStore, ["setLineType"]);
+
   return {
     handleInit() {
       deploymentStore.getState().initializeDeployment();
@@ -121,6 +127,9 @@ export const useEditDeploymentLogic = createLogic<
       deploymentStore
         .getState()
         .setDiagram(cloneDeep(undoStore.getState().current));
+    },
+    handleLineTypeChange(linetype) {
+      actions.setLineType(linetype);
     },
   };
 });

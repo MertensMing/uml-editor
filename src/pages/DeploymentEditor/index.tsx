@@ -15,6 +15,8 @@ import {
   ContainerObjectType,
   Deployment,
   findObject,
+  LineType,
+  RelationType,
 } from "../../core/entities/Deployment";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { ColorPicker } from "./components/ColorPicker";
@@ -46,6 +48,7 @@ export function DeploymentEditor() {
     handleRelationChange,
     handleUndo,
     handleRedo,
+    handleLineTypeChange,
   } = useEditDeploymentLogic([deploymentStore, undoStore]);
   const {
     currentObjectId,
@@ -161,6 +164,27 @@ export function DeploymentEditor() {
                 {allowDragRelation
                   ? "拖动节点新增对象关系"
                   : "拖动节点修改对象层级"}
+              </div>
+            </div>
+          </div>
+          <div className="pb-8">
+            <h3 className="pb-2 font-bold">连线样式</h3>
+            <div className="flex items-center">
+              <div className="form-control">
+                <label className="input-group input-group-sm">
+                  <span>类型</span>
+                  <select
+                    value={deployment?.linetype}
+                    className="select select-bordered select-sm"
+                    onChange={(e) => {
+                      handleLineTypeChange(e.target.value as LineType);
+                    }}
+                  >
+                    <option value={"default" as LineType}>Default</option>
+                    <option value={"ortho" as LineType}>Ortho</option>
+                    <option value={"polyline" as LineType}>Polyline</option>
+                  </select>
+                </label>
               </div>
             </div>
           </div>
@@ -293,9 +317,31 @@ export function DeploymentEditor() {
                             <select
                               value={item.type}
                               className="select select-bordered select-sm"
-                              onChange={() => {}}
+                              onChange={(e) => {
+                                handleRelationChange(
+                                  currentObjectId,
+                                  item.id,
+                                  "type",
+                                  e.target.value as RelationType
+                                );
+                              }}
                             >
-                              <option value={"dependency"}>依赖</option>
+                              <option value={RelationType.dependency}>
+                                依赖
+                              </option>
+                              <option value={RelationType.association}>
+                                关联
+                              </option>
+                              <option value={RelationType.composition}>
+                                组合
+                              </option>
+                              <option value={RelationType.aggregation}>
+                                聚合
+                              </option>
+                              <option value={RelationType.realize}>实现</option>
+                              <option value={RelationType.generalization}>
+                                继承
+                              </option>
                             </select>
                           </label>
                         </div>

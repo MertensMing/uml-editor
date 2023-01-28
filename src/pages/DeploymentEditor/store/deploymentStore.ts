@@ -11,6 +11,7 @@ import {
   Deployment,
   findObject,
   insertObject,
+  LineType,
   NormalObject,
   Relation,
   removeAllRelation,
@@ -69,6 +70,7 @@ type Actions = {
   ): void;
   toggleAllowDragRelation(allow: boolean): void;
   setDiagram(diagram: Deployment): void;
+  setLineType(linetype: LineType): void;
 };
 
 export type DeploymentStore = State & Actions;
@@ -95,6 +97,11 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
       pngUrl: undefined,
       allowDragRelation: false,
 
+      setLineType(linetype) {
+        const diagram = get().deployment;
+        diagram.linetype = linetype;
+        updateDiagram();
+      },
       setDiagram(diagram: Deployment) {
         set({
           deployment: diagram,

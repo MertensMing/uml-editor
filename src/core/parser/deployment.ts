@@ -5,6 +5,7 @@ import {
   BaseObject,
   Deployment,
   Relation,
+  RelationType,
 } from "../entities/Deployment";
 import forEach from "lodash/forEach";
 
@@ -32,6 +33,12 @@ class DeploymentParser {
     return `
       @startuml
 
+      ${
+        diagram?.linetype !== "default"
+          ? `skinparam linetype ${diagram.linetype}`
+          : ""
+      }
+
       title ${getName(diagram.root)}
 
       ${this.parseChildren(diagram.root.children)}
@@ -40,6 +47,23 @@ class DeploymentParser {
 
       @enduml
     `;
+  }
+  parseRelationLink(relation: Relation) {
+    switch (relation.type) {
+      case RelationType.dependency:
+        return `.${relation.linkDirection || ""}.>`;
+      case RelationType.realize:
+        return `.${relation.linkDirection || ""}.|>`;
+      case RelationType.generalization:
+        return `-${relation.linkDirection || ""}-|>`;
+      case RelationType.composition:
+        return `-${relation.linkDirection || ""}-*`;
+      case RelationType.aggregation:
+        return `-${relation.linkDirection || ""}-o`;
+      case RelationType.association:
+      default:
+        return `-${relation.linkDirection || ""}->`;
+    }
   }
   parseRelations(diagram: Deployment) {
     let result = "";
@@ -51,7 +75,7 @@ class DeploymentParser {
           ? `<color ${textColor}>${relation.name}</color>`
           : relation.name;
         const descText = desc ? `: ${desc}` : "";
-        result += `${relation.origin} -${relation.linkDirection || ""}-> ${
+        result += `${relation.origin} ${this.parseRelationLink(relation)} ${
           relation.to
         } ${linkColor}${descText}\n`;
       });
