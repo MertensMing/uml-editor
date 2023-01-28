@@ -9,7 +9,6 @@ import { DeploymentEditor } from "./pages/DeploymentEditor";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import * as colors from "@mui/material/colors";
 
-import "tailwindcss/dist/utilities.min.css";
 import "./App.scss";
 
 const theme = extendTheme({

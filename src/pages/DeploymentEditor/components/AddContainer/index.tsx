@@ -1,19 +1,22 @@
-import { Button, ButtonGroup } from "@mui/material";
 import { ContainerObjectType } from "../../../../core/entities/Deployment";
 
 export function AddContainer(props: {
   onClick(type: ContainerObjectType): void;
 }) {
   return (
-    <div>
-      <ButtonGroup variant="outlined" size="small">
-        <Button onClick={() => props.onClick(ContainerObjectType.rectangle)}>
-          矩形
-        </Button>
-        <Button onClick={() => props.onClick(ContainerObjectType.cloud)}>
-          云朵
-        </Button>
-      </ButtonGroup>
+    <div className="space-x-1">
+      <button
+        className="btn btn-sm btn-outline"
+        onClick={() => props.onClick(ContainerObjectType.rectangle)}
+      >
+        Rectangle
+      </button>
+      <button
+        className="btn btn-sm btn-outline"
+        onClick={() => props.onClick(ContainerObjectType.cloud)}
+      >
+        Cloud
+      </button>
     </div>
   );
 }

@@ -1,11 +1,10 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import { CopyDiagram } from "../CopyDiagram";
 import { useNavigate } from "react-router-dom";
+import classNames from "classnames";
 
 export function EditorLayout(props: {
   uml: string;
@@ -17,33 +16,70 @@ export function EditorLayout(props: {
 }) {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col h-screen">
-      <div className="flex p-4 items-center border-b-solid border-gray-700 border-b-2 h-16 justify-between">
-        <div className="flex items-center">
-          <div className="font-bold text-xl">PlantUML Editor</div>
-          <div className="ml-6">
-            <FormControl size="small" variant="standard" sx={{ minWidth: 120 }}>
-              <InputLabel>当前图表</InputLabel>
-              <Select
-                value={props.currentDiagram}
-                onChange={(e) => {
-                  navigate(`/${e.target.value}`);
-                }}
+    <div className="h-full flex flex-col">
+      <div className="navbar bg-base-100">
+        <div className="flex-none">
+          <div className="dropdown">
+            <label tabIndex={0} className="btn btn-ghost btn-circle">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                <MenuItem value={"activity"}>活动图</MenuItem>
-                <MenuItem value={"deployment"}>部署图</MenuItem>
-              </Select>
-            </FormControl>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h7"
+                />
+              </svg>
+            </label>
+            <ul
+              tabIndex={0}
+              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              <li>
+                <a
+                  className={classNames({
+                    active: props.currentDiagram === "activity",
+                  })}
+                  onClick={() => {
+                    navigate(`/activity`);
+                  }}
+                >
+                  活动图
+                </a>
+              </li>
+              <li>
+                <a
+                  className={classNames({
+                    active: props.currentDiagram === "deployment",
+                  })}
+                  onClick={() => {
+                    navigate(`/deployment`);
+                  }}
+                >
+                  部署图
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
-        <CopyDiagram uml={props.uml} png={props.pngUrl} svg={props.svgUrl} />
+        <div className="flex-1">
+          <a className="btn btn-ghost normal-case text-xl">PlantUML Editor</a>
+        </div>
+        <div className="flex-none gap-2">
+          <CopyDiagram uml={props.uml} png={props.pngUrl} svg={props.svgUrl} />
+        </div>
       </div>
-      <div className="flex" style={{ height: `calc(100vh - 64px)` }}>
-        <div className="px-4 py-4 h-full flex-shrink-0 border-r-solid border-gray-700 border-r-2 overflow-auto">
+      <div className="flex flex-grow overflow-auto">
+        <div className="px-4 py-4 h-full overflow-auto w-80 flex-shrink-0">
           {props.operation}
         </div>
-        <div className="h-full w-full overflow-auto bg-gray-100">
-          {props.diagram}
+        <div className="h-full w-full overflow-auto">
+          <div className="p-6">{props.diagram}</div>
         </div>
       </div>
     </div>

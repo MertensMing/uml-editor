@@ -136,43 +136,51 @@ export function DeploymentEditor() {
       }
       operation={
         <div>
-          <FormItem
-            label="图表操作"
-            content={
-              <ButtonGroup size="small">
-                <Button disabled={!allowUndo} onClick={handleUndo}>
-                  撤销
-                </Button>
-                <Button disabled={!allowRedo} onClick={handleRedo}>
-                  恢复
-                </Button>
-              </ButtonGroup>
-            }
-          />
-          <FormItem
-            label="拖拽连线"
-            content={
-              <div className="flex items-center">
-                <Switch
-                  checked={allowDragRelation ?? false}
-                  onChange={(e) =>
-                    handleToggleAllowDragRelation(e.target.checked)
-                  }
-                />
-                <div className="text-gray text-xs">
-                  {allowDragRelation
-                    ? "拖动节点新增对象关系"
-                    : "拖动节点修改对象层级"}
-                </div>
+          <div className="pb-8">
+            <h3 className="pb-2 font-bold">图表操作</h3>
+            <div className="space-x-1">
+              <button
+                className="btn btn-sm btn-outline"
+                disabled={!allowUndo}
+                onClick={handleUndo}
+              >
+                撤销
+              </button>
+              <button
+                className="btn btn-sm btn-outline"
+                disabled={!allowRedo}
+                onClick={handleRedo}
+              >
+                恢复
+              </button>
+            </div>
+          </div>
+          <div className="pb-8">
+            <h3 className="pb-2 font-bold">拖拽连线</h3>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                className="toggle"
+                checked={allowDragRelation ?? false}
+                onChange={(e) =>
+                  handleToggleAllowDragRelation(e.target.checked)
+                }
+              />
+              <div className="text-gray-400 ml-4 text-sm">
+                {allowDragRelation
+                  ? "拖动节点新增对象关系"
+                  : "拖动节点修改对象层级"}
               </div>
-            }
-          />
-          <FormItem
-            label="名称"
-            content={
+            </div>
+          </div>
+          <div className="pb-8">
+            <h3 className="pb-2 font-bold">名称</h3>
+            <div>
               <div>
                 {currentObject && (
-                  <Input
+                  <input
+                    type="text"
+                    className="input input-bordered w-full max-w-xs"
                     value={currentObject?.name}
                     onChange={(e) =>
                       handleObjectNameChange(currentObjectId, e.target.value)
@@ -180,185 +188,206 @@ export function DeploymentEditor() {
                   />
                 )}
               </div>
-            }
-          />
+            </div>
+          </div>
           {!isRoot && (
-            <FormItem
-              label="颜色"
-              content={
+            <div className="pb-8">
+              <h3 className="pb-2 font-bold">颜色</h3>
+              <div>
                 <div className="flex">
                   <div className="flex text-sm items-center mr-8">
-                    <span className="mr-3 text-gray text-xs">背景</span>{" "}
-                    <ColorPicker
-                      color={currentObject?.bgColor}
-                      onChange={(color) =>
-                        handleSelectObjectBgColor(currentObjectId, color)
-                      }
-                    />
+                    <button className="btn btn-sm btn-outline">
+                      <span className="mr-4">背景色</span>
+                      <ColorPicker
+                        color={currentObject?.bgColor || "#e5e7eb"}
+                        onChange={(color) =>
+                          handleSelectObjectBgColor(currentObjectId, color)
+                        }
+                      />
+                    </button>
                   </div>
-                  {/* <div className="flex text-sm items-center">
-                    <span className="mr-3">文字</span>{" "}
-                    <ColorPicker
-                      color={currentObject?.textColor}
-                      onChange={(color) =>
-                        handleSelectObjectTextColor(currentObjectId, color)
-                      }
-                    />
-                  </div> */}
                 </div>
-              }
-            />
+              </div>
+            </div>
           )}
-          <FormItem
-            label="添加容器"
-            content={
+          <div className="pb-8">
+            <h3 className="pb-2 font-bold">添加容器</h3>
+            <div>
               <AddContainer
                 onClick={(type) =>
                   handleAddContainer(deployment?.root?.id, type)
                 }
               />
-            }
-          />
-          <FormItem
-            label="添加图形"
-            content={
+            </div>
+          </div>
+          <div className="pb-8">
+            <h3 className="pb-2 font-bold">添加图形</h3>
+            <div>
               <AddObject
                 onClick={(type) => handleAddObject(deployment?.root?.id, type)}
               />
-            }
-          />
+            </div>
+          </div>
           {relations?.length > 0 && (
-            <FormItem
-              label="对象关系"
-              content={
-                <div className="-mb-5">
-                  {relations.map((item, idx) => {
-                    const to = findObject(deployment.root, item.to);
-                    return (
-                      <div className="pb-5 pt-2" key={idx}>
-                        <div className="flex justify-between items-center pb-2">
-                          <div className="flex">
-                            <div className="flex text-sm items-center mr-4">
-                              <span className="mr-3 text-gray text-xs">
-                                连线
-                              </span>{" "}
-                              <ColorPicker
-                                color={item.linkColor}
-                                onChange={(color) => {
-                                  handleRelationChange(
-                                    currentObjectId,
-                                    item.id,
-                                    "linkColor",
-                                    color
-                                  );
-                                }}
-                              />
-                            </div>
-                            <div className="flex text-sm items-center">
-                              <span className="mr-3 text-gray text-xs">
-                                文字
-                              </span>{" "}
-                              <ColorPicker
-                                color={item.descColor}
-                                onChange={(color) => {
-                                  handleRelationChange(
-                                    currentObjectId,
-                                    item.id,
-                                    "descColor",
-                                    color
-                                  );
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <div
-                            onClick={() =>
-                              handleDeleteRelation(item.origin, item.to)
-                            }
-                            className="cursor-pointer text-red-500 hover:text-red-700 text-xs"
-                          >
-                            删除
-                          </div>
+            <div className="pb-8">
+              <h3 className="pb-2 font-bold">对象关系</h3>
+              <div className="-mb-5">
+                {relations.map((item, idx) => {
+                  const to = findObject(deployment.root, item.to);
+                  return (
+                    <div className="pb-5 pt-2" key={idx}>
+                      <div>
+                        <div className="form-control pb-2">
+                          <label className="input-group input-group-sm">
+                            <span>目标</span>
+                            <input
+                              type="text"
+                              className="input input-bordered input-sm"
+                              disabled
+                              value={to?.name}
+                            />
+                          </label>
                         </div>
-                        <div className="flex text-sm items-center pb-1">
-                          <span className="mr-3 text-gray text-xs">类型</span>
-                          <div className="-m-2">
-                            <Select
-                              value={item.type}
-                              variant="standard"
-                              sx={{ m: 1, minWidth: 120 }}
-                            >
-                              <MenuItem value={"dependency"}>依赖</MenuItem>
-                            </Select>
-                          </div>
-                        </div>
-                        <div className="flex text-sm items-center pb-1">
-                          <span className="mr-3 text-gray text-xs">方向</span>
-                          <div className="-m-2">
-                            <Select
-                              value={item.linkDirection || "-"}
-                              variant="standard"
-                              sx={{ m: 1, minWidth: 120 }}
-                              onChange={(e) => {
+                        <div className="flex space-x-1 pb-2">
+                          <button className="btn btn-sm btn-outline">
+                            <span className="mr-4">连线颜色</span>
+                            <ColorPicker
+                              color={item.linkColor || "#000000"}
+                              onChange={(color) => {
                                 handleRelationChange(
                                   currentObjectId,
                                   item.id,
-                                  "linkDirection",
-                                  (e.target.value === "-"
-                                    ? ""
-                                    : e.target.value) as any
+                                  "linkColor",
+                                  color
                                 );
                               }}
+                            />
+                          </button>
+                          <button className="btn btn-sm btn-outline">
+                            <span className="mr-4">文字颜色</span>
+                            <ColorPicker
+                              color={item.descColor || "#000000"}
+                              onChange={(color) => {
+                                handleRelationChange(
+                                  currentObjectId,
+                                  item.id,
+                                  "descColor",
+                                  color
+                                );
+                              }}
+                            />
+                          </button>
+                        </div>
+                        <div className="form-control pb-2">
+                          <label className="input-group input-group-sm">
+                            <span>描述</span>
+                            <input
+                              type="text"
+                              className="input input-bordered input-sm"
+                              value={item.name}
+                              onChange={(e) =>
+                                handleRelationChange(
+                                  currentObjectId,
+                                  item.id,
+                                  "name",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </label>
+                        </div>
+                        <div className="form-control pb-2">
+                          <label className="input-group input-group-sm">
+                            <span>类型</span>
+                            <select
+                              value={item.type}
+                              className="select select-bordered select-sm"
                             >
-                              <MenuItem value={"up"}>上</MenuItem>
-                              <MenuItem value={"down"}>下</MenuItem>
-                              <MenuItem value={"left"}>左</MenuItem>
-                              <MenuItem value={"right"}>右</MenuItem>
-                              <MenuItem value={"-"}>自动</MenuItem>
-                            </Select>
+                              <option value={"dependency"}>依赖</option>
+                            </select>
+                          </label>
+                        </div>
+                        <div className="flex pb-2">
+                          <div className="form-control">
+                            <label className="input-group input-group-sm">
+                              <span>方向</span>
+                              <select
+                                value={item.type}
+                                className="select select-bordered select-sm"
+                                onChange={(e) => {
+                                  handleRelationChange(
+                                    currentObjectId,
+                                    item.id,
+                                    "linkDirection",
+                                    (e.target.value === "-"
+                                      ? ""
+                                      : e.target.value) as any
+                                  );
+                                }}
+                              >
+                                <option value={"up"}>上</option>
+                                <option value={"down"}>下</option>
+                                <option value={"left"}>左</option>
+                                <option value={"right"}>右</option>
+                                <option value={"-"}>自动</option>
+                              </select>
+                            </label>
                           </div>
-                        </div>
-                        <div className="flex text-sm items-center pb-1">
-                          <span className="mr-3 text-gray text-xs">描述</span>{" "}
-                          <Input
-                            value={item.name}
-                            onChange={(e) =>
-                              handleRelationChange(
-                                currentObjectId,
-                                item.id,
-                                "name",
-                                e.target.value
-                              )
+                          <button
+                            onClick={() =>
+                              handleDeleteRelation(item.origin, item.to)
                             }
-                          />
-                        </div>
-                        <div className="flex text-sm items-center pb-1">
-                          <span className="mr-3 text-gray text-xs">目标</span>{" "}
-                          <Input disabled value={to?.name} />
+                            className="btn btn-outline btn-error btn-sm ml-1"
+                          >
+                            删除
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              }
-            />
-          )}
-          <FormItem
-            label="删除操作"
-            content={
-              <div>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={() => handleDelete(currentObjectId)}
-                  color="error"
-                  disabled={isRoot}
-                >
-                  删除
-                </Button>
+                    </div>
+                  );
+                })}
               </div>
-            }
-          />
+            </div>
+          )}
+          <div className="pb-8">
+            <h3 className="pb-2 font-bold">危险操作</h3>
+            <div>
+              <button
+                onClick={() => handleDelete(currentObjectId)}
+                className="btn btn-outline btn-error btn-sm"
+              >
+                移除对象
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       }
     />
