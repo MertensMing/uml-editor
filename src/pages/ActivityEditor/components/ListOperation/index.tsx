@@ -18,12 +18,12 @@ export function ListOperation(props: {
             value={value}
             disabled={!props.allowEdit}
             onChange={(e) => props.onChange?.(e.target.value, index)}
-            className="input input-bordered input-xs"
+            className="input input-bordered input-sm"
           />
           {props.allowDelete && (
             <button
               onClick={() => props.onDelete(index)}
-              className="btn btn-outline btn-error btn-xs ml-2"
+              className="btn btn-outline btn-error btn-sm ml-2"
             >
               删除
               <svg
