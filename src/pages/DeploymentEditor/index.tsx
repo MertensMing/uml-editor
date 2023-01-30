@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef } from "react";
 import { ReactSVG } from "react-svg";
 import { useStore } from "zustand";

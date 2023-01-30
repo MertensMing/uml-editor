@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { TaskType } from "../../../../core/entities/Activity";
 import { TYPE_MAP } from "../../const";
 
@@ -9,8 +7,8 @@ export function AddTaskType(props: {
 }) {
   return (
     <div className="dropdown dropdown-hover">
-      <label tabIndex={0}>
-        <button className="btn btn-xs btn-ghost">
+      <label tabIndex={0} className="flex items-center">
+        <button className="btn btn-xs btn-ghost relative top-0 mt-px -ml-1">
           <svg
             fill="none"
             stroke="currentColor"

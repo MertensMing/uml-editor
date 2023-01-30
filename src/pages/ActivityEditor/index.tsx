@@ -69,9 +69,13 @@ export function Editor() {
     500
   );
 
-  useDrag("process-diagram", (origin, target) => {
-    handleMove(origin, target);
-  });
+  useDrag(
+    "process-diagram",
+    (origin, target) => {
+      handleMove(origin, target);
+    },
+    (objectId) => handleSelectTask(objectId)
+  );
 
   useLayoutEffect(() => {
     handleMount();
@@ -87,6 +91,109 @@ export function Editor() {
       pngUrl={pngUrl}
       svgUrl={url}
       currentDiagram="activity"
+      toolbar={
+        <>
+          <button
+            className="btn btn-xs btn-ghost"
+            disabled={!allowUndo}
+            onClick={handleUndo}
+          >
+            <svg
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              className=" w-4 h-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+              ></path>
+            </svg>
+          </button>
+          <button
+            className="btn btn-xs btn-ghost"
+            disabled={!allowRedo}
+            onClick={handleRedo}
+          >
+            <svg
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              className=" w-4 h-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3"
+              ></path>
+            </svg>
+          </button>
+          <div className="dropdown dropdown-hover">
+            <label tabIndex={0}>
+              <button
+                className="btn btn-xs btn-ghost relative top-0"
+                style={{
+                  marginTop: "3.5px",
+                }}
+              >
+                <svg
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  className=" w-4 h-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                  ></path>
+                </svg>
+              </button>
+            </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-36"
+            >
+              <li>
+                <a
+                  onClick={() => {
+                    currentTask && handleDeleteTask(currentTask.id);
+                  }}
+                >
+                  当前节点
+                </a>
+              </li>
+              {currentTask && currentTask?.next?.type === TaskType.stop && (
+                <li onClick={() => handleDeleteTask(currentTask.next.id)}>
+                  <a>下级结束节点</a>
+                </li>
+              )}
+            </ul>
+          </div>
+          <AddTaskType
+            group={[
+              TaskType.normal,
+              TaskType.switch,
+              TaskType.parallel,
+              TaskType.while,
+              TaskType.stop,
+            ]}
+            onClick={(type) =>
+              currentTask && handleAddTask(currentTask.id, type)
+            }
+          />
+        </>
+      }
       diagram={
         <div
           className={classNames("process")}
@@ -103,116 +210,18 @@ export function Editor() {
             }
           }}
         >
-          <div className="p-2 shadow-lg bg-white space-x-2">
-            <button
-              className="btn btn-xs btn-ghost"
-              disabled={!allowUndo}
-              onClick={handleUndo}
-            >
-              <svg
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-                className=" w-4 h-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
-                ></path>
-              </svg>
-            </button>
-            <button
-              className="btn btn-xs btn-ghost"
-              disabled={!allowRedo}
-              onClick={handleRedo}
-            >
-              <svg
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-                className=" w-4 h-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3"
-                ></path>
-              </svg>
-            </button>
-
-            <div className="dropdown dropdown-hover">
-              <label tabIndex={0}>
-                <button className="btn btn-xs btn-ghost">
-                  <svg
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                    className=" w-4 h-4"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                    ></path>
-                  </svg>
-                </button>
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-36"
-              >
-                <li>
-                  <a
-                    onClick={() => {
-                      currentTask && handleDeleteTask(currentTask.id);
-                    }}
-                  >
-                    当前节点
-                  </a>
-                </li>
-                {currentTask && currentTask?.next?.type === TaskType.stop && (
-                  <li onClick={() => handleDeleteTask(currentTask.next.id)}>
-                    <a>下级结束节点</a>
-                  </li>
-                )}
-              </ul>
-            </div>
-
-            <AddTaskType
-              group={[
-                TaskType.normal,
-                TaskType.switch,
-                TaskType.parallel,
-                TaskType.while,
-                TaskType.stop,
-              ]}
-              onClick={(type) =>
-                currentTask && handleAddTask(currentTask.id, type)
-              }
-            />
-          </div>
           <div className="p-4">
             <div>{activity && <ReactSVG src={url} />}</div>
           </div>
         </div>
       }
       operation={
-        <>
+        <div className="-mb-8">
           {currentTask && (
             <>
               {/* 类型 */}
               <div className="pb-8">
-                <h3 className="pb-2 font-bold">Type</h3>
+                <div className="pb-2 font-bold text-sm">类型</div>
                 <div className="space-x-1">
                   <input
                     type="text"
@@ -226,7 +235,7 @@ export function Editor() {
               {/* 名称 */}
               {currentTask.type !== TaskType.start && (
                 <div className="pb-8">
-                  <h3 className="pb-2 font-bold">Name</h3>
+                  <h3 className="pb-2 font-bold text-sm">名称</h3>
                   <div className="space-x-1">
                     <input
                       type="text"
@@ -242,14 +251,14 @@ export function Editor() {
 
               {currentTask.type === TaskType.while ? (
                 <div className="pb-8">
-                  <h3 className="pb-2 font-bold">Loop Condition</h3>
+                  <h3 className="pb-2 font-bold text-sm">循环条件</h3>
                   <div>
                     <div className="form-control pb-2">
-                      <label className="input-group input-group-xs input-group-vertical">
-                        <span>Loop</span>
+                      <label className="input-group input-group-sm">
+                        <span>循环条件</span>
                         <input
                           type="text"
-                          className="input input-bordered input-xs"
+                          className="input input-bordered input-sm"
                           onChange={(e) =>
                             handleWhileConditionChange(
                               currentTask.id,
@@ -263,11 +272,11 @@ export function Editor() {
                       </label>
                     </div>
                     <div className="form-control">
-                      <label className="input-group input-group-xs input-group-vertical">
-                        <span>Exit</span>
+                      <label className="input-group input-group-sm">
+                        <span>退出条件</span>
                         <input
                           type="text"
-                          className="input input-bordered input-xs"
+                          className="input input-bordered input-sm"
                           value={currentTask?.condition?.no}
                           onChange={(e) =>
                             handleWhileConditionChange(
@@ -287,7 +296,7 @@ export function Editor() {
               {currentTask.type === TaskType.parallel ? (
                 <div>
                   <div className="pb-8">
-                    <h3 className="pb-2 font-bold">Parallel</h3>
+                    <h3 className="pb-2 font-bold text-sm">并行任务</h3>
                     <div className="space-x-1">
                       <ListOperation
                         allowDelete={currentTask.parallel.length > 2}
@@ -303,20 +312,22 @@ export function Editor() {
                   </div>
 
                   <div className="pb-8">
-                    <h3 className="pb-2 font-bold">添加并行任务</h3>
-                    <div className="space-x-1">
-                      <AddTaskType
-                        group={[
-                          TaskType.normal,
-                          TaskType.switch,
-                          TaskType.parallel,
-                          TaskType.while,
-                        ]}
-                        onClick={(type) =>
-                          handleAddParallelTask(currentTask.id, type)
-                        }
-                      />
-                    </div>
+                    <h3 className="pb-2 font-bold text-sm flex items-center">
+                      添加并行任务{" "}
+                      <div className="ml-1">
+                        <AddTaskType
+                          group={[
+                            TaskType.normal,
+                            TaskType.switch,
+                            TaskType.parallel,
+                            TaskType.while,
+                          ]}
+                          onClick={(type) =>
+                            handleAddParallelTask(currentTask.id, type)
+                          }
+                        />
+                      </div>
+                    </h3>
                   </div>
                 </div>
               ) : null}
@@ -324,7 +335,7 @@ export function Editor() {
               {currentTask.type === TaskType.switch ? (
                 <div>
                   <div className="pb-8">
-                    <h3 className="pb-2 font-bold">编辑条件</h3>
+                    <h3 className="pb-2 font-bold text-sm">编辑条件</h3>
                     <div className="space-x-1">
                       <ListOperation
                         allowDelete={currentTask.cases.length > 1}
@@ -345,27 +356,29 @@ export function Editor() {
                   </div>
 
                   <div className="pb-8">
-                    <h3 className="pb-2 font-bold">添加条件</h3>
-                    <div className="space-x-1">
-                      <AddTaskType
-                        group={[
-                          TaskType.normal,
-                          TaskType.switch,
-                          TaskType.parallel,
-                          TaskType.while,
-                          TaskType.stop,
-                        ]}
-                        onClick={(type) =>
-                          handleAddCondition(currentTask.id, type)
-                        }
-                      />
-                    </div>
+                    <h3 className="pb-2 font-bold text-sm flex items-center">
+                      添加条件{" "}
+                      <div className="ml-1">
+                        <AddTaskType
+                          group={[
+                            TaskType.normal,
+                            TaskType.switch,
+                            TaskType.parallel,
+                            TaskType.while,
+                            TaskType.stop,
+                          ]}
+                          onClick={(type) =>
+                            handleAddCondition(currentTask.id, type)
+                          }
+                        />
+                      </div>
+                    </h3>
                   </div>
                 </div>
               ) : null}
             </>
           )}
-        </>
+        </div>
       }
     />
   );

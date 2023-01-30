@@ -1,6 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { CopyDiagram } from "../CopyDiagram";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +10,7 @@ export function EditorLayout(props: {
   currentDiagram: string;
   operation: React.ReactElement;
   diagram: React.ReactElement;
+  toolbar?: React.ReactElement;
 }) {
   const navigate = useNavigate();
   return (
@@ -74,17 +72,16 @@ export function EditorLayout(props: {
           <CopyDiagram uml={props.uml} png={props.pngUrl} svg={props.svgUrl} />
         </div>
       </div>
-      <div className="flex flex-grow overflow-auto">
-        <div
-          className={classNames(
-            `px-4 py-4 h-full overflow-auto w-52`,
-            `flex-shrink-0 border-r scrollbar shadow-lg`,
-            `scrollbar-thumb-gray-300 scrollbar-track-gray-100 scrollbar-w-0.5 shadow-r bg-white`
-          )}
-        >
+      <div className="flex flex-grow w-full relative overflow-hidden">
+        <div className="p-2 px-6 shadow-lg bg-white space-x-2 flex items-center h-12 absolute top-0 left-0 w-full z-10">
+          {props.toolbar}
+        </div>
+        <div className="overflow-auto w-full h-full">
+          <div className="px-64 pt-12">{props.diagram}</div>
+        </div>
+        <div className="absolute top-0 left-0 bg-white shadow-xl mt-16 ml-6 rounded p-4 max-h-96 overflow-auto">
           {props.operation}
         </div>
-        <div className="h-full w-full overflow-auto">{props.diagram}</div>
       </div>
     </div>
   );

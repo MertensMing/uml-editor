@@ -1,8 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import Input from "@mui/material/Input";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-
 export function ListOperation(props: {
   values: string[];
   allowDelete: boolean;
@@ -23,9 +18,8 @@ export function ListOperation(props: {
           {props.allowDelete && (
             <button
               onClick={() => props.onDelete(index)}
-              className="btn btn-outline btn-error btn-sm ml-2"
+              className="btn btn-ghost btn-error btn-xs ml-1"
             >
-              删除
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4"

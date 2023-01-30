@@ -1,11 +1,11 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useLayoutEffect, useRef, useState } from "react";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { BaseObject } from "../../core/entities/Deployment";
 
 export function useDrag(
   diagramId: string,
-  onDrop?: (objectId: BaseObject["id"], targetId: BaseObject["id"]) => void
+  onDrop?: (objectId: BaseObject["id"], targetId: BaseObject["id"]) => void,
+  onSelect?: (objectId: BaseObject["id"]) => void
 ) {
   const ref = useRef({
     objectId: "",
@@ -94,7 +94,9 @@ export function useDrag(
     }
 
     function ontouchstart(e: any) {
-      if (e.touches[0].target?.attributes?.objectId?.value) {
+      const objectId = e.touches[0].target?.attributes?.objectId?.value;
+      if (objectId) {
+        onSelect(objectId);
         e.preventDefault();
       }
       onStart(e.touches[0].target, e.touches[0].clientX, e.touches[0].clientY);
