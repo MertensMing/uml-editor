@@ -18,12 +18,15 @@ body,
 .deployment,
 .process {
   user-select: none;
-  .object:hover,
-  .task:hover,
-  .activity:hover {
-    cursor: pointer;
-    font-weight: bold;
-    fill: #d32f2f;
+
+  .object,
+  .task,
+  .activity {
+    &:hover {
+      cursor: pointer;
+      font-weight: bold;
+      fill: #d32f2f;
+    }
   }
 }
 

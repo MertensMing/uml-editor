@@ -14,6 +14,7 @@ import { createUndoStore } from "../../shared/store/undo";
 import { EditorLayout } from "../../shared/components/EditorLayout";
 import { pick } from "../../shared/utils/pick";
 import { useDrag } from "../../shared/hooks/useDrag";
+import classNames from "classnames";
 
 export function Editor() {
   const activityStore = useRef(
@@ -88,11 +89,8 @@ export function Editor() {
       currentDiagram="activity"
       diagram={
         <div
-          className="process"
+          className={classNames("process")}
           id="process-diagram"
-          style={{
-            touchAction: "none",
-          }}
           onClick={(e: any) => {
             if (
               e.target.nodeName === "ellipse" &&

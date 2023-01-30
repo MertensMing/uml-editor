@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { BaseObject } from "../../core/entities/Deployment";
 
@@ -94,6 +94,9 @@ export function useDrag(
     }
 
     function ontouchstart(e: any) {
+      if (e.touches[0].target?.attributes?.objectId?.value) {
+        e.preventDefault();
+      }
       onStart(e.touches[0].target, e.touches[0].clientX, e.touches[0].clientY);
       document.addEventListener("touchmove", ontouchmove);
       document.addEventListener("touchend", ontouchend);
