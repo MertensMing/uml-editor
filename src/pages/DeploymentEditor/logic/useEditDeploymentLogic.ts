@@ -11,6 +11,7 @@ import { createLogic } from "../../../shared/utils/createLogic";
 import { DeploymentStore } from "../store/deploymentStore";
 import cloneDeep from "lodash/cloneDeep";
 import { useAction } from "../../../shared/hooks/useAction";
+import { deploymentHistoryStorage } from "../../../shared/storage/deployment";
 
 type Handlers = {
   handleInit(): void;
@@ -55,6 +56,7 @@ export const useEditDeploymentLogic = createLogic<
 >(([deploymentStore, undoStore]) => {
   const saveChanged = () => {
     undoStore.getState().save(cloneDeep(deploymentStore.getState().deployment));
+    deploymentHistoryStorage.set(undoStore.getState().queue);
   };
 
   const actions = useAction(deploymentStore, ["setLineType"]);
@@ -62,9 +64,14 @@ export const useEditDeploymentLogic = createLogic<
   return {
     handleInit() {
       deploymentStore.getState().initializeDeployment();
+      const history = deploymentHistoryStorage.get();
       undoStore
         .getState()
-        .initialize([cloneDeep(deploymentStore.getState().deployment)]);
+        .initialize(
+          history?.length
+            ? history
+            : [cloneDeep(deploymentStore.getState().deployment)]
+        );
     },
     handleDiagramChange() {
       deploymentStore.getState().updateUmlUrl();
