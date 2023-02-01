@@ -35,6 +35,7 @@ export type Deployment = {
 
 export enum ObjectType {
   circle = "circle",
+  json = "json",
 }
 
 export enum ContainerObjectType {
@@ -48,6 +49,7 @@ export type BaseObject = {
   id: string;
   bgColor?: string;
   textColor?: string;
+  content?: string;
 };
 
 export type NormalObject = BaseObject & {

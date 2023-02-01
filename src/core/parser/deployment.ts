@@ -6,6 +6,7 @@ import {
   Deployment,
   Relation,
   RelationType,
+  ObjectType,
 } from "../entities/Deployment";
 import forEach from "lodash/forEach";
 
@@ -83,8 +84,17 @@ class DeploymentParser {
     return result;
   }
   parseObject(object: NormalObject) {
+    if (object.type === ObjectType.json) {
+      return `
+      ${this.parseObjectType(object.type)} "${object.name || defaultName}" as ${
+        object.id
+      } ${getColorText(object)} {
+        ${object.content}
+      }
+    `;
+    }
     return `
-      ${this.parseObjectType(object.type)} ${getName(object)} as ${
+      ${this.parseObjectType(object.type)} ${getName(object) || "Object"} as ${
       object.id
     } ${getColorText(object)}
     `;
@@ -93,6 +103,7 @@ class DeploymentParser {
     return (
       {
         circle: "circle",
+        json: "object",
       } as { [k in NormalObject["type"]]: string }
     )[type];
   }

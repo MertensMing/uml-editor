@@ -27,7 +27,14 @@ export function useDrag(
   }, 100);
 
   function onStart(target: any, x: number, y: number) {
-    const objectId = target?.attributes?.objectId?.value;
+    let objectId = target?.attributes?.objectId?.value;
+    if (
+      !objectId &&
+      target.nodeName === "text" &&
+      `${target.parentNode.id}`.startsWith("elem_object")
+    ) {
+      objectId = `${target.parentNode.id}`.replace("elem_", "");
+    }
     if (objectId) {
       const { left, top } = target.getBoundingClientRect();
       const clickOffsetX = x - left;

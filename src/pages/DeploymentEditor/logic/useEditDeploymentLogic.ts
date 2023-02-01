@@ -36,6 +36,7 @@ type Handlers = {
   handleDelete(objectId: BaseObject["id"]): void;
   handleToggleAllowDragRelation(allow: boolean): void;
   handleSelectObjectBgColor(objectId: BaseObject["id"], color: string): void;
+  handleContentChange(objectId: BaseObject["id"], content: string): void;
   handleSelectObjectTextColor(objectId: BaseObject["id"], color: string): void;
   handleRelationChange<T extends keyof Relation>(
     id: ContainerObject["id"],
@@ -106,6 +107,10 @@ export const useEditDeploymentLogic = createLogic<
     },
     handleSelectObjectBgColor(id, color) {
       deploymentStore.getState().setObjectField(id, "bgColor", color);
+      saveChanged();
+    },
+    handleContentChange(id, content) {
+      deploymentStore.getState().setObjectField(id, "content", content);
       saveChanged();
     },
     handleSelectObjectTextColor(id, color) {

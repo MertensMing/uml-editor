@@ -14,6 +14,7 @@ import {
   Deployment,
   findObject,
   LineType,
+  ObjectType,
   RelationType,
 } from "../../core/entities/Deployment";
 import { useDebounceCallback } from "@react-hook/debounce";
@@ -47,6 +48,7 @@ export function DeploymentEditor() {
     handleUndo,
     handleRedo,
     handleLineTypeChange,
+    handleContentChange,
   } = useEditDeploymentLogic([deploymentStore, undoStore]);
   const {
     currentObjectId,
@@ -119,6 +121,11 @@ export function DeploymentEditor() {
               const objectId = e.target?.attributes?.objectId?.value;
               if (objectId) {
                 handleObjectSelect(objectId);
+              } else if (
+                e.target.nodeName === "text" &&
+                `${e.target.parentNode.id}`.startsWith("elem_object")
+              ) {
+                handleObjectSelect(e.target.parentNode.id.replace("elem_", ""));
               }
             }}
           >
@@ -185,6 +192,25 @@ export function DeploymentEditor() {
                     }
                   />
                 )}
+              </div>
+            </div>
+          </div>
+          <div className="pt-8">
+            <h3 className="pb-2 text-sm font-bold">名称</h3>
+            <div>
+              <div>
+                {currentObject &&
+                  !currentObject.isContainer &&
+                  currentObject.type === ObjectType.json && (
+                    <textarea
+                      className="textarea textarea-bordered"
+                      placeholder={`name = "my name"\nage = 12`}
+                      value={currentObject.content}
+                      onChange={(e) => {
+                        handleContentChange(currentObjectId, e.target.value);
+                      }}
+                    ></textarea>
+                  )}
               </div>
             </div>
           </div>

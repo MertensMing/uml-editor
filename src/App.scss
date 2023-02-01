@@ -19,6 +19,7 @@ body,
 .process {
   user-select: none;
 
+  [id^="elem_object"] text,
   .object,
   .task,
   .activity {
