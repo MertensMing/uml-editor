@@ -216,11 +216,11 @@ export function Editor() {
         </div>
       }
       operation={
-        <div className="-mb-8">
+        <div>
           {currentTask && (
             <>
               {/* 类型 */}
-              <div className="pb-8">
+              <div>
                 <div className="pb-2 font-bold text-sm">类型</div>
                 <div className="space-x-1">
                   <input
@@ -234,7 +234,7 @@ export function Editor() {
 
               {/* 名称 */}
               {currentTask.type !== TaskType.start && (
-                <div className="pb-8">
+                <div className="pt-8">
                   <h3 className="pb-2 font-bold text-sm">名称</h3>
                   <div className="space-x-1">
                     <input
@@ -250,7 +250,7 @@ export function Editor() {
               )}
 
               {currentTask.type === TaskType.while ? (
-                <div className="pb-8">
+                <div className="pt-8">
                   <h3 className="pb-2 font-bold text-sm">循环条件</h3>
                   <div>
                     <div className="form-control pb-2">
@@ -295,7 +295,7 @@ export function Editor() {
 
               {currentTask.type === TaskType.parallel ? (
                 <div>
-                  <div className="pb-8">
+                  <div className="pt-8">
                     <h3 className="pb-2 font-bold text-sm">并行任务</h3>
                     <div className="space-x-1">
                       <ListOperation
@@ -311,7 +311,7 @@ export function Editor() {
                     </div>
                   </div>
 
-                  <div className="pb-8">
+                  <div className="pt-8">
                     <h3 className="pb-2 font-bold text-sm flex items-center">
                       添加并行任务{" "}
                       <div className="ml-1">
@@ -334,7 +334,26 @@ export function Editor() {
 
               {currentTask.type === TaskType.switch ? (
                 <div>
-                  <div className="pb-8">
+                  <div className="pt-8">
+                    <h3 className="pb-2 font-bold text-sm flex items-center">
+                      添加条件{" "}
+                      <div className="ml-1">
+                        <AddTaskType
+                          group={[
+                            TaskType.normal,
+                            TaskType.switch,
+                            TaskType.parallel,
+                            TaskType.while,
+                            TaskType.stop,
+                          ]}
+                          onClick={(type) =>
+                            handleAddCondition(currentTask.id, type)
+                          }
+                        />
+                      </div>
+                    </h3>
+                  </div>
+                  <div className="pt-8">
                     <h3 className="pb-2 font-bold text-sm">编辑条件</h3>
                     <div className="space-x-1">
                       <ListOperation
@@ -353,26 +372,6 @@ export function Editor() {
                         }}
                       />
                     </div>
-                  </div>
-
-                  <div className="pb-8">
-                    <h3 className="pb-2 font-bold text-sm flex items-center">
-                      添加条件{" "}
-                      <div className="ml-1">
-                        <AddTaskType
-                          group={[
-                            TaskType.normal,
-                            TaskType.switch,
-                            TaskType.parallel,
-                            TaskType.while,
-                            TaskType.stop,
-                          ]}
-                          onClick={(type) =>
-                            handleAddCondition(currentTask.id, type)
-                          }
-                        />
-                      </div>
-                    </h3>
                   </div>
                 </div>
               ) : null}

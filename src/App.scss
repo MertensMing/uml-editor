@@ -48,3 +48,11 @@ body,
 .text-gray {
   color: var(--mui-palette-text-secondary);
 }
+
+.ant-popover-inner-content {
+  .swatches-picker {
+    div div {
+      box-shadow: none !important;
+    }
+  }
+}

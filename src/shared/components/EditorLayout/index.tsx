@@ -72,15 +72,16 @@ export function EditorLayout(props: {
           <CopyDiagram uml={props.uml} png={props.pngUrl} svg={props.svgUrl} />
         </div>
       </div>
+
       <div className="flex flex-grow w-full relative overflow-hidden">
-        <div className="p-2 px-6 shadow-lg bg-white space-x-2 flex items-center h-12 absolute top-0 left-0 w-full z-10">
+        <div className="p-2 px-8 shadow-lg bg-white space-x-2 flex items-center h-12 absolute top-0 left-0 w-full z-10">
           {props.toolbar}
         </div>
-        <div className="overflow-auto w-full h-full">
-          <div className="px-64 pt-12">{props.diagram}</div>
-        </div>
-        <div className="absolute top-0 left-0 bg-white shadow-xl mt-16 ml-6 rounded p-4 max-h-96 overflow-auto">
-          {props.operation}
+        <div className="overflow-auto w-full scrollbar-thumb-slate-300 scrollbar-thin flex">
+          <div className="bg-white flex-shrink-0 shadow-xl mt-20 mb-8 ml-8 rounded p-4 scrollbar-thumb-slate-300 scrollbar-thin overflow-x-hidden overflow-y-auto">
+            {props.operation}
+          </div>
+          <div className="px-9 pt-16">{props.diagram}</div>
         </div>
       </div>
     </div>

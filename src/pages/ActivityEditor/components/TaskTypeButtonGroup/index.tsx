@@ -7,7 +7,7 @@ export function AddTaskType(props: {
 }) {
   return (
     <div className="dropdown dropdown-hover">
-      <label tabIndex={0} className="flex items-center">
+      <label className="flex items-center">
         <button className="btn btn-xs btn-ghost relative top-0 mt-px -ml-1">
           <svg
             fill="none"
@@ -26,10 +26,7 @@ export function AddTaskType(props: {
           </svg>
         </button>
       </label>
-      <ul
-        tabIndex={0}
-        className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-24"
-      >
+      <ul className="dropdown-content menu p-2 shadow-lg bg-slate-50 rounded-box w-24 z-10">
         {props.group.map((type) => {
           return (
             <li key={type} onClick={() => props.onClick(type)}>

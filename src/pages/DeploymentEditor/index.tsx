@@ -103,7 +103,11 @@ export function DeploymentEditor() {
       pngUrl={pngUrl}
       svgUrl={svgUrl}
       diagram={
-        <div>
+        <div
+          style={{
+            paddingTop: "16px",
+          }}
+        >
           <div ref={dragElementRef} />
           <div
             className="deployment"
@@ -128,27 +132,8 @@ export function DeploymentEditor() {
       }
       operation={
         <div>
-          <div className="pb-8">
-            <h3 className="pb-2 font-bold">图表操作</h3>
-            <div className="space-x-1">
-              <button
-                className="btn btn-sm btn-outline"
-                disabled={!allowUndo}
-                onClick={handleUndo}
-              >
-                撤销
-              </button>
-              <button
-                className="btn btn-sm btn-outline"
-                disabled={!allowRedo}
-                onClick={handleRedo}
-              >
-                恢复
-              </button>
-            </div>
-          </div>
-          <div className="pb-8">
-            <h3 className="pb-2 font-bold">拖拽连线</h3>
+          <div>
+            <h3 className="pb-2 text-sm font-bold">拖拽连线</h3>
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -165,8 +150,8 @@ export function DeploymentEditor() {
               </div>
             </div>
           </div>
-          <div className="pb-8">
-            <h3 className="pb-2 font-bold">连线样式</h3>
+          <div className="pt-8">
+            <h3 className="pb-2 text-sm font-bold">连线样式</h3>
             <div className="flex items-center">
               <div className="form-control">
                 <label className="input-group input-group-sm">
@@ -186,8 +171,8 @@ export function DeploymentEditor() {
               </div>
             </div>
           </div>
-          <div className="pb-8">
-            <h3 className="pb-2 font-bold">名称</h3>
+          <div className="pt-8">
+            <h3 className="pb-2 text-sm font-bold">名称</h3>
             <div>
               <div>
                 {currentObject && (
@@ -204,27 +189,22 @@ export function DeploymentEditor() {
             </div>
           </div>
           {!isRoot && (
-            <div className="pb-8">
-              <h3 className="pb-2 font-bold">颜色</h3>
-              <div>
-                <div className="flex">
-                  <div className="flex text-sm items-center mr-8">
-                    <button className="btn btn-sm btn-outline">
-                      <span className="mr-4">背景色</span>
-                      <ColorPicker
-                        color={currentObject?.bgColor || "#e5e7eb"}
-                        onChange={(color) =>
-                          handleSelectObjectBgColor(currentObjectId, color)
-                        }
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
+            <div className="pt-8">
+              <h3 className="pb-2 text-sm font-bold flex items-center">
+                背景色
+              </h3>
+              <button className="btn btn-outline btn-sm">
+                <ColorPicker
+                  color={currentObject?.bgColor || "#e5e7eb"}
+                  onChange={(color) =>
+                    handleSelectObjectBgColor(currentObjectId, color)
+                  }
+                />
+              </button>
             </div>
           )}
-          <div className="pb-8">
-            <h3 className="pb-2 font-bold">添加容器</h3>
+          <div className="pt-8">
+            <h3 className="pb-2 text-sm font-bold">添加容器</h3>
             <div>
               <AddContainer
                 onClick={(type) =>
@@ -233,8 +213,8 @@ export function DeploymentEditor() {
               />
             </div>
           </div>
-          <div className="pb-8">
-            <h3 className="pb-2 font-bold">添加图形</h3>
+          <div className="pt-8">
+            <h3 className="pb-2 text-sm font-bold">添加图形</h3>
             <div>
               <AddObject
                 onClick={(type) => handleAddObject(deployment?.root?.id, type)}
@@ -242,28 +222,17 @@ export function DeploymentEditor() {
             </div>
           </div>
           {relations?.length > 0 && (
-            <div className="pb-8">
-              <h3 className="pb-2 font-bold">对象关系</h3>
+            <div className="pt-8">
+              <h3 className="pb-2 text-sm font-bold">对象关系</h3>
               <div className="-mb-5">
                 {relations.map((item, idx) => {
                   const to = findObject(deployment.root, item.to);
                   return (
                     <div className="pb-5 pt-2" key={idx}>
                       <div>
-                        <div className="form-control pb-2">
-                          <label className="input-group input-group-sm">
-                            <span>目标</span>
-                            <input
-                              type="text"
-                              className="input input-bordered input-sm"
-                              disabled
-                              value={to?.name}
-                            />
-                          </label>
-                        </div>
                         <div className="flex space-x-1 pb-2">
-                          <button className="btn btn-sm btn-outline">
-                            <span className="mr-4">连线颜色</span>
+                          <button className="btn btn-xs btn-ghost">
+                            <span className="mr-4">连线</span>
                             <ColorPicker
                               color={item.linkColor || "#000000"}
                               onChange={(color) => {
@@ -276,8 +245,8 @@ export function DeploymentEditor() {
                               }}
                             />
                           </button>
-                          <button className="btn btn-sm btn-outline">
-                            <span className="mr-4">文字颜色</span>
+                          <button className="btn btn-xs btn-ghost">
+                            <span className="mr-4">文字</span>
                             <ColorPicker
                               color={item.descColor || "#000000"}
                               onChange={(color) => {
@@ -293,10 +262,16 @@ export function DeploymentEditor() {
                         </div>
                         <div className="form-control pb-2">
                           <label className="input-group input-group-sm">
+                            <span>目标</span>
+                            <span className="bg-slate-50">{to?.name}</span>
+                          </label>
+                        </div>
+                        <div className="form-control pb-2">
+                          <label className="input-group input-group-xs">
                             <span>描述</span>
                             <input
                               type="text"
-                              className="input input-bordered input-sm"
+                              className="input input-bordered input-xs w-36"
                               value={item.name}
                               onChange={(e) =>
                                 handleRelationChange(
@@ -310,11 +285,11 @@ export function DeploymentEditor() {
                           </label>
                         </div>
                         <div className="form-control pb-2">
-                          <label className="input-group input-group-sm">
+                          <label className="input-group input-group-xs">
                             <span>类型</span>
                             <select
                               value={item.type}
-                              className="select select-bordered select-sm"
+                              className="select select-bordered select-xs"
                               onChange={(e) => {
                                 handleRelationChange(
                                   currentObjectId,
@@ -345,11 +320,11 @@ export function DeploymentEditor() {
                         </div>
                         <div className="flex pb-2">
                           <div className="form-control">
-                            <label className="input-group input-group-sm">
+                            <label className="input-group input-group-xs">
                               <span>方向</span>
                               <select
                                 value={item.linkDirection}
-                                className="select select-bordered select-sm"
+                                className="select select-bordered select-xs"
                                 onChange={(e) => {
                                   handleRelationChange(
                                     currentObjectId,
@@ -373,9 +348,8 @@ export function DeploymentEditor() {
                             onClick={() =>
                               handleDeleteRelation(item.origin, item.to)
                             }
-                            className="btn btn-outline btn-error btn-sm ml-1"
+                            className="btn btn-ghost btn-error btn-xs ml-1"
                           >
-                            删除
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               className="h-4 w-4"
@@ -399,32 +373,73 @@ export function DeploymentEditor() {
               </div>
             </div>
           )}
-          <div className="pb-8">
-            <h3 className="pb-2 font-bold">删除操作</h3>
-            <div>
-              <button
-                onClick={() => handleDelete(currentObjectId)}
-                className="btn btn-outline btn-error btn-sm"
-              >
-                移除对象
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
         </div>
+      }
+      toolbar={
+        <>
+          <button
+            className="btn btn-xs btn-ghost"
+            disabled={!allowUndo}
+            onClick={handleUndo}
+          >
+            <svg
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              className=" w-4 h-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+              ></path>
+            </svg>
+          </button>
+          <button
+            className="btn btn-xs btn-ghost"
+            disabled={!allowRedo}
+            onClick={handleRedo}
+          >
+            <svg
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              className=" w-4 h-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3"
+              ></path>
+            </svg>
+          </button>
+          <button
+            className="btn btn-xs btn-ghost"
+            onClick={() => handleDelete(currentObjectId)}
+          >
+            <svg
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              className=" w-4 h-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+              ></path>
+            </svg>
+          </button>
+        </>
       }
     />
   );

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback } from "react";
 import cloneDeep from "lodash/cloneDeep";
 import { createLogic } from "../../../shared/utils/createLogic";
