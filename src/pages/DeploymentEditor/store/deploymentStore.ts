@@ -112,7 +112,6 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         if ([origin, target].includes(get().deployment.root.id)) {
           return;
         }
-        get().deployment.last++;
         addRelation(get().deployment, origin, target);
         updateDiagram();
       },
@@ -166,12 +165,7 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
           containerId
         ) as ContainerObject;
         if (container) {
-          get().deployment.last++;
-          const target = createObject(
-            objectMap[type],
-            type,
-            get().deployment.last
-          );
+          const target = createObject(objectMap[type], type);
           addChildObject(container, target);
           updateDiagram();
         }
@@ -182,12 +176,7 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
           containerId
         ) as ContainerObject;
         if (container) {
-          get().deployment.last++;
-          const target = createContainer(
-            containerMap[type],
-            type,
-            get().deployment.last
-          );
+          const target = createContainer(containerMap[type], type);
           addChildObject(container, target);
           updateDiagram();
         }

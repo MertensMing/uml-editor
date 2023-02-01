@@ -1,6 +1,7 @@
 import remove from "lodash/remove";
 import uniqBy from "lodash/uniqBy";
 import forEach from "lodash/forEach";
+import { nanoid } from "nanoid";
 
 export const DEFAULT_NAME = "未命名对象";
 
@@ -29,7 +30,6 @@ export type Relation = {
 export type Deployment = {
   linetype: LineType;
   root: ContainerObject;
-  last: number;
   relations: {
     [k: BaseObject["id"]]: Relation[];
   };
@@ -67,36 +67,32 @@ export type ContainerObject = BaseObject & {
 
 export function createContainer(
   name: string,
-  type: ContainerObjectType,
-  last: Deployment["last"]
+  type: ContainerObjectType
 ): ContainerObject {
   return {
     name,
     type,
     children: [],
-    id: `object_${last}`,
+    id: `object_${nanoid()}`,
     isContainer: true,
   };
 }
 
 export function createObject(
   name: BaseObject["name"],
-  type: ObjectType,
-  last: Deployment["last"]
+  type: ObjectType
 ): NormalObject {
   return {
     name,
     type,
-    id: `object_${last}`,
+    id: `object_${nanoid()}`,
     isContainer: false,
   };
 }
 
 export function createDiagram(): Deployment {
-  const last = 0;
   return {
-    root: createContainer("图表名称", ContainerObjectType.diagram, last),
-    last,
+    root: createContainer("图表名称", ContainerObjectType.diagram),
     relations: {},
     linetype: "default",
   };
@@ -152,15 +148,14 @@ export function insertObject(
 
 export function createRelation(
   origin: BaseObject["id"],
-  target: BaseObject["id"],
-  last: number
+  target: BaseObject["id"]
 ): Relation {
   return {
     type: RelationType.association,
     origin,
     to: target,
     name: "",
-    id: `link_${last}`,
+    id: `link_${nanoid()}`,
   };
 }
 
@@ -175,7 +170,7 @@ export function addRelation(
   if (!diagram.relations[origin]) {
     diagram.relations[origin] = [];
   }
-  diagram.relations[origin].push(createRelation(origin, target, diagram.last));
+  diagram.relations[origin].push(createRelation(origin, target));
   diagram.relations[origin] = uniqBy(diagram.relations[origin], "to");
 }
 
