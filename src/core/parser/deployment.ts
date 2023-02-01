@@ -7,14 +7,13 @@ import {
   Relation,
   RelationType,
   ObjectType,
+  DEFAULT_NAME,
 } from "../entities/Deployment";
 import forEach from "lodash/forEach";
 
-const defaultName = "未命名对象";
-
 function getName(object: BaseObject) {
   return `"<text class="object" objectId="${object.id}">${
-    object.name || defaultName
+    object.name || DEFAULT_NAME
   }</text>"`;
 }
 
@@ -86,10 +85,10 @@ class DeploymentParser {
   parseObject(object: NormalObject) {
     if (object.type === ObjectType.json) {
       return `
-      ${this.parseObjectType(object.type)} "${object.name || defaultName}" as ${
-        object.id
-      } ${getColorText(object)} {
-        ${object.content}
+      ${this.parseObjectType(object.type)} "${
+        object.name || DEFAULT_NAME
+      }" as ${object.id} ${getColorText(object)} {
+        ${object.content || ""}
       }
     `;
     }

@@ -2776,6 +2776,10 @@ html {
   text-transform: none;
 }
 
+.leading-4 {
+  line-height: 1rem;
+}
+
 .text-gray-400 {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));

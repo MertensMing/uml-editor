@@ -2,6 +2,8 @@ import remove from "lodash/remove";
 import uniqBy from "lodash/uniqBy";
 import forEach from "lodash/forEach";
 
+export const DEFAULT_NAME = "未命名对象";
+
 export enum RelationType {
   association = "association", // 关联
   dependency = "dependency", // 依赖

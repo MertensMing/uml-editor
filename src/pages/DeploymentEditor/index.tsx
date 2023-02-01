@@ -11,6 +11,7 @@ import { createDeploymentStore } from "./store/deploymentStore";
 import { useDrag } from "../../shared/hooks/useDrag";
 import {
   ContainerObjectType,
+  DEFAULT_NAME,
   Deployment,
   findObject,
   LineType,
@@ -182,38 +183,32 @@ export function DeploymentEditor() {
             <h3 className="pb-2 text-sm font-bold">名称</h3>
             <div>
               <div>
-                {currentObject && (
-                  <input
-                    type="text"
-                    className="input input-bordered w-full input-sm"
-                    value={currentObject?.name}
-                    onChange={(e) =>
-                      handleObjectNameChange(currentObjectId, e.target.value)
-                    }
-                  />
-                )}
+                <input
+                  type="text"
+                  className="input input-bordered input-sm"
+                  value={currentObject?.name || DEFAULT_NAME}
+                  onChange={(e) =>
+                    handleObjectNameChange(currentObjectId, e.target.value)
+                  }
+                />
               </div>
             </div>
           </div>
-          <div className="pt-8">
-            <h3 className="pb-2 text-sm font-bold">名称</h3>
-            <div>
-              <div>
-                {currentObject &&
-                  !currentObject.isContainer &&
-                  currentObject.type === ObjectType.json && (
-                    <textarea
-                      className="textarea textarea-bordered"
-                      placeholder={`name = "my name"\nage = 12`}
-                      value={currentObject.content}
-                      onChange={(e) => {
-                        handleContentChange(currentObjectId, e.target.value);
-                      }}
-                    ></textarea>
-                  )}
+          {currentObject &&
+            !currentObject.isContainer &&
+            currentObject.type === ObjectType.json && (
+              <div className="pt-8">
+                <h3 className="pb-2 text-sm font-bold">内容</h3>
+                <textarea
+                  className="textarea textarea-bordered leading-4 scrollbar-thin scrollbar-thumb-slate-300"
+                  value={currentObject.content || ""}
+                  onChange={(e) => {
+                    handleContentChange(currentObjectId, e.target.value);
+                  }}
+                  rows={10}
+                />
               </div>
-            </div>
-          </div>
+            )}
           {!isRoot && (
             <div className="pt-8">
               <h3 className="pb-2 text-sm font-bold flex items-center">
