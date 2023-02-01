@@ -190,3 +190,14 @@ export function removeAllRelation(diagram: Deployment, id: BaseObject["id"]) {
     remove(relations, (item) => item.to === id || item.origin === id);
   });
 }
+
+export function correctDeployment(diagram: Deployment) {
+  forEach(diagram.relations, (relations: Relation[]) => {
+    remove(
+      relations,
+      (item) =>
+        !findObject(diagram.root, item.origin) ||
+        !findObject(diagram.root, item.to)
+    );
+  });
+}

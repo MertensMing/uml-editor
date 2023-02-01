@@ -5,6 +5,7 @@ import {
   addRelation,
   BaseObject,
   ContainerObject,
+  correctDeployment,
   createContainer,
   createDiagram,
   createObject,
@@ -78,8 +79,10 @@ export type DeploymentStore = State & Actions;
 export function createDeploymentStore(): StoreApi<DeploymentStore> {
   return createStore((set, get) => {
     function updateDiagram() {
+      const diagram = cloneDeep(get().deployment);
+      correctDeployment(diagram);
       set({
-        deployment: cloneDeep(get().deployment),
+        deployment: diagram,
       });
       deploymentStorage.set(get().deployment);
     }

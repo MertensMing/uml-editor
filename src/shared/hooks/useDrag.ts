@@ -94,7 +94,10 @@ export function useDrag(
     }
 
     function onmouseup(e: any) {
-      const objectId = e.target?.attributes?.objectId?.value;
+      let objectId = e.target?.attributes?.objectId?.value;
+      if (!objectId && `${e.target.parentNode.id}`.startsWith("elem_object")) {
+        objectId = `${e.target.parentNode.id}`.replace("elem_", "");
+      }
       onEnd(objectId);
       document.removeEventListener("mousemove", onmousemove);
       document.removeEventListener("mouseup", onmouseup);
