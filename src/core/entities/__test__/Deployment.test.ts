@@ -17,7 +17,7 @@ describe("部署图", () => {
   test("创建部署图", () => {
     const diagram = createDiagram();
     expect(diagram.linetype).toBe("default");
-    expect(diagram.root.name).toBe("图表名称");
+    expect(diagram.root.name).toBe("架构图名称");
     expect(diagram.root.type).toBe(ContainerObjectType.diagram);
   });
 

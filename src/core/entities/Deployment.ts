@@ -96,10 +96,10 @@ export function createObject(
 
 export function createDiagram(): Deployment {
   return {
-    root: createContainer("图表名称", ContainerObjectType.diagram),
+    root: createContainer("架构图名称", ContainerObjectType.diagram),
     relations: {},
     linetype: "default",
-    id: `diagram_${getId()}`,
+    id: `deployment_${getId()}`,
   };
 }
 

@@ -141,8 +141,7 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
           currentObjectId: id,
         });
       },
-      initializeDeployment() {
-        const storage = deploymentStorage.get();
+      initializeDeployment(storage) {
         if (storage) {
           set({
             deployment: storage,

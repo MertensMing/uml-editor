@@ -16,6 +16,10 @@ const router = createHashRouter([
     element: <ActivityEditor />,
   },
   {
+    path: "/deployment/:id",
+    element: <DeploymentEditor />,
+  },
+  {
     path: "/deployment",
     element: <DeploymentEditor />,
   },

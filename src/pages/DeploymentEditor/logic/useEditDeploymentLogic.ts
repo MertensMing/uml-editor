@@ -12,9 +12,11 @@ import { DeploymentStore } from "../store/deploymentStore";
 import cloneDeep from "lodash/cloneDeep";
 import { useAction } from "../../../shared/hooks/useAction";
 import { deploymentHistoryStorage } from "../../../shared/storage/deployment";
+import { useNavigate, useParams } from "react-router-dom";
+import { db } from "../../../db";
 
 type Handlers = {
-  handleInit(): void;
+  handleInit(): Promise<void>;
   handleDiagramChange(): void;
   handleAddContainer(
     containerId: ContainerObject["id"],
@@ -57,21 +59,34 @@ export const useEditDeploymentLogic = createLogic<
   const saveChanged = () => {
     undoStore.getState().save(cloneDeep(deploymentStore.getState().deployment));
     deploymentHistoryStorage.set(undoStore.getState().queue);
+    db.deployments.update(deploymentStore.getState().deployment.id, {
+      diagram: JSON.stringify(deploymentStore.getState().deployment),
+    });
   };
 
+  const params = useParams();
   const actions = useAction(deploymentStore, ["setLineType"]);
+  const navigate = useNavigate();
 
   return {
-    handleInit() {
-      deploymentStore.getState().initializeDeployment();
-      const history = deploymentHistoryStorage.get();
+    async handleInit() {
+      const id = params.id;
+      const diagram = await db.deployments.get(id ?? "");
+      if (!id || !diagram) {
+        deploymentStore.getState().initializeDeployment();
+        await db.deployments.add({
+          id: deploymentStore.getState().deployment.id,
+          diagram: JSON.stringify(deploymentStore.getState().deployment),
+        });
+        navigate(`/deployment/${deploymentStore.getState().deployment.id}`);
+        return;
+      }
+      deploymentStore
+        .getState()
+        .initializeDeployment(JSON.parse(diagram.diagram));
       undoStore
         .getState()
-        .initialize(
-          history?.length
-            ? history
-            : [cloneDeep(deploymentStore.getState().deployment)]
-        );
+        .initialize([cloneDeep(deploymentStore.getState().deployment)]);
     },
     handleDiagramChange() {
       deploymentStore.getState().updateUmlUrl();
