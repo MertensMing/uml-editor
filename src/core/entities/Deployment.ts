@@ -1,7 +1,10 @@
 import remove from "lodash/remove";
 import uniqBy from "lodash/uniqBy";
 import forEach from "lodash/forEach";
-import { nanoid } from "nanoid";
+
+const getId = () => {
+  return `${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+};
 
 export const DEFAULT_NAME = "未命名对象";
 
@@ -33,6 +36,7 @@ export type Deployment = {
   relations: {
     [k: BaseObject["id"]]: Relation[];
   };
+  id: string;
 };
 
 export enum ObjectType {
@@ -73,7 +77,7 @@ export function createContainer(
     name,
     type,
     children: [],
-    id: `object_${nanoid()}`,
+    id: `object_${getId()}`,
     isContainer: true,
   };
 }
@@ -85,7 +89,7 @@ export function createObject(
   return {
     name,
     type,
-    id: `object_${nanoid()}`,
+    id: `object_${getId()}`,
     isContainer: false,
   };
 }
@@ -95,14 +99,8 @@ export function createDiagram(): Deployment {
     root: createContainer("图表名称", ContainerObjectType.diagram),
     relations: {},
     linetype: "default",
+    id: `diagram_${getId()}`,
   };
-}
-
-export function addChildObject(
-  container: ContainerObject,
-  object: ContainerObject | NormalObject
-): void {
-  container.children.push(object);
 }
 
 export function findObject(
@@ -155,7 +153,7 @@ export function createRelation(
     origin,
     to: target,
     name: "",
-    id: `link_${nanoid()}`,
+    id: `link_${getId()}`,
   };
 }
 
@@ -164,9 +162,6 @@ export function addRelation(
   origin: BaseObject["id"],
   target: BaseObject["id"]
 ) {
-  if (!diagram.relations) {
-    diagram.relations = {};
-  }
   if (!diagram.relations[origin]) {
     diagram.relations[origin] = [];
   }
@@ -179,10 +174,7 @@ export function removeRelation(
   origin: BaseObject["id"],
   target: BaseObject["id"]
 ) {
-  if (!diagram.relations[origin]) {
-    diagram.relations[origin] = [];
-  }
-  remove(diagram.relations[origin], (item) => item.to === target);
+  remove(diagram?.relations?.[origin], (item) => item.to === target);
 }
 
 export function removeAllRelation(diagram: Deployment, id: BaseObject["id"]) {

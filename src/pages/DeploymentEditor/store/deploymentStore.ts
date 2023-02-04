@@ -1,7 +1,6 @@
 import { createStore, StoreApi } from "zustand";
 import cloneDeep from "lodash/cloneDeep";
 import {
-  addChildObject,
   addRelation,
   BaseObject,
   ContainerObject,
@@ -169,7 +168,7 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         ) as ContainerObject;
         if (container) {
           const target = createObject(objectMap[type], type);
-          addChildObject(container, target);
+          insertObject(container, target);
           updateDiagram();
         }
       },
@@ -180,7 +179,7 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         ) as ContainerObject;
         if (container) {
           const target = createContainer(containerMap[type], type);
-          addChildObject(container, target);
+          insertObject(container, target);
           updateDiagram();
         }
       },
