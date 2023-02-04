@@ -14,6 +14,7 @@ import { useAction } from "../../../shared/hooks/useAction";
 import { deploymentHistoryStorage } from "../../../shared/storage/deployment";
 import { useNavigate, useParams } from "react-router-dom";
 import { db } from "../../../db";
+import { ListStore } from "../../../shared/store/listStore";
 
 type Handlers = {
   handleInit(): Promise<void>;
@@ -53,15 +54,18 @@ type Handlers = {
 };
 
 export const useEditDeploymentLogic = createLogic<
-  [DeploymentStore, UndoStore<Deployment>],
+  [DeploymentStore, UndoStore<Deployment>, ListStore],
   Handlers
->(([deploymentStore, undoStore]) => {
+>(([deploymentStore, undoStore, listStore]) => {
   const saveChanged = () => {
-    undoStore.getState().save(cloneDeep(deploymentStore.getState().deployment));
+    const deployment = deploymentStore.getState().deployment;
+    undoStore.getState().save(cloneDeep(deployment));
     deploymentHistoryStorage.set(undoStore.getState().queue);
-    db.deployments.update(deploymentStore.getState().deployment.id, {
-      diagram: JSON.stringify(deploymentStore.getState().deployment),
+    db.deployments.update(deployment.id, {
+      diagram: JSON.stringify(deployment),
+      name: deployment.root.name,
     });
+    listStore.getState().fetchList();
   };
 
   const params = useParams();
@@ -72,21 +76,26 @@ export const useEditDeploymentLogic = createLogic<
     async handleInit() {
       const id = params.id;
       const diagram = await db.deployments.get(id ?? "");
-      if (!id || !diagram) {
+      const list = await db.deployments.toArray();
+      if (!id && !diagram && !list.length) {
         deploymentStore.getState().initializeDeployment();
         await db.deployments.add({
           id: deploymentStore.getState().deployment.id,
           diagram: JSON.stringify(deploymentStore.getState().deployment),
+          name: deploymentStore.getState().deployment.root.name,
         });
         navigate(`/deployment/${deploymentStore.getState().deployment.id}`);
         return;
       }
       deploymentStore
         .getState()
-        .initializeDeployment(JSON.parse(diagram.diagram));
+        .initializeDeployment(JSON.parse(diagram?.diagram || list[0].diagram));
       undoStore
         .getState()
         .initialize([cloneDeep(deploymentStore.getState().deployment)]);
+      if (!id) {
+        navigate(`/deployment/${deploymentStore.getState().deployment.id}`);
+      }
     },
     handleDiagramChange() {
       deploymentStore.getState().updateUmlUrl();

@@ -21,6 +21,19 @@ import {
 import { useDebounceCallback } from "@react-hook/debounce";
 import { ColorPicker } from "./components/ColorPicker";
 import { createUndoStore } from "../../shared/store/undo";
+import {
+  CopyOutlined,
+  DeleteOutlined,
+  DownloadOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
+import classNames from "classnames";
+import copy from "copy-to-clipboard";
+import { Dropdown, message, Tooltip } from "antd";
+import type { MenuProps } from "antd";
+import { listStore } from "../../shared/store/listStore";
+import { useParams } from "react-router-dom";
 
 export function DeploymentEditor() {
   const deploymentStore = useRef(createDeploymentStore()).current;
@@ -33,6 +46,7 @@ export function DeploymentEditor() {
     }),
     shallow
   );
+
   const {
     handleInit,
     handleDiagramChange,
@@ -50,7 +64,8 @@ export function DeploymentEditor() {
     handleRedo,
     handleLineTypeChange,
     handleContentChange,
-  } = useEditDeploymentLogic([deploymentStore, undoStore]);
+  } = useEditDeploymentLogic([deploymentStore, undoStore, listStore]);
+
   const {
     currentObjectId,
     svgUrl,
@@ -84,16 +99,18 @@ export function DeploymentEditor() {
 
   const dragElementRef = useRef<HTMLDivElement>();
 
+  const { id } = useParams();
+
   const boundHandleDiagramChange = useDebounceCallback(
     handleDiagramChange,
-    600
+    500
   );
 
   useDrag("deployment-diagram", handleDrop);
 
   useEffect(() => {
     handleInit();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     boundHandleDiagramChange();
@@ -398,68 +415,85 @@ export function DeploymentEditor() {
       }
       toolbar={
         <>
-          <button
-            className="btn btn-xs btn-ghost"
-            disabled={!allowUndo}
-            onClick={handleUndo}
+          <Tooltip title="撤销">
+            <LeftOutlined
+              className={classNames(
+                "cursor-pointer text-gray-500 hover:text-gray-900",
+                {
+                  "opacity-30": !allowUndo,
+                }
+              )}
+              disabled={!allowUndo}
+              onClick={allowUndo && handleUndo}
+            />
+          </Tooltip>
+
+          <Tooltip title="恢复">
+            <RightOutlined
+              className={classNames(
+                "cursor-pointer text-gray-500 hover:text-gray-900",
+                {
+                  "opacity-30": !allowRedo,
+                }
+              )}
+              onClick={allowRedo && handleRedo}
+            />
+          </Tooltip>
+
+          <Tooltip title="删除对象">
+            <DeleteOutlined
+              onClick={() => !isRoot && handleDelete(currentObjectId)}
+              className={classNames(
+                "cursor-pointer text-gray-500 hover:text-gray-900",
+                {
+                  "opacity-30": isRoot,
+                }
+              )}
+            />
+          </Tooltip>
+
+          <Tooltip title="复制 PlantUML">
+            <CopyOutlined
+              className={classNames(
+                "cursor-pointer text-gray-500 hover:text-gray-900",
+                {}
+              )}
+              onClick={() => {
+                copy(uml);
+                message.success("复制成功");
+              }}
+            />
+          </Tooltip>
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  label: (
+                    <a href={pngUrl} target="_blank">
+                      PNG
+                    </a>
+                  ),
+                  key: "1",
+                },
+                {
+                  label: (
+                    <a href={svgUrl} target="_blank">
+                      SVG
+                    </a>
+                  ),
+                  key: "2",
+                },
+              ] as MenuProps["items"],
+            }}
+            trigger={["hover"]}
           >
-            <svg
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              className=" w-4 h-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
-              ></path>
-            </svg>
-          </button>
-          <button
-            className="btn btn-xs btn-ghost"
-            disabled={!allowRedo}
-            onClick={handleRedo}
-          >
-            <svg
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              className=" w-4 h-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3"
-              ></path>
-            </svg>
-          </button>
-          <button
-            className="btn btn-xs btn-ghost"
-            onClick={() => handleDelete(currentObjectId)}
-          >
-            <svg
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              className=" w-4 h-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-              ></path>
-            </svg>
-          </button>
+            <DownloadOutlined
+              className={classNames(
+                "cursor-pointer text-gray-500 hover:text-gray-900",
+                {}
+              )}
+            />
+          </Dropdown>
         </>
       }
     />

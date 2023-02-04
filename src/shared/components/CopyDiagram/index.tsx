@@ -1,5 +1,19 @@
 import copy from "copy-to-clipboard";
-import React from "react";
+import {
+  Button,
+  Divider,
+  Dropdown,
+  Input,
+  MenuProps,
+  Select,
+  Space,
+} from "antd";
+
+import { message } from "antd";
+import { createListStore, listStore } from "../../store/listStore";
+import { useEffect, useRef } from "react";
+import { useStore } from "zustand";
+import { useNavigate, useParams } from "react-router-dom";
 
 type Props = {
   uml: string;
@@ -8,19 +22,61 @@ type Props = {
 };
 
 export function CopyDiagram(props: Props) {
-  const [open, setOpen] = React.useState(false);
+  const { id } = useParams();
+  const list = useStore(listStore, (state) => state.list);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    listStore.getState().fetchList();
+  }, []);
+
+  if (!list.length) {
+    return null;
+  }
 
   return (
-    <div>
-      {open && (
-        <div className="toast toast-top toast-center">
-          <div className="alert alert-success whitespace-nowrap">
-            <div>复制成功</div>
-          </div>
-        </div>
-      )}
-      <div className="dropdown dropdown-end">
-        <label tabIndex={0} className="btn btn-ghost btn-circle">
+    <div className="flex items-center">
+      <Select
+        value={[id]}
+        className="mt-1 pt-px"
+        showArrow={false}
+        style={{ width: 300 }}
+        placeholder="搜索并选择图表"
+        dropdownRender={(menu) => (
+          <>
+            {menu}
+            <Divider style={{ margin: "8px 0" }} />
+            <Space style={{ padding: "0 8px 4px" }}>
+              <Input bordered={false} placeholder="图表名称" />
+              <Button type="text">新建图表</Button>
+            </Space>
+          </>
+        )}
+        bordered={false}
+        options={list.map((item) => ({
+          label: (
+            <div className="text-gray-500 text-base cursor-pointer w-64 whitespace-nowrap overflow-ellipsis overflow-hidden text-right hover:text-gray-800">
+              {item.name}
+            </div>
+          ),
+          value: item.id,
+        }))}
+        onChange={(e) => {
+          navigate(`/deployment/${e}`);
+        }}
+      />
+      <Dropdown
+        menu={{
+          items: [
+            {
+              label: <div>删除图表</div>,
+              key: "1",
+            },
+          ] as MenuProps["items"],
+        }}
+        trigger={["hover"]}
+      >
+        <label className="btn btn-ghost btn-circle">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -35,38 +91,7 @@ export function CopyDiagram(props: Props) {
             ></path>
           </svg>
         </label>
-        <ul
-          tabIndex={10}
-          className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
-        >
-          <li>
-            <a
-              className="justify-between"
-              onClick={() => {
-                const success = copy(props.uml);
-                if (success) {
-                  setOpen(true);
-                  setTimeout(() => {
-                    setOpen(false);
-                  }, 1500);
-                }
-              }}
-            >
-              复制 PlantUML
-            </a>
-          </li>
-          <li>
-            <a href={props.svg} target="_blank">
-              下载 SVG
-            </a>
-          </li>
-          <li>
-            <a href={props.png} target="_blank">
-              下载 PNG
-            </a>
-          </li>
-        </ul>
-      </div>
+      </Dropdown>
     </div>
   );
 }
