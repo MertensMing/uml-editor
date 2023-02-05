@@ -7,10 +7,10 @@ import {
   Select,
   Space,
 } from "antd";
-import { listStore } from "../../store/listStore";
 import { useEffect } from "react";
 import { useStore } from "zustand";
 import { useNavigate, useParams } from "react-router-dom";
+import { listStore } from "../../store/listStore";
 
 export function SelectDiagram() {
   const { id } = useParams();

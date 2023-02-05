@@ -12,9 +12,9 @@ import { DeploymentStore } from "../store/deploymentStore";
 import cloneDeep from "lodash/cloneDeep";
 import { useAction } from "../../../shared/hooks/useAction";
 import { deploymentHistoryStorage } from "../../../shared/storage/deployment";
-import { useNavigate, useParams } from "react-router-dom";
 import { db } from "../../../db";
 import { ListStore } from "../../../shared/store/listStore";
+import { useNavigate, useParams } from "react-router-dom";
 
 type Handlers = {
   handleInit(): Promise<void>;
