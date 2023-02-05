@@ -4,7 +4,7 @@ import shallow from "zustand/shallow";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { useDebounceCallback } from "@react-hook/debounce";
 import { createActivityStore } from "./store/activity";
-import { useEditActivityLogic } from "./logic/useEditActivityLogic";
+import { useEditActivityController } from "./controller/useEditActivityController";
 import { Activity, findTask, TaskType } from "../../core/entities/Activity";
 import { AddTaskType } from "./components/TaskTypeButtonGroup";
 import { TYPE_MAP } from "./const";
@@ -62,7 +62,7 @@ export function Editor() {
     // parallel
     handleAddParallelTask,
     handleDeleteParallelTask,
-  } = useEditActivityLogic([activityStore, undoStore]);
+  } = useEditActivityController([activityStore, undoStore]);
 
   const boundHandleActivityChange = useDebounceCallback(
     handleActivityChange,

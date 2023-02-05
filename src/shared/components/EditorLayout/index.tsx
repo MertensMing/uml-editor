@@ -1,5 +1,5 @@
 import React from "react";
-import { CopyDiagram } from "../CopyDiagram";
+import { SelectDiagram } from "../SelectDiagram";
 import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
 
@@ -70,7 +70,7 @@ export function EditorLayout(props: {
           <a className="btn btn-ghost normal-case text-xl">PlantUML Editor</a>
         </div>
         <div className="flex-none gap-2">
-          <CopyDiagram uml={props.uml} png={props.pngUrl} svg={props.svgUrl} />
+          <SelectDiagram />
         </div>
       </div>
 

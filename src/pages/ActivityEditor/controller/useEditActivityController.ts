@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import cloneDeep from "lodash/cloneDeep";
-import { createLogic } from "../../../shared/utils/createLogic";
+import { createController } from "../../../shared/utils/createController";
 import { Activity, Task } from "../../../core/entities/Activity";
 import { activityStorage } from "../../../shared/storage/activity";
 import { ActivityStore } from "../store/activity";
@@ -28,7 +28,7 @@ type Handlers = {
   handleMove(origin: Task["id"], target: Task["id"]): void;
 };
 
-export const useEditActivityLogic = createLogic<
+export const useEditActivityController = createController<
   [ActivityStore, UndoStore<Activity>],
   Handlers
 >(([activityStore, undoStore]) => {

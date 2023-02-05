@@ -7,7 +7,7 @@ type UseLogic<
   [K in keyof StoreDeps]: StoreApi<StoreDeps[K]>;
 }) => Handlers;
 
-export function createLogic<
+export function createController<
   S extends {}[],
   H extends Record<string, Function>,
   I = UseLogic<S, H>

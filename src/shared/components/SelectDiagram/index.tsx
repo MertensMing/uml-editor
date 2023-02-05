@@ -1,4 +1,3 @@
-import copy from "copy-to-clipboard";
 import {
   Button,
   Divider,
@@ -8,20 +7,12 @@ import {
   Select,
   Space,
 } from "antd";
-
-import { message } from "antd";
-import { createListStore, listStore } from "../../store/listStore";
-import { useEffect, useRef } from "react";
+import { listStore } from "../../store/listStore";
+import { useEffect } from "react";
 import { useStore } from "zustand";
 import { useNavigate, useParams } from "react-router-dom";
 
-type Props = {
-  uml: string;
-  svg: string;
-  png: string;
-};
-
-export function CopyDiagram(props: Props) {
+export function SelectDiagram() {
   const { id } = useParams();
   const list = useStore(listStore, (state) => state.list);
   const navigate = useNavigate();

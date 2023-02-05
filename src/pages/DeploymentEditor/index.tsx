@@ -6,7 +6,7 @@ import { EditorLayout } from "../../shared/components/EditorLayout";
 import { pick } from "../../shared/utils/pick";
 import { AddContainer } from "./components/AddContainer";
 import { AddObject } from "./components/AddObject";
-import { useEditDeploymentLogic } from "./logic/useEditDeploymentLogic";
+import { useEditDeploymentController } from "./controller/useEditDeploymentController";
 import { createDeploymentStore } from "./store/deploymentStore";
 import { useDrag } from "../../shared/hooks/useDrag";
 import {
@@ -64,7 +64,7 @@ export function DeploymentEditor() {
     handleRedo,
     handleLineTypeChange,
     handleContentChange,
-  } = useEditDeploymentLogic([deploymentStore, undoStore, listStore]);
+  } = useEditDeploymentController([deploymentStore, undoStore, listStore]);
 
   const {
     currentObjectId,

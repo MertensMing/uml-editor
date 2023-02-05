@@ -7,7 +7,7 @@ import {
   Relation,
 } from "../../../core/entities/Deployment";
 import { UndoStore } from "../../../shared/store/undo";
-import { createLogic } from "../../../shared/utils/createLogic";
+import { createController } from "../../../shared/utils/createController";
 import { DeploymentStore } from "../store/deploymentStore";
 import cloneDeep from "lodash/cloneDeep";
 import { useAction } from "../../../shared/hooks/useAction";
@@ -53,7 +53,7 @@ type Handlers = {
   handleLineTypeChange(linetype: LineType): void;
 };
 
-export const useEditDeploymentLogic = createLogic<
+export const useEditDeploymentController = createController<
   [DeploymentStore, UndoStore<Deployment>, ListStore],
   Handlers
 >(([deploymentStore, undoStore, listStore]) => {
