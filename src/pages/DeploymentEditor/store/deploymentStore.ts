@@ -34,6 +34,7 @@ type State = {
 
 type Actions = {
   initializeDeployment(deployment?: State["deployment"]): void;
+  initializeNewDeployment(): void;
   addObject(containerId: string, type: NormalObject["type"]): void;
   deleteObject(id: BaseObject["id"]): void;
   moveObject(originId: string, targetId: string): void;
@@ -127,18 +128,17 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         });
       },
       initializeDeployment(storage) {
-        if (storage) {
-          set({
-            deployment: storage,
-            currentObjectId: storage.root.id,
-          });
-        } else {
-          const diagram = createDiagram();
-          set({
-            deployment: createDiagram(),
-            currentObjectId: diagram.root.id,
-          });
-        }
+        set({
+          deployment: storage,
+          currentObjectId: storage.root.id,
+        });
+      },
+      initializeNewDeployment(name?: string) {
+        const diagram = createDiagram();
+        set({
+          deployment: createDiagram(name),
+          currentObjectId: diagram.root.id,
+        });
       },
       toggleAllowDragRelation(allow) {
         set({

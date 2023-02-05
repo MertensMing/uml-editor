@@ -12,6 +12,8 @@ export function EditorLayout(props: {
   operation: React.ReactElement;
   diagram: React.ReactElement;
   toolbar?: React.ReactElement;
+  onDelete?: () => void;
+  onAdd?: (name: string) => void;
 }) {
   const navigate = useNavigate();
 
@@ -79,7 +81,7 @@ export function EditorLayout(props: {
           </a>
         </div>
         <div className="flex-none gap-2">
-          <SelectDiagram />
+          <SelectDiagram onDelete={props.onDelete} onAdd={props.onAdd} />
         </div>
       </div>
 

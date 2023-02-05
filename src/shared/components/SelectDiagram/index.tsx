@@ -3,22 +3,27 @@ import {
   Divider,
   Dropdown,
   Input,
+  InputRef,
   MenuProps,
   Select,
   Space,
 } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "zustand";
 import { useParams } from "react-router-dom";
 import { listStore } from "../../store/listStore";
 import { useDiagramListContrller } from "../../controller/useDiagramListContrller";
 
-export function SelectDiagram() {
+export function SelectDiagram(props: {
+  onDelete?: () => void;
+  onAdd?: (name: string) => void;
+}) {
   const { handleInit, handleSelectDiagram } = useDiagramListContrller([
     listStore,
   ]);
   const { id } = useParams();
   const diagramList = useStore(listStore, (state) => state.list);
+  const [name, setName] = useState("");
 
   useEffect(() => {
     handleInit();
@@ -41,8 +46,23 @@ export function SelectDiagram() {
             {menu}
             <Divider style={{ margin: "8px 0" }} />
             <Space style={{ padding: "0 8px 4px" }}>
-              <Input bordered={false} placeholder="图表名称" />
-              <Button type="text">新建图表</Button>
+              <Input
+                bordered={false}
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+                value={name}
+                placeholder="按回车新建图表"
+              />
+              <Button
+                type="text"
+                onClick={() => {
+                  props.onAdd(name);
+                  setName("");
+                }}
+              >
+                新建图表
+              </Button>
             </Space>
           </>
         )}
@@ -59,18 +79,8 @@ export function SelectDiagram() {
           handleSelectDiagram(id);
         }}
       />
-      <Dropdown
-        menu={{
-          items: [
-            {
-              label: <div>删除图表</div>,
-              key: "1",
-            },
-          ] as MenuProps["items"],
-        }}
-        trigger={["click"]}
-      >
-        <label className="btn btn-ghost btn-circle">
+      <div className="dropdown dropdown-bottom dropdown-end">
+        <label tabIndex={10} className="btn btn-ghost btn-circle">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -85,7 +95,15 @@ export function SelectDiagram() {
             ></path>
           </svg>
         </label>
-      </Dropdown>
+        <ul
+          tabIndex={10}
+          className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+        >
+          <li>
+            <div onClick={() => props?.onDelete?.()}>删除图表</div>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }

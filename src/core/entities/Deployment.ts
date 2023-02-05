@@ -94,9 +94,9 @@ export function createObject(
   };
 }
 
-export function createDiagram(): Deployment {
+export function createDiagram(name?: string): Deployment {
   return {
-    root: createContainer("架构图名称", ContainerObjectType.diagram),
+    root: createContainer(name || "架构图名称", ContainerObjectType.diagram),
     relations: {},
     linetype: "default",
     id: `deployment_${getId()}`,

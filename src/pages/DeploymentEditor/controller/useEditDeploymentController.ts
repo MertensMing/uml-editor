@@ -4,6 +4,7 @@ import cloneDeep from "lodash/cloneDeep";
 import debounce from "lodash/debounce";
 import {
   ContainerObjectType,
+  createDiagram,
   Deployment,
   LineType,
   ObjectType,
@@ -16,12 +17,14 @@ import { db } from "../../../db";
 import { ListStore } from "../../../shared/store/listStore";
 import { DiagramType } from "../../../shared/constants";
 import { DeploymentStore } from "../store/deploymentStore";
+import { message } from "antd";
 
 type Handlers = {
   // 图表
   handleInit(): Promise<void>;
   handleDiagramChange(): void;
   handleDeleteDiagram(): Promise<void>;
+  handleAddDiagram(name: string): Promise<void>;
   handleToggleAllowDragRelation(allow: boolean): void;
   handleRedo(): void;
   handleUndo(): void;
@@ -69,6 +72,7 @@ export const useEditDeploymentController = createController<
   const actions = useAction(deploymentStore, [
     "setLineType",
     "initializeDeployment",
+    "initializeNewDeployment",
   ]);
   const undoActions = useAction(undoStore, [
     "initialize",
@@ -86,7 +90,7 @@ export const useEditDeploymentController = createController<
 
       if (!currentDiagram) {
         // 创建新图表
-        actions.initializeDeployment();
+        actions.initializeNewDeployment();
         await db.deployments.add({
           id: deploymentStore.getState().deployment.id,
           diagram: JSON.stringify(deploymentStore.getState().deployment),
@@ -95,7 +99,10 @@ export const useEditDeploymentController = createController<
         navigate(
           `/${DiagramType.deployment}/${
             deploymentStore.getState().deployment.id
-          }`
+          }`,
+          {
+            replace: true,
+          }
         );
         return;
       }
@@ -108,12 +115,38 @@ export const useEditDeploymentController = createController<
         navigate(
           `/${DiagramType.deployment}/${
             deploymentStore.getState().deployment.id
-          }`
+          }`,
+          {
+            replace: true,
+          }
         );
       }
     },
     async handleDeleteDiagram() {
-      const state = deploymentStore.getState();
+      if (listStore.getState().list.length <= 1) {
+        message.warning("不能删除最后一个图表");
+        return;
+      }
+      await db.deployments.delete(deploymentStore.getState().deployment.id);
+      await listStore.getState().fetchList();
+      navigate(
+        `/${DiagramType.deployment}/${listStore.getState().list[0].id}`,
+        {
+          replace: true,
+        }
+      );
+    },
+    async handleAddDiagram(name) {
+      const diagram = createDiagram(name);
+      await db.deployments.add({
+        id: diagram.id,
+        diagram: JSON.stringify(diagram),
+        name: diagram.root.name,
+      });
+      await listStore.getState().fetchList();
+      navigate(`/${DiagramType.deployment}/${diagram.id}`, {
+        replace: true,
+      });
     },
     handleDiagramChange() {
       deploymentStore.getState().updateUmlUrl();

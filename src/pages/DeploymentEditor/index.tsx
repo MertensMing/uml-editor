@@ -2,6 +2,19 @@ import { useEffect, useRef } from "react";
 import { ReactSVG } from "react-svg";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
+import {
+  CopyOutlined,
+  DeleteOutlined,
+  DownloadOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
+import classNames from "classnames";
+import copy from "copy-to-clipboard";
+import { Dropdown, message, Tooltip } from "antd";
+import type { MenuProps } from "antd";
+import { useDebounceCallback } from "@react-hook/debounce";
+import { useParams } from "react-router-dom";
 import { EditorLayout } from "../../shared/components/EditorLayout";
 import { pick } from "../../shared/utils/pick";
 import { AddContainer } from "./components/AddContainer";
@@ -18,22 +31,9 @@ import {
   ObjectType,
   RelationType,
 } from "../../core/entities/Deployment";
-import { useDebounceCallback } from "@react-hook/debounce";
 import { ColorPicker } from "./components/ColorPicker";
 import { createUndoStore } from "../../shared/store/undo";
-import {
-  CopyOutlined,
-  DeleteOutlined,
-  DownloadOutlined,
-  LeftOutlined,
-  RightOutlined,
-} from "@ant-design/icons";
-import classNames from "classnames";
-import copy from "copy-to-clipboard";
-import { Dropdown, message, Tooltip } from "antd";
-import type { MenuProps } from "antd";
 import { listStore } from "../../shared/store/listStore";
-import { useParams } from "react-router-dom";
 
 export function DeploymentEditor() {
   const deploymentStore = useRef(createDeploymentStore()).current;
@@ -64,6 +64,8 @@ export function DeploymentEditor() {
     handleRedo,
     handleLineTypeChange,
     handleContentChange,
+    handleDeleteDiagram,
+    handleAddDiagram,
   } = useEditDeploymentController([deploymentStore, undoStore, listStore]);
 
   const {
@@ -122,6 +124,8 @@ export function DeploymentEditor() {
       uml={uml}
       pngUrl={pngUrl}
       svgUrl={svgUrl}
+      onDelete={handleDeleteDiagram}
+      onAdd={handleAddDiagram}
       diagram={
         <div
           style={{
