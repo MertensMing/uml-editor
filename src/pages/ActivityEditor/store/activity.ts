@@ -1,11 +1,11 @@
 import { createStore, StoreApi } from "zustand";
+import cloneDeep from "lodash/cloneDeep";
 import {
   Activity,
   Task,
   TaskType,
   findTask,
   createTask,
-  StartTask,
   createCase,
   correctTask,
   removeTask,
@@ -27,8 +27,9 @@ type Actions = {
   resetCurrentTask(): void;
   updateDiagramUrl(): void;
   // activity
-  initializeActivity(): void;
+  initializeActivity(activity: Activity): void;
   setActivity(activity: Activity): void;
+  setActivityTitle(title: string): void;
   // task
   setTaskField(taskId: Task["id"], field: string, value: any): void;
   addTask(taskId: Task["id"], type?: TaskType): void;
@@ -51,9 +52,7 @@ export function createActivityStore(
     function updateActivity() {
       correctTask(get().activity.start);
       set({
-        activity: {
-          ...get().activity,
-        },
+        activity: cloneDeep(get().activity),
       });
     }
 
@@ -86,22 +85,17 @@ export function createActivityStore(
         });
       },
       // activity
-      initializeActivity() {
-        if (!!get().activity) {
-          correctTask(get().activity.start);
-          set({
-            currentTask: get().activity.start,
-          });
-          return;
-        }
-        const activity: Activity = {
-          start: createTask(TaskType.start) as StartTask,
-        };
+      initializeActivity(activity) {
         correctTask(activity.start);
         set({
           activity,
           currentTask: activity.start,
         });
+      },
+      setActivityTitle(title) {
+        const activity = get().activity;
+        activity.title = title;
+        updateActivity();
       },
       setActivity(activity) {
         set({

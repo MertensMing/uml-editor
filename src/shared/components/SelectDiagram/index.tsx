@@ -52,12 +52,12 @@ export function SelectDiagram(props: {
                   setName(e.target.value);
                 }}
                 value={name}
-                placeholder="按回车新建图表"
+                placeholder="请输入图表名称"
               />
               <Button
                 type="text"
                 onClick={() => {
-                  props.onAdd(name);
+                  props?.onAdd?.(name);
                   setName("");
                 }}
               >

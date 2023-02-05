@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAction } from "../hooks/useAction";
-import { ListStore } from "../store/listStore";
+import { listStore, ListStore } from "../store/listStore";
 import { createController } from "../utils/createController";
 
 export const useDiagramListContrller = createController<
@@ -18,7 +18,7 @@ export const useDiagramListContrller = createController<
       actions.fetchList();
     },
     handleSelectDiagram(id: string) {
-      navigate(`/deployment/${id}`);
+      navigate(`/${listStore.getState().type}/${id}`);
     },
   };
 });

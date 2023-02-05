@@ -13,6 +13,10 @@ const router = createHashRouter([
     element: <ActivityEditor />,
   },
   {
+    path: "/activity/:id",
+    element: <ActivityEditor />,
+  },
+  {
     path: "/",
     element: <ActivityEditor />,
   },

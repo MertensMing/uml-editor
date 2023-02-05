@@ -12,7 +12,7 @@ class PlantUMLEditorDatabase extends Dexie {
 
   constructor() {
     super("PlantUMLEditorDatabase");
-    this.version(1).stores({
+    this.version(2).stores({
       deployments: "++id, diagram, name",
       activities: "++id, diagram, name",
     });

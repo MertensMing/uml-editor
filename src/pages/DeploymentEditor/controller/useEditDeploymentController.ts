@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useRef } from "react";
 import cloneDeep from "lodash/cloneDeep";
 import debounce from "lodash/debounce";
+import { message } from "antd";
 import {
   ContainerObjectType,
   createDiagram,
@@ -17,7 +18,6 @@ import { db } from "../../../db";
 import { ListStore } from "../../../shared/store/listStore";
 import { DiagramType } from "../../../shared/constants";
 import { DeploymentStore } from "../store/deploymentStore";
-import { message } from "antd";
 
 type Handlers = {
   // 图表
@@ -75,7 +75,6 @@ export const useEditDeploymentController = createController<
   const actions = useAction(deploymentStore, [
     "setLineType",
     "initializeDeployment",
-    "initializeNewDeployment",
   ]);
   const undoActions = useAction(undoStore, [
     "initialize",
@@ -91,38 +90,30 @@ export const useEditDeploymentController = createController<
       const diagramList = await db.deployments.toArray();
       const currentDiagram = diagram || diagramList[0];
 
+      listStore.getState().setCurrentType(DiagramType.deployment);
+
       if (!currentDiagram) {
         // 创建新图表
-        actions.initializeNewDeployment();
+        const diagram = createDiagram();
         await db.deployments.add({
-          id: deploymentStore.getState().deployment.id,
-          diagram: JSON.stringify(deploymentStore.getState().deployment),
-          name: deploymentStore.getState().deployment.root.name,
+          id: diagram.id,
+          diagram: JSON.stringify(diagram),
+          name: diagram.root.name,
         });
-        navigate(
-          `/${DiagramType.deployment}/${
-            deploymentStore.getState().deployment.id
-          }`,
-          {
-            replace: true,
-          }
-        );
+        navigate(`/${DiagramType.deployment}/${diagram.id}`, {
+          replace: true,
+        });
         return;
       }
 
-      // 初始化 store
-      actions.initializeDeployment(JSON.parse(currentDiagram.diagram));
-      undoActions.initialize([deploymentStore.getState().deployment]);
-
-      if (!id) {
-        navigate(
-          `/${DiagramType.deployment}/${
-            deploymentStore.getState().deployment.id
-          }`,
-          {
-            replace: true,
-          }
-        );
+      if (id) {
+        // 初始化 store
+        actions.initializeDeployment(JSON.parse(currentDiagram.diagram));
+        undoActions.initialize([JSON.parse(currentDiagram.diagram)]);
+      } else {
+        navigate(`/${DiagramType.deployment}/${currentDiagram.id}`, {
+          replace: true,
+        });
       }
     },
     async handleDeleteDiagram() {

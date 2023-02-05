@@ -15,6 +15,8 @@ import { EditorLayout } from "../../shared/components/EditorLayout";
 import { pick } from "../../shared/utils/pick";
 import { useDrag } from "../../shared/hooks/useDrag";
 import classNames from "classnames";
+import { listStore } from "../../shared/store/listStore";
+import { useParams } from "react-router-dom";
 
 export function Editor() {
   const activityStore = useRef(
@@ -40,6 +42,8 @@ export function Editor() {
     shallow
   );
 
+  const params = useParams();
+
   const {
     // init
     handleMount,
@@ -47,6 +51,9 @@ export function Editor() {
     handleActivityChange,
     handleRedo,
     handleUndo,
+    handleAddActivity,
+    handleTitleChange,
+    handleDeleteDiagram,
     // task
     handleAddTask,
     handleDeleteTask,
@@ -62,7 +69,7 @@ export function Editor() {
     // parallel
     handleAddParallelTask,
     handleDeleteParallelTask,
-  } = useEditActivityController([activityStore, undoStore]);
+  } = useEditActivityController([activityStore, undoStore, listStore]);
 
   const boundHandleActivityChange = useDebounceCallback(
     handleActivityChange,
@@ -79,7 +86,7 @@ export function Editor() {
 
   useLayoutEffect(() => {
     handleMount();
-  }, []);
+  }, [params.id]);
 
   useEffect(() => {
     boundHandleActivityChange();
@@ -91,6 +98,8 @@ export function Editor() {
       pngUrl={pngUrl}
       svgUrl={url}
       currentDiagram="activity"
+      onAdd={(name) => handleAddActivity(name)}
+      onDelete={handleDeleteDiagram}
       toolbar={
         <>
           <button
@@ -221,7 +230,22 @@ export function Editor() {
             <>
               {/* 类型 */}
               <div>
-                <div className="pb-2 font-bold text-sm">类型</div>
+                <div className="pb-2 font-bold text-sm">图表标题</div>
+                <div className="space-x-1">
+                  <input
+                    type="text"
+                    value={activity.title}
+                    className="input input-bordered input-sm w-full"
+                    onChange={(e) => {
+                      handleTitleChange(e.target.value);
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* 类型 */}
+              <div className="pt-8">
+                <div className="pb-2 font-bold text-sm">节点类型</div>
                 <div className="space-x-1">
                   <input
                     type="text"
@@ -310,7 +334,6 @@ export function Editor() {
                       />
                     </div>
                   </div>
-
                   <div className="pt-8">
                     <h3 className="pb-2 font-bold text-sm flex items-center">
                       添加并行任务{" "}
