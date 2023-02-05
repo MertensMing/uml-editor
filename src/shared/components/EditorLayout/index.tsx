@@ -2,6 +2,7 @@ import React from "react";
 import { SelectDiagram } from "../SelectDiagram";
 import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
+import { DiagramType } from "../../constants";
 
 export function EditorLayout(props: {
   uml: string;
@@ -42,10 +43,10 @@ export function EditorLayout(props: {
               <li>
                 <a
                   className={classNames({
-                    active: props.currentDiagram === "activity",
+                    active: props.currentDiagram === DiagramType.activity,
                   })}
                   onClick={() => {
-                    navigate(`/activity`);
+                    navigate(`/${DiagramType.activity}`);
                   }}
                 >
                   活动图
@@ -54,10 +55,10 @@ export function EditorLayout(props: {
               <li>
                 <a
                   className={classNames({
-                    active: props.currentDiagram === "deployment",
+                    active: props.currentDiagram === DiagramType.deployment,
                   })}
                   onClick={() => {
-                    navigate(`/deployment`);
+                    navigate(`/${DiagramType.deployment}`);
                   }}
                 >
                   部署图
@@ -67,7 +68,15 @@ export function EditorLayout(props: {
           </div>
         </div>
         <div className="flex-1">
-          <a className="btn btn-ghost normal-case text-xl">PlantUML Editor</a>
+          <a className="btn btn-ghost normal-case text-xl">
+            PlantUML Editor{" "}
+            {
+              {
+                [DiagramType.deployment]: "部署图",
+                [DiagramType.activity]: "活动图",
+              }[props.currentDiagram]
+            }
+          </a>
         </div>
         <div className="flex-none gap-2">
           <SelectDiagram />

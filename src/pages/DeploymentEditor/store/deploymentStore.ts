@@ -34,19 +34,10 @@ type State = {
 
 type Actions = {
   initializeDeployment(deployment?: State["deployment"]): void;
-  addObject(
-    containerId: ContainerObject["id"],
-    type: NormalObject["type"]
-  ): void;
+  addObject(containerId: string, type: NormalObject["type"]): void;
   deleteObject(id: BaseObject["id"]): void;
-  moveObject(
-    origin: ContainerObject["id"],
-    target: ContainerObject["id"]
-  ): void;
-  addContainer(
-    containerId: ContainerObject["id"],
-    type: ContainerObject["type"]
-  ): void;
+  moveObject(originId: string, targetId: string): void;
+  addContainer(containerId: string, type: ContainerObject["type"]): void;
   updateUmlUrl(): void;
   updateCurrentObject(id: BaseObject["id"]): void;
   setObjectField(
@@ -54,16 +45,10 @@ type Actions = {
     field: keyof ContainerObject | keyof NormalObject,
     value: unknown
   ): void;
-  addRelation(
-    origin: ContainerObject["id"],
-    target: ContainerObject["id"]
-  ): void;
-  deleteRelation(
-    origin: ContainerObject["id"],
-    target: ContainerObject["id"]
-  ): void;
+  addRelation(originId: string, targetId: string): void;
+  deleteRelation(originId: string, targetId: string): void;
   updateRelation<T extends keyof Relation>(
-    id: ContainerObject["id"],
+    id: string,
     relationId: Relation["id"],
     field: T,
     value: Relation[T]
@@ -110,15 +95,15 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         });
         updateDiagram();
       },
-      addRelation(origin, target) {
-        if ([origin, target].includes(get().deployment.root.id)) {
+      addRelation(originId, targetId) {
+        if ([originId, targetId].includes(get().deployment.root.id)) {
           return;
         }
-        addRelation(get().deployment, origin, target);
+        addRelation(get().deployment, originId, targetId);
         updateDiagram();
       },
-      deleteRelation(origin, target) {
-        removeRelation(get().deployment, origin, target);
+      deleteRelation(originId, targetId) {
+        removeRelation(get().deployment, originId, targetId);
         updateDiagram();
       },
       updateRelation(id, relationId, field, value) {
@@ -182,11 +167,19 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
           updateDiagram();
         }
       },
-      moveObject(origin, target) {
-        const removed = removeObject(get().deployment.root, origin);
-        if (!removed) return;
-        const targetObject = findObject(get().deployment.root, target);
-        if (!targetObject || !targetObject?.isContainer) return;
+      moveObject(originId, targetId) {
+        const targetObject = findObject(get().deployment.root, targetId);
+        if (!targetObject || !targetObject?.isContainer) {
+          throw new Error(`targetId ${targetId} 不是容器`);
+        }
+        const originObject = findObject(get().deployment.root, originId);
+        if (originObject?.isContainer && findObject(originObject, targetId)) {
+          throw new Error(`父对象 ${originId} 不能移动到子对象 ${targetId} 中`);
+        }
+        const removed = removeObject(get().deployment.root, originId);
+        if (!removed) {
+          throw new Error(`找不到对象 ${targetId}`);
+        }
         insertObject(targetObject, removed);
         updateDiagram();
       },
