@@ -175,15 +175,18 @@ export const useEditDeploymentController = createController<
       deploymentStore
         .getState()
         .setDiagram(cloneDeep(undoStore.getState().current));
+      saveChanged();
     },
     handleUndo() {
       undoStore.getState().undo();
       deploymentStore
         .getState()
         .setDiagram(cloneDeep(undoStore.getState().current));
+      saveChanged();
     },
     handleLineTypeChange(linetype) {
       actions.setLineType(linetype);
+      saveChanged();
     },
   };
 });
