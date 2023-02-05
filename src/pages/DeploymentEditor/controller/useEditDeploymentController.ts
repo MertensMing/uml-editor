@@ -54,10 +54,13 @@ export const useEditDeploymentController = createController<
   Handlers
 >(([deploymentStore, undoStore, listStore]) => {
   const saveChanged = useRef(
-    debounce(() => {
+    debounce((needSaveUndo?: boolean) => {
+      needSaveUndo = needSaveUndo ?? true;
       const state = deploymentStore.getState();
       const deployment = state.deployment;
-      undoStore.getState().save(deployment);
+      if (needSaveUndo) {
+        undoStore.getState().save(deployment);
+      }
       db.deployments.update(deployment.id, {
         diagram: JSON.stringify(deployment),
         name: deployment.root.name,
@@ -208,14 +211,14 @@ export const useEditDeploymentController = createController<
       deploymentStore
         .getState()
         .setDiagram(cloneDeep(undoStore.getState().current));
-      saveChanged();
+      saveChanged(false);
     },
     handleUndo() {
       undoStore.getState().undo();
       deploymentStore
         .getState()
         .setDiagram(cloneDeep(undoStore.getState().current));
-      saveChanged();
+      saveChanged(false);
     },
     handleLineTypeChange(linetype) {
       actions.setLineType(linetype);

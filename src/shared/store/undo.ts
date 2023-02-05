@@ -1,6 +1,6 @@
 import { createStore, StoreApi } from "zustand";
 import remove from "lodash/remove";
-import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
 import cloneDeep from "lodash/cloneDeep";
 
 type State<T> = {
@@ -20,7 +20,7 @@ export type UndoStore<T> = State<T> & Actions<T>;
 
 export function createUndoStore<T>(): StoreApi<UndoStore<T>> {
   return createStore((set, get) => {
-    const save = debounce((version: T) => {
+    const save = throttle((version: T) => {
       const cloned = cloneDeep(version);
       if (get().queue.length >= 100) {
         get().queue.pop();
@@ -38,7 +38,7 @@ export function createUndoStore<T>(): StoreApi<UndoStore<T>> {
           queue: [cloned, ...get().queue],
         });
       }
-    }, 800);
+    }, 5000);
 
     return {
       queue: [],
