@@ -12,6 +12,7 @@ import {
 } from "../../../core/entities/Activity";
 import { activityParser } from "../../../core/parser/activity";
 import { drawPng, drawSvg } from "../../../shared/utils/uml";
+import { message } from "antd";
 
 type State = {
   activity?: Activity;
@@ -173,6 +174,10 @@ export function createActivityStore(
         }
       },
       moveTask(origin, target) {
+        if (get().activity.start.id === origin) {
+          return message.warning("起始点不允许移动");
+        }
+
         const originTask = findTask(get().activity.start, origin);
 
         if (!originTask) return;

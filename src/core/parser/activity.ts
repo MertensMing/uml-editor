@@ -10,13 +10,15 @@ import {
 } from "../entities/Activity";
 
 function getTaskName(task: Task) {
-  return `<text class="task" taskId="${task.id}" objectId="${task.id}">${task.name}</text>`;
+  return `<text class="task" taskId="${task.id}" objectId="${task.id}">${
+    task.name || "未命名流程"
+  }</text>`;
 }
 
 export const activityParser = {
   parseActivityTitle(activity: Activity): string {
     if (activity?.title) {
-      return `title "<text class="activity" activityName="${activity.title}">${activity.title}</text>"\n`;
+      return `title "<text class="task" taskId="${activity.start.id}" objectId="${activity.start.id}">${activity.title}</text>"\n`;
     }
     return "";
   },
@@ -25,10 +27,10 @@ export const activityParser = {
       return "";
     }
     const uml = `
-@startuml
-  ${this.parseActivityTitle(activity)}
-  ${this.parseTask("", activity.start)}
-@enduml
+      @startuml
+        ${this.parseActivityTitle(activity)}
+        ${this.parseTask("", activity.start)}
+      @enduml
     `;
     return uml;
   },
@@ -37,24 +39,24 @@ export const activityParser = {
   },
   parseSwitchTask(task: SwitchTask): string {
     return `
-switch (${getTaskName(task)})
-  ${this.parseCases(task.cases)}
-endswitch\n
+      switch (${getTaskName(task)})
+        ${this.parseCases(task.cases)}
+      endswitch\n
     `;
   },
   parseParallelTask(task: ParallelTask): string {
     return `
-fork 
-  ${task.parallel.map((t) => this.parseTask("", t)).join("fork again\n")}
-end fork {${getTaskName(task)}}\n
+      fork 
+        ${task.parallel.map((t) => this.parseTask("", t)).join("fork again\n")}
+      end fork {${getTaskName(task)}}\n
     `;
   },
   parseWhileTask(task: WhileTask): string {
     const yes = task.condition?.yes || "是";
     const no = task.condition?.no || "否";
     return `
-repeat ${this.parseTask("", task.while)}
-repeat while (${getTaskName(task)}) is (${yes}) not (${no})\n
+      repeat ${this.parseTask("", task.while)}
+      repeat while (${getTaskName(task)}) is (${yes}) not (${no})\n
     `;
   },
   parseTask(uml: string, task: Task): string {
@@ -90,9 +92,9 @@ repeat while (${getTaskName(task)}) is (${yes}) not (${no})\n
     return cases
       .map((item) => {
         const condition = `
-  case (<text caseId="${item.condition}">${item.condition}</text>)
-    ${this.parseTask("", item.task)}
-`;
+          case (<text caseId="${item.condition}">${item.condition}</text>)
+            ${this.parseTask("", item.task)}
+        `;
         return condition;
       })
       .join("\n");

@@ -91,6 +91,7 @@ export const useEditDeploymentController = createController<
       const currentDiagram = diagram || diagramList[0];
 
       listStore.getState().setCurrentType(DiagramType.deployment);
+      listStore.getState().fetchList();
 
       if (!currentDiagram) {
         // 创建新图表
