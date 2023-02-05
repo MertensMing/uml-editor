@@ -5,6 +5,7 @@ import { DeploymentEditor } from "./pages/DeploymentEditor";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 
 import "./App.scss";
+import { ConfigProvider } from "antd";
 
 const router = createHashRouter([
   {
@@ -31,6 +32,14 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#f0f0f0",
+        },
+      }}
+    >
+      <RouterProvider router={router} />
+    </ConfigProvider>
   </React.StrictMode>
 );

@@ -9,30 +9,33 @@ import {
 } from "antd";
 import { useEffect } from "react";
 import { useStore } from "zustand";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { listStore } from "../../store/listStore";
+import { useDiagramListContrller } from "../../controller/useDiagramListContrller";
 
 export function SelectDiagram() {
+  const { handleInit, handleSelectDiagram } = useDiagramListContrller([
+    listStore,
+  ]);
   const { id } = useParams();
-  const list = useStore(listStore, (state) => state.list);
-  const navigate = useNavigate();
+  const diagramList = useStore(listStore, (state) => state.list);
 
   useEffect(() => {
-    listStore.getState().fetchList();
+    handleInit();
   }, []);
 
-  if (!list.length) {
+  if (!diagramList.length) {
     return null;
   }
 
   return (
     <div className="flex items-center">
       <Select
-        value={[id]}
+        value={id}
         className="mt-1 pt-px"
         showArrow={false}
         style={{ width: 300 }}
-        placeholder="搜索并选择图表"
+        placeholder="选择图表"
         dropdownRender={(menu) => (
           <>
             {menu}
@@ -44,7 +47,7 @@ export function SelectDiagram() {
           </>
         )}
         bordered={false}
-        options={list.map((item) => ({
+        options={diagramList.map((item) => ({
           label: (
             <div className="text-gray-500 text-base cursor-pointer w-64 whitespace-nowrap overflow-ellipsis overflow-hidden text-right hover:text-gray-800">
               {item.name}
@@ -52,8 +55,8 @@ export function SelectDiagram() {
           ),
           value: item.id,
         }))}
-        onChange={(e) => {
-          navigate(`/deployment/${e}`);
+        onChange={(id: string) => {
+          handleSelectDiagram(id);
         }}
       />
       <Dropdown
@@ -65,7 +68,7 @@ export function SelectDiagram() {
             },
           ] as MenuProps["items"],
         }}
-        trigger={["hover"]}
+        trigger={["click"]}
       >
         <label className="btn btn-ghost btn-circle">
           <svg

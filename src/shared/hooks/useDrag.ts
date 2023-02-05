@@ -31,7 +31,8 @@ export function useDrag(
     if (
       !objectId &&
       target.nodeName === "text" &&
-      `${target.parentNode.id}`.startsWith("elem_object")
+      `${target.parentNode.id}`.startsWith("elem_object") &&
+      target.attributes.fill.value === "#000001"
     ) {
       objectId = `${target.parentNode.id}`.replace("elem_", "");
     }
@@ -59,10 +60,10 @@ export function useDrag(
     if (divRef.current) {
       divRef.current.style.display = "none";
     }
-    if (Date.now() - ref.current.now < 500) {
+    if (Date.now() - ref.current.now < 100) {
       return;
     }
-    if (objectId) {
+    if (objectId !== ref.current.objectId) {
       boundEnd(objectId);
     }
   }

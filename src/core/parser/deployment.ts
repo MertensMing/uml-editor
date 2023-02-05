@@ -85,9 +85,9 @@ class DeploymentParser {
   parseObject(object: NormalObject) {
     if (object.type === ObjectType.json) {
       return `
-      ${this.parseObjectType(object.type)} "${
+      ${this.parseObjectType(object.type)} "<color #000001>${
         object.name || DEFAULT_NAME
-      }" as ${object.id} ${getColorText(object)} {
+      }</color>" as ${object.id} ${getColorText(object)} {
         ${object.content || ""}
       }
     `;

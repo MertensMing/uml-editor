@@ -162,10 +162,10 @@ export function addRelation(
   origin: BaseObject["id"],
   target: BaseObject["id"]
 ) {
-  if (!diagram.relations[origin]) {
+  if (!diagram?.relations[origin]) {
     diagram.relations[origin] = [];
   }
-  diagram.relations[origin].push(createRelation(origin, target));
+  diagram?.relations[origin].push(createRelation(origin, target));
   diagram.relations[origin] = uniqBy(diagram.relations[origin], "to");
 }
 
@@ -178,13 +178,13 @@ export function removeRelation(
 }
 
 export function removeAllRelation(diagram: Deployment, id: BaseObject["id"]) {
-  forEach(diagram.relations, (relations) => {
+  forEach(diagram?.relations, (relations) => {
     remove(relations, (item) => item.to === id || item.origin === id);
   });
 }
 
 export function correctDeployment(diagram: Deployment) {
-  forEach(diagram.relations, (relations: Relation[]) => {
+  forEach(diagram?.relations, (relations: Relation[]) => {
     remove(
       relations,
       (item) =>

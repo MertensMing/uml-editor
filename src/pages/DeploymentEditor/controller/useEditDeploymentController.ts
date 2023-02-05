@@ -1,5 +1,7 @@
+import { useNavigate, useParams } from "react-router-dom";
+import { DeploymentStore } from "../store/deploymentStore";
+import cloneDeep from "lodash/cloneDeep";
 import {
-  BaseObject,
   ContainerObject,
   Deployment,
   LineType,
@@ -8,43 +10,28 @@ import {
 } from "../../../core/entities/Deployment";
 import { UndoStore } from "../../../shared/store/undo";
 import { createController } from "../../../shared/utils/createController";
-import { DeploymentStore } from "../store/deploymentStore";
-import cloneDeep from "lodash/cloneDeep";
 import { useAction } from "../../../shared/hooks/useAction";
 import { deploymentHistoryStorage } from "../../../shared/storage/deployment";
 import { db } from "../../../db";
 import { ListStore } from "../../../shared/store/listStore";
-import { useNavigate, useParams } from "react-router-dom";
 
 type Handlers = {
   handleInit(): Promise<void>;
   handleDiagramChange(): void;
-  handleAddContainer(
-    containerId: ContainerObject["id"],
-    type: ContainerObject["type"]
-  ): void;
-  handleAddObject(
-    containerId: ContainerObject["id"],
-    type: NormalObject["type"]
-  ): void;
-  handleObjectNameChange(
-    objectId: BaseObject["id"],
-    name: BaseObject["name"]
-  ): void;
-  handleObjectSelect(id: BaseObject["id"]): void;
-  handleDrop(origin: BaseObject["id"], target: BaseObject["id"]): void;
-  handleDeleteRelation(
-    origin: BaseObject["id"],
-    target: BaseObject["id"]
-  ): void;
-  handleDelete(objectId: BaseObject["id"]): void;
+  handleAddContainer(containerId: string, type: ContainerObject["type"]): void;
+  handleAddObject(containerId: string, type: NormalObject["type"]): void;
+  handleObjectNameChange(objectId: string, name: string): void;
+  handleObjectSelect(id: string): void;
+  handleDrop(origin: string, target: string): void;
+  handleDeleteRelation(origin: string, target: string): void;
+  handleDelete(objectId: string): void;
   handleToggleAllowDragRelation(allow: boolean): void;
-  handleSelectObjectBgColor(objectId: BaseObject["id"], color: string): void;
-  handleContentChange(objectId: BaseObject["id"], content: string): void;
-  handleSelectObjectTextColor(objectId: BaseObject["id"], color: string): void;
+  handleSelectObjectBgColor(objectId: string, color: string): void;
+  handleContentChange(objectId: string, content: string): void;
+  handleSelectObjectTextColor(objectId: string, color: string): void;
   handleRelationChange<T extends keyof Relation>(
-    id: ContainerObject["id"],
-    relationId: Relation["id"],
+    id: string,
+    relationId: string,
     field: T,
     value: Relation[T]
   ): void;
@@ -58,8 +45,9 @@ export const useEditDeploymentController = createController<
   Handlers
 >(([deploymentStore, undoStore, listStore]) => {
   const saveChanged = () => {
-    const deployment = deploymentStore.getState().deployment;
-    undoStore.getState().save(cloneDeep(deployment));
+    const state = deploymentStore.getState();
+    const deployment = state.deployment;
+    undoStore.getState().save(deployment);
     deploymentHistoryStorage.set(undoStore.getState().queue);
     db.deployments.update(deployment.id, {
       diagram: JSON.stringify(deployment),
@@ -69,32 +57,41 @@ export const useEditDeploymentController = createController<
   };
 
   const params = useParams();
-  const actions = useAction(deploymentStore, ["setLineType"]);
   const navigate = useNavigate();
+
+  const actions = useAction(deploymentStore, [
+    "setLineType",
+    "initializeDeployment",
+  ]);
+  const undoActions = useAction(undoStore, [
+    "initialize",
+    "redo",
+    "save",
+    "undo",
+  ]);
 
   return {
     async handleInit() {
+      const state = deploymentStore.getState();
       const id = params.id;
       const diagram = await db.deployments.get(id ?? "");
       const list = await db.deployments.toArray();
       if (!id && !diagram && !list.length) {
-        deploymentStore.getState().initializeDeployment();
+        actions.initializeDeployment();
         await db.deployments.add({
-          id: deploymentStore.getState().deployment.id,
-          diagram: JSON.stringify(deploymentStore.getState().deployment),
-          name: deploymentStore.getState().deployment.root.name,
+          id: state.deployment.id,
+          diagram: JSON.stringify(state.deployment),
+          name: state.deployment.root.name,
         });
-        navigate(`/deployment/${deploymentStore.getState().deployment.id}`);
+        navigate(`/deployment/${state.deployment.id}`);
         return;
       }
-      deploymentStore
-        .getState()
-        .initializeDeployment(JSON.parse(diagram?.diagram || list[0].diagram));
-      undoStore
-        .getState()
-        .initialize([cloneDeep(deploymentStore.getState().deployment)]);
+      actions.initializeDeployment(
+        JSON.parse(diagram?.diagram || list[0].diagram)
+      );
+      undoActions.initialize([state.deployment]);
       if (!id) {
-        navigate(`/deployment/${deploymentStore.getState().deployment.id}`);
+        navigate(`/deployment/${state.deployment.id}`);
       }
     },
     handleDiagramChange() {
