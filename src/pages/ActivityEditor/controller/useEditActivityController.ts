@@ -102,6 +102,7 @@ export const useEditActivityController = createController<
     },
     async handleMount() {
       listStore.getState().setCurrentType(DiagramType.activity);
+      listStore.getState().fetchList();
 
       const id = params.id;
       const diagram = await db.activities.get(id ?? "");

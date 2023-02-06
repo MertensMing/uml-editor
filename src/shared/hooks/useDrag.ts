@@ -60,7 +60,8 @@ export function useDrag(
     if (divRef.current) {
       divRef.current.style.display = "none";
     }
-    if (Date.now() - ref.current.now < 800) {
+    if (Date.now() - ref.current.now < 500) {
+      console.warn("拖拽时长小于 500ms");
       return;
     }
     if (objectId !== ref.current.objectId) {
