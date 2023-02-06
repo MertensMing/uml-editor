@@ -56,6 +56,10 @@ export type BaseObject = {
   bgColor?: string;
   textColor?: string;
   content?: string;
+  comment?: {
+    direction: "left" | "right" | "top" | "bottom";
+    content: string;
+  };
 };
 
 export type NormalObject = BaseObject & {

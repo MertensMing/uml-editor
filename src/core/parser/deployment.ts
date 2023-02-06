@@ -83,6 +83,13 @@ class DeploymentParser {
     return result;
   }
   parseObject(object: NormalObject) {
+    const comment =
+      object.comment && object.comment.content
+        ? `note ${object.comment.direction} of ${object.id}
+        ${object.comment.content}
+      end note`
+        : "";
+
     if (object.type === ObjectType.json) {
       return `
       ${this.parseObjectType(object.type)} "<color #000001>${
@@ -90,12 +97,14 @@ class DeploymentParser {
       }</color>" as ${object.id} ${getColorText(object)} {
         ${object.content || ""}
       }
+      ${comment}
     `;
     }
     return `
       ${this.parseObjectType(object.type)} ${getName(object) || "Object"} as ${
       object.id
     } ${getColorText(object)}
+      ${comment}
     `;
   }
   parseObjectType(type: NormalObject["type"]) {
@@ -115,12 +124,22 @@ class DeploymentParser {
     )[type];
   }
   parseContainer(container: ContainerObject) {
+    const type = this.parseContainerType(container.type);
+    const id = container.id;
+    const name = getName(container);
+    const color = getColorText(container);
+    const comment =
+      container.comment && container.comment.content
+        ? `note ${container.comment.direction} of ${id}
+        ${container.comment.content}
+      end note`
+        : "";
+
     return `
-    ${this.parseContainerType(container.type)} ${getName(container)} as ${
-      container.id
-    } ${getColorText(container)} {
+      ${type} ${name} as ${id} ${color} {
         ${this.parseChildren(container.children)}
       }
+      ${comment}
     `;
   }
   parseChildren(children: ContainerObject["children"]) {

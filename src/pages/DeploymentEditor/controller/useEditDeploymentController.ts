@@ -4,6 +4,7 @@ import cloneDeep from "lodash/cloneDeep";
 import debounce from "lodash/debounce";
 import { message } from "antd";
 import {
+  BaseObject,
   ContainerObjectType,
   createDiagram,
   Deployment,
@@ -37,6 +38,11 @@ type Handlers = {
   handleDelete(objectId: string): void;
   handleSelectObjectBgColor(objectId: string, color: string): void;
   handleContentChange(objectId: string, content: string): void;
+  handleObjectChange(
+    objectId: string,
+    field: "type" | keyof BaseObject | "isContainer" | "children",
+    value: unknown
+  ): void;
   handleSelectObjectTextColor(objectId: string, color: string): void;
   handleLineTypeChange(linetype: LineType): void;
   // 关系
@@ -184,6 +190,10 @@ export const useEditDeploymentController = createController<
     },
     handleSelectObjectBgColor(id, color) {
       deploymentStore.getState().setObjectField(id, "bgColor", color);
+      saveChanged();
+    },
+    handleObjectChange(id, type, value) {
+      deploymentStore.getState().setObjectField(id, type, value);
       saveChanged();
     },
     handleContentChange(id, content) {
