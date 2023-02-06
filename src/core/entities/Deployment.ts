@@ -42,6 +42,10 @@ export type Deployment = {
 export enum ObjectType {
   circle = "circle",
   json = "json",
+  actor = "actor",
+  boundary = "boundary",
+  database = "database",
+  usecase = "usecase",
 }
 
 export enum ContainerObjectType {

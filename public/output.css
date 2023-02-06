@@ -2913,6 +2913,10 @@ html {
   width: 16rem;
 }
 
+.max-w-xs {
+  max-width: 20rem;
+}
+
 .flex-none {
   flex: none;
 }
@@ -3303,6 +3307,10 @@ html {
 
 .pt-px {
   padding-top: 1px;
+}
+
+.pr-3 {
+  padding-right: 0.75rem;
 }
 
 .text-center {

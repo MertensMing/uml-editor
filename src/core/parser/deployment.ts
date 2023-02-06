@@ -33,6 +33,8 @@ class DeploymentParser {
     return `
       @startuml
 
+      allow_mixing
+
       ${
         diagram?.linetype !== "default"
           ? `skinparam linetype ${diagram.linetype}`
@@ -112,6 +114,10 @@ class DeploymentParser {
       {
         circle: "circle",
         json: "object",
+        actor: "actor",
+        boundary: "boundary",
+        database: "database",
+        usecase: "usecase",
       } as { [k in NormalObject["type"]]: string }
     )[type];
   }
