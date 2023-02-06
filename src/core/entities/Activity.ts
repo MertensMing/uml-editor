@@ -16,6 +16,10 @@ type CommonTask = {
   prev?: Task["id"];
   name?: string;
   parent?: string;
+  comment?: {
+    direction: "left" | "right";
+    content: string;
+  };
 };
 
 export type StartTask = {

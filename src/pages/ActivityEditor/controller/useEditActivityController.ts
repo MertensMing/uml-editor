@@ -38,6 +38,7 @@ type Handlers = {
   handleTitleChange(title: string): void;
   handleAddActivity(name: string): void;
   handleDeleteDiagram(): Promise<void>;
+  handleTaskChange(taskId: string, field: string, value: unknown): void;
 };
 
 export const useEditActivityController = createController<
@@ -160,6 +161,10 @@ export const useEditActivityController = createController<
     },
     handleTaskNameChange(taskId, name) {
       actions.setTaskField(taskId, "name", name);
+      saveChanged();
+    },
+    handleTaskChange(taskId, field, name) {
+      actions.setTaskField(taskId, field, name);
       saveChanged();
     },
     handleAddCondition(taskId, type) {

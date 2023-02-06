@@ -68,6 +68,7 @@ export function Editor() {
     handleDeleteTask,
     handleSelectTask,
     handleTaskNameChange,
+    handleTaskChange,
     handleMove,
     // switch
     handleAddCondition,
@@ -259,7 +260,6 @@ export function Editor() {
         <div>
           {currentTask && (
             <>
-              {/* 类型 */}
               <div>
                 <div className="pb-2 font-bold text-sm">图表标题</div>
                 <div className="space-x-1">
@@ -301,6 +301,39 @@ export function Editor() {
                       }}
                     />
                   </div>
+                </div>
+              )}
+
+              {/* 注释 */}
+              {currentTask.type === TaskType.normal && (
+                <div className="pt-8">
+                  <h3 className="pb-2 text-sm font-bold flex items-center">
+                    注释{" "}
+                    <select
+                      value={currentTask?.comment?.direction || "right"}
+                      className="select select-bordered select-xs ml-3"
+                      onChange={(e) => {
+                        handleTaskChange(currentTask?.id, "comment", {
+                          direction: e.target.value,
+                          content: currentTask?.comment?.content,
+                        });
+                      }}
+                    >
+                      <option value={"right"}>右</option>
+                      <option value={"left"}>左</option>
+                    </select>
+                  </h3>
+                  <textarea
+                    className="textarea textarea-bordered leading-4 scrollbar-thin scrollbar-thumb-slate-300"
+                    value={currentTask?.comment?.content || ""}
+                    onChange={(e) => {
+                      handleTaskChange(currentTask?.id, "comment", {
+                        direction: currentTask?.comment?.direction || "right",
+                        content: e.target.value,
+                      });
+                    }}
+                    rows={10}
+                  />
                 </div>
               )}
 

@@ -35,7 +35,13 @@ export const activityParser = {
     return uml;
   },
   parseNormalTask(task: NormalTask): string {
-    return `:${getTaskName(task)};\n`;
+    const comment = task?.comment?.content
+      ? `note ${task.comment.direction}
+      ${task.comment.content}
+    end note
+    `
+      : "";
+    return `:${getTaskName(task)};\n${comment}`;
   },
   parseSwitchTask(task: SwitchTask): string {
     return `
