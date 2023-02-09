@@ -118,11 +118,11 @@ export function AddObject(props: {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 88.332 88.333"
         stroke="#000000"
-        stroke-width="0.353328"
+        strokeWidth="3"
         className="h-10 w-10 cursor-pointer hover:opacity-70 pr-3"
         onClick={() => props.onClick(ObjectType.usecase)}
       >
-        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
         <g
           id="SVGRepo_tracerCarrier"
           strokeLinecap="round"
