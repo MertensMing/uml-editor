@@ -6,6 +6,7 @@ import { createHashRouter, RouterProvider } from "react-router-dom";
 
 import "./App.scss";
 import { ConfigProvider } from "antd";
+import { SequenceEditor } from "./pages/SequenceEditor";
 
 const router = createHashRouter([
   {
@@ -27,6 +28,10 @@ const router = createHashRouter([
   {
     path: "/deployment",
     element: <DeploymentEditor />,
+  },
+  {
+    path: "/sequence",
+    element: <SequenceEditor />,
   },
 ]);
 

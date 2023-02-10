@@ -18,11 +18,23 @@ body,
 .deployment,
 .process {
   user-select: none;
-
   [id^="elem_object"] text[fill^="#000001"],
   .object,
   .task,
   .activity {
+    &:hover {
+      cursor: pointer;
+      font-weight: bold;
+      fill: #d32f2f;
+    }
+  }
+}
+
+.sequence {
+  user-select: none;
+  text[fill^="#000001"],
+  text[objectId],
+  rect[fill^="#FCFCFC"] {
     &:hover {
       cursor: pointer;
       font-weight: bold;
