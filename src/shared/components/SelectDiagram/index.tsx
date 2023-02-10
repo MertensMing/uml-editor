@@ -1,18 +1,10 @@
-import {
-  Button,
-  Divider,
-  Dropdown,
-  Input,
-  InputRef,
-  MenuProps,
-  Select,
-  Space,
-} from "antd";
+import { Button, Divider, Input, message, Select, Space } from "antd";
 import { useEffect, useState } from "react";
 import { useStore } from "zustand";
 import { useParams } from "react-router-dom";
 import { listStore } from "../../store/listStore";
 import { useDiagramListContrller } from "../../controller/useDiagramListContrller";
+import { DiagramType } from "../../constants";
 
 export function SelectDiagram(props: {
   onDelete?: () => void;
@@ -23,11 +15,35 @@ export function SelectDiagram(props: {
   ]);
   const { id } = useParams();
   const diagramList = useStore(listStore, (state) => state.list);
+  const type = useStore(listStore, (state) => state.type);
   const [name, setName] = useState("");
 
   useEffect(() => {
     handleInit();
   }, []);
+
+  const handleExport = () => {
+    const json = diagramList.reduce((acc, current) => {
+      acc[current.id] = {
+        id: current.id,
+        name: current.name,
+        diagram: current.diagram,
+      };
+      return acc;
+    }, {});
+    const dataStr =
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(json));
+    const name = {
+      [DiagramType.activity]: "activities",
+      [DiagramType.deployment]: "deployments",
+    }[type];
+    const ele = document.createElement("a");
+    ele.setAttribute("href", dataStr);
+    ele.setAttribute("download", `${name}.json`);
+    ele.click();
+    message.success("导出成功");
+  };
 
   if (!diagramList.length) {
     return null;
@@ -101,6 +117,9 @@ export function SelectDiagram(props: {
         >
           <li>
             <div onClick={() => props?.onDelete?.()}>删除图表</div>
+          </li>
+          <li>
+            <div onClick={handleExport}>导出所有图表</div>
           </li>
         </ul>
       </div>

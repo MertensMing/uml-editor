@@ -6,6 +6,7 @@ type State = {
   list: {
     id: string;
     name: string;
+    diagram: string;
   }[];
   type: DiagramType;
 };
@@ -34,10 +35,12 @@ export function createListStore(): StoreApi<ListStore> {
             [DiagramType.deployment]: "deployments",
           }[get().type]
         ].toArray();
+        const r = await db.activities.toArray();
         set({
           list: res.map((item) => ({
             id: item.id,
             name: item.name,
+            diagram: item.diagram,
           })),
         });
       },
