@@ -34,7 +34,6 @@ export function DeploymentEditor() {
     handleDiagramChange,
     handleAddContainer,
     handleAddObject,
-    handleDrop,
     handleObjectNameChange,
     handleToggleAllowDragRelation,
     handleLineTypeChange,
@@ -77,8 +76,6 @@ export function DeploymentEditor() {
     handleDiagramChange,
     500
   );
-
-  useDrag("deployment-diagram", handleDrop);
 
   useEffect(() => {
     handleInit();
