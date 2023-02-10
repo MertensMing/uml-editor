@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { listStore } from "../../store/listStore";
 import { useDiagramListContrller } from "../../controller/useDiagramListContrller";
 import { DiagramType } from "../../constants";
+import { db } from "../../../db";
 
 export function SelectDiagram(props: {
   onDelete?: () => void;
@@ -119,7 +120,40 @@ export function SelectDiagram(props: {
             <div onClick={() => props?.onDelete?.()}>删除图表</div>
           </li>
           <li>
-            <div onClick={handleExport}>导出所有图表</div>
+            <div onClick={handleExport}>导出图表</div>
+          </li>
+          <li>
+            <label htmlFor="import">
+              导入图表{" "}
+              <input
+                id="import"
+                type="file"
+                accept=".json"
+                className="fixed top-0 right-0 ml-96 opacity-0"
+                onChange={function (e) {
+                  const file = e.target.files[0];
+                  if (file.type.includes("json")) {
+                    const reader = new FileReader();
+                    reader.onload = async function () {
+                      const diagrams = JSON.parse(reader.result as string);
+                      await Promise.all(
+                        Object.keys(diagrams).map(async (key) => {
+                          const item = diagrams[key];
+                          if (type === DiagramType.activity) {
+                            await db.activities.put(item);
+                          } else {
+                            await db.deployments.put(item);
+                          }
+                        })
+                      );
+                      message.success("导入成功");
+                      listStore.getState().fetchList();
+                    };
+                    reader.readAsText(file);
+                  }
+                }}
+              />
+            </label>
           </li>
         </ul>
       </div>
