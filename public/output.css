@@ -2966,6 +2966,10 @@ html {
   cursor: move;
 }
 
+.cursor-default {
+  cursor: default;
+}
+
 .select-none {
   -webkit-user-select: none;
           user-select: none;
@@ -3484,6 +3488,10 @@ html {
 
 .opacity-30 {
   opacity: 0.3;
+}
+
+.opacity-0 {
+  opacity: 0;
 }
 
 .shadow {

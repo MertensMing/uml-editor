@@ -1,4 +1,9 @@
-import { ArrowRightOutlined, DragOutlined } from "@ant-design/icons";
+import {
+  ArrowRightOutlined,
+  DeleteOutlined,
+  DragOutlined,
+} from "@ant-design/icons";
+import classNames from "classnames";
 import { useEffect, useRef } from "react";
 import { ReactSVG } from "react-svg";
 import { StoreApi, useStore } from "zustand";
@@ -26,9 +31,9 @@ function Diagram(props: {
   undoStore: StoreApi<UndoStore<any>>;
   listStore: StoreApi<ListStore>;
 }) {
-  const { svgUrl, currentObjectId } = useStore(
+  const { svgUrl, currentObjectId, deployment } = useStore(
     props.deploymentStore,
-    (state) => pick(state, ["svgUrl", "currentObjectId"]),
+    (state) => pick(state, ["svgUrl", "currentObjectId", "deployment"]),
     shallow
   );
   const { handleObjectSelect } = useEditDeploymentController([
@@ -36,6 +41,7 @@ function Diagram(props: {
     props.undoStore,
     props.listStore,
   ]);
+  const isRoot = currentObjectId === deployment?.root?.id;
   const ref = useRef(null);
 
   useEffect(() => {
@@ -54,10 +60,21 @@ function Diagram(props: {
       <div
         ref={ref}
         style={{ position: "fixed", left: 0, top: 0, display: "none" }}
-        className="shadow-slate-400 shadow-xl bg-slate-50 z-10 p-2 rounded border border-solid flex-col flex"
+        className={classNames(
+          "shadow-slate-400 shadow-xl bg-slate-50 z-10 p-2 rounded border border-solid flex-col flex",
+          {
+            "opacity-0": isRoot,
+          }
+        )}
       >
+        <DeleteOutlined
+          className="cursor-pointer hover:opacity-70"
+          onClick={() => {
+            props.deploymentStore.getState().deleteObject(currentObjectId);
+          }}
+        />
         <DragOutlined
-          className="cursor-move"
+          className={classNames("cursor-move hover:opacity-70 mt-2")}
           draggable
           onDragEnd={(e) => {
             const objectId = getObjectId(e);
@@ -70,7 +87,7 @@ function Diagram(props: {
           }}
         />
         <ArrowRightOutlined
-          className="cursor-pointer mt-2"
+          className="cursor-default mt-2 hover:opacity-70"
           draggable
           onDragEnd={(e) => {
             const objectId = getObjectId(e);
