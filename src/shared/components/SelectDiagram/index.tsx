@@ -130,6 +130,9 @@ export function SelectDiagram(props: {
                 type="file"
                 accept=".json"
                 className="fixed top-0 right-0 ml-96 opacity-0"
+                style={{
+                  top: "-10000px",
+                }}
                 onChange={function (e) {
                   const file = e.target.files[0];
                   if (file.type.includes("json")) {
