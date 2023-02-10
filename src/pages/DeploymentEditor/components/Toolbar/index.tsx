@@ -60,7 +60,6 @@ function Toolbar(props: {
         : findObject(state.deployment?.root, state.currentObjectId),
     shallow
   );
-  const relations = deployment?.relations?.[currentObjectId] ?? [];
   const isRoot = currentObject?.type === ContainerObjectType.diagram;
   return (
     <>
