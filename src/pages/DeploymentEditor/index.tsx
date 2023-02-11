@@ -5,17 +5,13 @@ import { useDebounceCallback } from "@react-hook/debounce";
 import { useParams } from "react-router-dom";
 import { EditorLayout } from "../../shared/components/EditorLayout";
 import { pick } from "../../shared/utils/pick";
-import { AddContainer } from "./components/AddContainer";
-import { AddObject } from "./components/AddObject";
 import { useEditDeploymentController } from "./controller/useEditDeploymentController";
 import { createDeploymentStore } from "./store/deploymentStore";
-import { useDrag } from "../../shared/hooks/useDrag";
 import { createUndoStore } from "../../shared/store/undo";
 import { listStore } from "../../shared/store/listStore";
 import Diagram from "./components/Diagram";
 import Toolbar from "./components/Toolbar";
 import Relations from "./components/Relations";
-import Background from "./components/Background";
 import JsonContent from "./components/JsonContent";
 import Comments from "./components/Comments";
 import {
@@ -32,23 +28,13 @@ export function DeploymentEditor() {
   const {
     handleInit,
     handleDiagramChange,
-    handleAddContainer,
-    handleAddObject,
     handleObjectNameChange,
-    handleToggleAllowDragRelation,
     handleLineTypeChange,
     handleDeleteDiagram,
     handleAddDiagram,
   } = useEditDeploymentController([deploymentStore, undoStore, listStore]);
 
-  const {
-    currentObjectId,
-    svgUrl,
-    deployment,
-    allowDragRelation,
-    uml,
-    pngUrl,
-  } = useStore(
+  const { currentObjectId, svgUrl, deployment, uml, pngUrl } = useStore(
     deploymentStore,
     (state) =>
       pick(state, [
@@ -148,24 +134,6 @@ export function DeploymentEditor() {
             undoStore={undoStore}
             listStore={listStore}
           />
-          <div className="pt-8">
-            <h3 className="pb-2 text-sm font-bold">添加容器</h3>
-            <div>
-              <AddContainer
-                onClick={(type) =>
-                  handleAddContainer(deployment?.root?.id, type)
-                }
-              />
-            </div>
-          </div>
-          <div className="pt-8">
-            <h3 className="pb-2 text-sm font-bold">添加图形</h3>
-            <div>
-              <AddObject
-                onClick={(type) => handleAddObject(deployment?.root?.id, type)}
-              />
-            </div>
-          </div>
           <Relations
             deploymentStore={deploymentStore}
             undoStore={undoStore}

@@ -2,9 +2,10 @@ import {
   CopyOutlined,
   DownloadOutlined,
   LeftOutlined,
+  PlusOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import { Dropdown, MenuProps, message, Tooltip } from "antd";
+import { Dropdown, MenuProps, message, Popover, Tooltip } from "antd";
 import classNames from "classnames";
 import copy from "copy-to-clipboard";
 import { StoreApi, useStore } from "zustand";
@@ -18,6 +19,8 @@ import { UndoStore } from "../../../../shared/store/undo";
 import { pick } from "../../../../shared/utils/pick";
 import { useEditDeploymentController } from "../../controller/useEditDeploymentController";
 import { DeploymentStore } from "../../store/deploymentStore";
+import { AddContainer } from "../AddContainer";
+import { AddObject } from "../AddObject";
 
 function Toolbar(props: {
   deploymentStore: StoreApi<DeploymentStore>;
@@ -25,11 +28,8 @@ function Toolbar(props: {
   listStore: StoreApi<ListStore>;
 }) {
   const { deploymentStore, undoStore, listStore } = props;
-  const { handleUndo, handleRedo } = useEditDeploymentController([
-    deploymentStore,
-    undoStore,
-    listStore,
-  ]);
+  const { handleUndo, handleRedo, handleAddContainer, handleAddObject } =
+    useEditDeploymentController([deploymentStore, undoStore, listStore]);
   const { allowRedo, allowUndo } = useStore(
     undoStore,
     (state) => ({
@@ -38,7 +38,7 @@ function Toolbar(props: {
     }),
     shallow
   );
-  const { currentObjectId, svgUrl, deployment, uml, pngUrl } = useStore(
+  const { svgUrl, deployment, uml, pngUrl } = useStore(
     deploymentStore,
     (state) =>
       pick(state, [
@@ -129,6 +129,41 @@ function Toolbar(props: {
           )}
         />
       </Dropdown>
+      <Popover
+        showArrow={false}
+        content={
+          <div>
+            <div>
+              <h3 className="pb-2 text-sm font-bold">添加容器</h3>
+              <div>
+                <AddContainer
+                  onClick={(type) =>
+                    handleAddContainer(deployment?.root?.id, type)
+                  }
+                />
+              </div>
+            </div>
+            <div className="pt-8">
+              <h3 className="pb-2 text-sm font-bold">添加图形</h3>
+              <div>
+                <AddObject
+                  onClick={(type) =>
+                    handleAddObject(deployment?.root?.id, type)
+                  }
+                />
+              </div>
+            </div>
+          </div>
+        }
+        placement="leftBottom"
+      >
+        <PlusOutlined
+          className={classNames(
+            "cursor-pointer text-gray-500 hover:text-gray-900",
+            {}
+          )}
+        />
+      </Popover>
     </>
   );
 }
