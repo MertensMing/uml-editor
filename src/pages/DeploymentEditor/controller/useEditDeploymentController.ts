@@ -34,7 +34,8 @@ type Handlers = {
   handleAddObject(containerId: string, type: ObjectType): void;
   handleObjectNameChange(objectId: string, name: string): void;
   handleObjectSelect(id: string): void;
-  handleDrop(origin: string, target: string): void;
+  handleAddRelation(origin: string, target: string): void;
+  handleMoveObject(origin: string, target: string): void;
   handleDelete(objectId: string): void;
   handleSelectObjectBgColor(objectId: string, color: string): void;
   handleContentChange(objectId: string, content: string): void;
@@ -164,12 +165,12 @@ export const useEditDeploymentController = createController<
       deploymentStore.getState().updateCurrentObject(id);
       saveChanged();
     },
-    handleDrop(origin, target) {
-      if (deploymentStore.getState().allowDragRelation) {
-        deploymentStore.getState().addRelation(origin, target);
-      } else {
-        deploymentStore.getState().moveObject(origin, target);
-      }
+    handleAddRelation(origin, target) {
+      deploymentStore.getState().addRelation(origin, target);
+      saveChanged();
+    },
+    handleMoveObject(origin, target) {
+      deploymentStore.getState().moveObject(origin, target);
       saveChanged();
     },
     handleObjectNameChange(id, name) {

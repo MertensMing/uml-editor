@@ -102,25 +102,7 @@ export function DeploymentEditor() {
       }
       operation={
         <div>
-          <div>
-            <h3 className="pb-2 text-sm font-bold">拖拽连线</h3>
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                className="toggle"
-                checked={allowDragRelation ?? false}
-                onChange={(e) =>
-                  handleToggleAllowDragRelation(e.target.checked)
-                }
-              />
-              <div className="text-gray-400 ml-4 text-sm">
-                {allowDragRelation
-                  ? "拖动节点新增对象关系"
-                  : "拖动节点修改对象层级"}
-              </div>
-            </div>
-          </div>
-          <div className="pt-8">
+          <div className="">
             <h3 className="pb-2 text-sm font-bold">连线样式</h3>
             <div className="flex items-center">
               <div className="form-control">

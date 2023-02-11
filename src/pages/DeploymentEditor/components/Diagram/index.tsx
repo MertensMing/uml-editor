@@ -38,23 +38,28 @@ function Diagram(props: {
     (state) => pick(state, ["svgUrl", "currentObjectId", "deployment"]),
     shallow
   );
-  const { handleObjectSelect } = useEditDeploymentController([
-    deploymentStore,
-    undoStore,
-    listStore,
-  ]);
+  const {
+    handleObjectSelect,
+    handleAddRelation,
+    handleMoveObject,
+    handleDelete,
+  } = useEditDeploymentController([deploymentStore, undoStore, listStore]);
   const isRoot = currentObjectId === deployment?.root?.id;
   const ref = useRef(null);
 
-  useEffect(() => {
-    function onClick(e) {
-      const id = getObjectId(e);
-      if (!id) {
-        ref.current.style.display = "none";
-      }
+  function onClick(e) {
+    const id = getObjectId(e);
+    if (!id) {
+      ref.current.style.display = "none";
     }
+  }
+
+  useEffect(() => {
     window.addEventListener("click", onClick);
-    return () => window.removeEventListener("click", onClick);
+
+    return () => {
+      window.removeEventListener("click", onClick);
+    };
   }, []);
 
   return (
@@ -72,7 +77,7 @@ function Diagram(props: {
         <DeleteOutlined
           className="cursor-pointer hover:opacity-70"
           onClick={() => {
-            deploymentStore.getState().deleteObject(currentObjectId);
+            handleDelete(currentObjectId);
           }}
         />
         <DragOutlined
@@ -81,23 +86,23 @@ function Diagram(props: {
           onDragEnd={(e) => {
             const objectId = getObjectId(e);
             if (objectId) {
-              deploymentStore.getState().moveObject(currentObjectId, objectId);
+              handleMoveObject(currentObjectId, objectId);
               ref.current.style.display = "none";
             }
           }}
         />
         <ArrowRightOutlined
-          className="cursor-default mt-2 hover:opacity-70"
+          className="cursor-grab mt-2 hover:opacity-70"
           draggable
           onDragEnd={(e) => {
             const objectId = getObjectId(e);
             if (objectId) {
-              deploymentStore.getState().addRelation(currentObjectId, objectId);
+              handleAddRelation(currentObjectId, objectId);
               ref.current.style.display = "none";
             }
           }}
         />
-        <div className="mt-2">
+        <div className="mt-2 cursor-pointer">
           <Background
             deploymentStore={deploymentStore}
             undoStore={undoStore}

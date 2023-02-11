@@ -2974,6 +2974,10 @@ html {
   cursor: default;
 }
 
+.cursor-grab {
+  cursor: grab;
+}
+
 .select-none {
   -webkit-user-select: none;
           user-select: none;
