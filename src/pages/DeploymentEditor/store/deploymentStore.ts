@@ -10,6 +10,7 @@ import {
   createObject,
   Deployment,
   findObject,
+  getId,
   insertObject,
   LineType,
   NormalObject,
@@ -45,6 +46,7 @@ type Actions = {
     field: keyof ContainerObject | keyof NormalObject,
     value: unknown
   ): void;
+  copyObject(id: string): void;
   addRelation(originId: string, targetId: string): void;
   deleteRelation(originId: string, targetId: string): void;
   updateRelation<T extends keyof Relation>(
@@ -158,6 +160,13 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
           insertObject(container, target);
           updateDiagram();
         }
+      },
+      copyObject(objectId) {
+        const targetObject = findObject(get().deployment.root, objectId);
+        const newObject = cloneDeep(targetObject);
+        newObject.id = `object_${getId()}`;
+        insertObject(get().deployment.root, newObject);
+        updateDiagram();
       },
       moveObject(originId, targetId) {
         const targetObject = findObject(get().deployment.root, targetId);

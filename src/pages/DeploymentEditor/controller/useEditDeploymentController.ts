@@ -37,6 +37,7 @@ type Handlers = {
   handleAddRelation(origin: string, target: string): void;
   handleMoveObject(origin: string, target: string): void;
   handleDelete(objectId: string): void;
+  handleCopy(objectId: string): void;
   handleSelectObjectBgColor(objectId: string, color: string): void;
   handleContentChange(objectId: string, content: string): void;
   handleObjectChange(
@@ -149,6 +150,9 @@ export const useEditDeploymentController = createController<
       navigate(`/${DiagramType.deployment}/${diagram.id}`, {
         replace: true,
       });
+    },
+    handleCopy(id) {
+      deploymentStore.getState().copyObject(id);
     },
     handleDiagramChange() {
       deploymentStore.getState().updateUmlUrl();

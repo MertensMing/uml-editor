@@ -138,12 +138,12 @@ export function DeploymentEditor() {
               </div>
             </div>
           </div>
-          <Comments
+          <JsonContent
             deploymentStore={deploymentStore}
             undoStore={undoStore}
             listStore={listStore}
           />
-          <JsonContent
+          <Comments
             deploymentStore={deploymentStore}
             undoStore={undoStore}
             listStore={listStore}

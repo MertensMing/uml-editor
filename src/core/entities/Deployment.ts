@@ -2,7 +2,7 @@ import remove from "lodash/remove";
 import uniqBy from "lodash/uniqBy";
 import forEach from "lodash/forEach";
 
-const getId = () => {
+export const getId = () => {
   return `${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 };
 

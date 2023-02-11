@@ -1,5 +1,6 @@
 import {
   ArrowRightOutlined,
+  CopyOutlined,
   DeleteOutlined,
   DragOutlined,
 } from "@ant-design/icons";
@@ -43,6 +44,7 @@ function Diagram(props: {
     handleAddRelation,
     handleMoveObject,
     handleDelete,
+    handleCopy,
   } = useEditDeploymentController([deploymentStore, undoStore, listStore]);
   const isRoot = currentObjectId === deployment?.root?.id;
   const ref = useRef(null);
@@ -81,7 +83,7 @@ function Diagram(props: {
           }}
         />
         <DragOutlined
-          className={classNames("cursor-move hover:opacity-70 mt-2")}
+          className={classNames("cursor-move hover:opacity-70 mt-3")}
           draggable
           onDragEnd={(e) => {
             const objectId = getObjectId(e);
@@ -92,7 +94,7 @@ function Diagram(props: {
           }}
         />
         <ArrowRightOutlined
-          className="cursor-grab mt-2 hover:opacity-70"
+          className="cursor-grab mt-3 hover:opacity-70"
           draggable
           onDragEnd={(e) => {
             const objectId = getObjectId(e);
@@ -102,7 +104,13 @@ function Diagram(props: {
             }
           }}
         />
-        <div className="mt-2 cursor-pointer">
+        <CopyOutlined
+          className="mt-3 cursor-pointer"
+          onClick={() => {
+            handleCopy(currentObjectId);
+          }}
+        />
+        <div className="mt-3 cursor-pointer">
           <Background
             deploymentStore={deploymentStore}
             undoStore={undoStore}

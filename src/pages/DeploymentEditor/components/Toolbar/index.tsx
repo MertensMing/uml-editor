@@ -1,6 +1,5 @@
 import {
   CopyOutlined,
-  DeleteOutlined,
   DownloadOutlined,
   LeftOutlined,
   RightOutlined,
@@ -26,7 +25,7 @@ function Toolbar(props: {
   listStore: StoreApi<ListStore>;
 }) {
   const { deploymentStore, undoStore, listStore } = props;
-  const { handleDelete, handleUndo, handleRedo } = useEditDeploymentController([
+  const { handleUndo, handleRedo } = useEditDeploymentController([
     deploymentStore,
     undoStore,
     listStore,
@@ -85,18 +84,6 @@ function Toolbar(props: {
             }
           )}
           onClick={allowRedo && handleRedo}
-        />
-      </Tooltip>
-
-      <Tooltip title="删除对象">
-        <DeleteOutlined
-          onClick={() => !isRoot && handleDelete(currentObjectId)}
-          className={classNames(
-            "cursor-pointer text-gray-500 hover:text-gray-900",
-            {
-              "opacity-30": isRoot,
-            }
-          )}
         />
       </Tooltip>
 

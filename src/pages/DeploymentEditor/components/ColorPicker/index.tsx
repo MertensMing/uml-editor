@@ -30,6 +30,11 @@ const colorScheme = [
   "#87cefa",
   "#add8e6",
   "#e0ffff",
+  "#fcdabd",
+  "#e0facd",
+  "#bde9fc",
+  "#b6eb8f",
+  "#f0d6ff",
   "#ffffff",
   "#000000",
 ];
