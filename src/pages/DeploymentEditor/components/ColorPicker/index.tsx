@@ -1,5 +1,4 @@
 import { Popover } from "antd";
-import classNames from "classnames";
 import { SwatchesPicker } from "react-color";
 
 export function ColorPicker(props: {
@@ -11,6 +10,7 @@ export function ColorPicker(props: {
       <Popover
         placement="rightBottom"
         arrowPointAtCenter
+        showArrow={false}
         content={
           <SwatchesPicker
             onChange={(e) => {
@@ -20,7 +20,7 @@ export function ColorPicker(props: {
         }
       >
         <div
-          className="h-4 w-8 rounded"
+          className="h-4 w-4 rounded"
           style={{
             background: props.color,
           }}

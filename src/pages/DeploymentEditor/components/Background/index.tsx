@@ -3,7 +3,6 @@ import shallow from "zustand/shallow";
 import {
   ContainerObjectType,
   findObject,
-  RelationType,
 } from "../../../../core/entities/Deployment";
 import { ListStore } from "../../../../shared/store/listStore";
 import { UndoStore } from "../../../../shared/store/undo";
@@ -12,7 +11,7 @@ import { useEditDeploymentController } from "../../controller/useEditDeploymentC
 import { DeploymentStore } from "../../store/deploymentStore";
 import { ColorPicker } from "../ColorPicker";
 
-function Background(props: {
+function Comments(props: {
   deploymentStore: StoreApi<DeploymentStore>;
   undoStore: StoreApi<UndoStore<any>>;
   listStore: StoreApi<ListStore>;
@@ -41,20 +40,17 @@ function Background(props: {
   return (
     <>
       {!isRoot && (
-        <div className="pt-8">
-          <h3 className="pb-2 text-sm font-bold flex items-center">背景色</h3>
-          <button className="btn btn-outline btn-sm">
-            <ColorPicker
-              color={currentObject?.bgColor || "#e5e7eb"}
-              onChange={(color) =>
-                handleSelectObjectBgColor(currentObjectId, color)
-              }
-            />
-          </button>
+        <div>
+          <ColorPicker
+            color={currentObject?.bgColor || "#e5e7eb"}
+            onChange={(color) =>
+              handleSelectObjectBgColor(currentObjectId, color)
+            }
+          />
         </div>
       )}
     </>
   );
 }
 
-export default Background;
+export default Comments;

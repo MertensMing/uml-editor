@@ -13,6 +13,7 @@ import { UndoStore } from "../../../../shared/store/undo";
 import { pick } from "../../../../shared/utils/pick";
 import { useEditDeploymentController } from "../../controller/useEditDeploymentController";
 import { DeploymentStore } from "../../store/deploymentStore";
+import Background from "../Background";
 
 function getObjectId(e: any) {
   const hoveredElement: any = document.elementFromPoint(e.clientX, e.clientY);
@@ -31,15 +32,16 @@ function Diagram(props: {
   undoStore: StoreApi<UndoStore<any>>;
   listStore: StoreApi<ListStore>;
 }) {
+  const { deploymentStore, undoStore, listStore } = props;
   const { svgUrl, currentObjectId, deployment } = useStore(
-    props.deploymentStore,
+    deploymentStore,
     (state) => pick(state, ["svgUrl", "currentObjectId", "deployment"]),
     shallow
   );
   const { handleObjectSelect } = useEditDeploymentController([
-    props.deploymentStore,
-    props.undoStore,
-    props.listStore,
+    deploymentStore,
+    undoStore,
+    listStore,
   ]);
   const isRoot = currentObjectId === deployment?.root?.id;
   const ref = useRef(null);
@@ -70,7 +72,7 @@ function Diagram(props: {
         <DeleteOutlined
           className="cursor-pointer hover:opacity-70"
           onClick={() => {
-            props.deploymentStore.getState().deleteObject(currentObjectId);
+            deploymentStore.getState().deleteObject(currentObjectId);
           }}
         />
         <DragOutlined
@@ -79,9 +81,7 @@ function Diagram(props: {
           onDragEnd={(e) => {
             const objectId = getObjectId(e);
             if (objectId) {
-              props.deploymentStore
-                .getState()
-                .moveObject(currentObjectId, objectId);
+              deploymentStore.getState().moveObject(currentObjectId, objectId);
               ref.current.style.display = "none";
             }
           }}
@@ -92,13 +92,18 @@ function Diagram(props: {
           onDragEnd={(e) => {
             const objectId = getObjectId(e);
             if (objectId) {
-              props.deploymentStore
-                .getState()
-                .addRelation(currentObjectId, objectId);
+              deploymentStore.getState().addRelation(currentObjectId, objectId);
               ref.current.style.display = "none";
             }
           }}
         />
+        <div className="mt-2">
+          <Background
+            deploymentStore={deploymentStore}
+            undoStore={undoStore}
+            listStore={listStore}
+          />
+        </div>
       </div>
       <div
         className="deployment"

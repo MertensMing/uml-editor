@@ -166,11 +166,6 @@ export function DeploymentEditor() {
             undoStore={undoStore}
             listStore={listStore}
           />
-          <Background
-            deploymentStore={deploymentStore}
-            undoStore={undoStore}
-            listStore={listStore}
-          />
           <div className="pt-8">
             <h3 className="pb-2 text-sm font-bold">添加容器</h3>
             <div>
