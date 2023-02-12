@@ -36,8 +36,8 @@ function Relations(props: {
                 <div className="pb-5 pt-2" key={idx}>
                   <div>
                     <div className="flex space-x-1 pb-2">
-                      <button className="btn btn-xs btn-ghost">
-                        <span className="mr-4">连线</span>
+                      <div className="flex items-center mr-4">
+                        <span className="mr-2 text-sm">连线</span>
                         <ColorPicker
                           color={item.linkColor || "#000000"}
                           onChange={(color) => {
@@ -49,9 +49,9 @@ function Relations(props: {
                             );
                           }}
                         />
-                      </button>
-                      <button className="btn btn-xs btn-ghost">
-                        <span className="mr-4">文字</span>
+                      </div>
+                      <div className="flex items-center mr-4">
+                        <span className="mr-2 text-sm">文字</span>
                         <ColorPicker
                           color={item.descColor || "#000000"}
                           onChange={(color) => {
@@ -63,7 +63,7 @@ function Relations(props: {
                             );
                           }}
                         />
-                      </button>
+                      </div>
                     </div>
                     <div className="form-control pb-2">
                       <label className="input-group input-group-sm">

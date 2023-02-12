@@ -64,7 +64,7 @@ export function ColorPicker(props: {
         }
       >
         <div
-          className="h-4 w-4 rounded"
+          className="h-4 w-4 rounded cursor-pointer"
           style={{
             background: props.color,
           }}
