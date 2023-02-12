@@ -88,7 +88,7 @@ class DeploymentParser {
     const comment =
       object.comment && object.comment.content
         ? `note ${object.comment.direction} of ${object.id}
-        ${object.comment.content}
+${object.comment.content}
       end note`
         : "";
 
