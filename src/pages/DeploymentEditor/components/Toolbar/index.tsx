@@ -10,7 +10,6 @@ import classNames from "classnames";
 import copy from "copy-to-clipboard";
 import { StoreApi, useStore } from "zustand";
 import shallow from "zustand/shallow";
-import { findObject } from "../../../../core/entities/Deployment";
 import { ListStore } from "../../../../shared/store/listStore";
 import { UndoStore } from "../../../../shared/store/undo";
 import { pick } from "../../../../shared/utils/pick";
