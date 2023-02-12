@@ -58,6 +58,7 @@ type Actions = {
   toggleAllowDragRelation(allow: boolean): void;
   setDiagram(diagram: Deployment): void;
   setLineType(linetype: LineType): void;
+  copyDiagram(): void;
 };
 
 export type DeploymentStore = State & Actions;
@@ -70,7 +71,6 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
       set({
         deployment: diagram,
       });
-      deploymentStorage.set(get().deployment);
     }
 
     function resetCurrent() {
@@ -160,6 +160,14 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
           insertObject(container, target);
           updateDiagram();
         }
+      },
+      copyDiagram() {
+        const newDeployment = cloneDeep(get().deployment);
+        newDeployment.id = `deployment_${getId()}`;
+        newDeployment.root.name = `${newDeployment.root.name}（副本）`;
+        set({
+          deployment: newDeployment,
+        });
       },
       copyObject(objectId) {
         const targetObject = findObject(get().deployment.root, objectId);

@@ -55,6 +55,7 @@ type Handlers = {
     field: T,
     value: Relation[T]
   ): void;
+  handleCopyDiagram(): void;
 };
 
 export const useEditDeploymentController = createController<
@@ -83,6 +84,7 @@ export const useEditDeploymentController = createController<
   const actions = useAction(deploymentStore, [
     "setLineType",
     "initializeDeployment",
+    "copyDiagram",
   ]);
   const undoActions = useAction(undoStore, [
     "initialize",
@@ -124,6 +126,22 @@ export const useEditDeploymentController = createController<
           replace: true,
         });
       }
+    },
+    async handleCopyDiagram() {
+      actions.copyDiagram();
+      await db.deployments.add({
+        id: deploymentStore.getState().deployment.id,
+        diagram: JSON.stringify(deploymentStore.getState().deployment),
+        name: deploymentStore.getState().deployment.root.name,
+      });
+      navigate(
+        `/${DiagramType.deployment}/${
+          deploymentStore.getState().deployment.id
+        }`,
+        {
+          replace: true,
+        }
+      );
     },
     async handleDeleteDiagram() {
       if (listStore.getState().list.length <= 1) {

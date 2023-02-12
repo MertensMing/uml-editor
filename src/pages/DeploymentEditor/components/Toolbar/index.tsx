@@ -10,10 +10,7 @@ import classNames from "classnames";
 import copy from "copy-to-clipboard";
 import { StoreApi, useStore } from "zustand";
 import shallow from "zustand/shallow";
-import {
-  ContainerObjectType,
-  findObject,
-} from "../../../../core/entities/Deployment";
+import { findObject } from "../../../../core/entities/Deployment";
 import { ListStore } from "../../../../shared/store/listStore";
 import { UndoStore } from "../../../../shared/store/undo";
 import { pick } from "../../../../shared/utils/pick";
@@ -28,8 +25,13 @@ function Toolbar(props: {
   listStore: StoreApi<ListStore>;
 }) {
   const { deploymentStore, undoStore, listStore } = props;
-  const { handleUndo, handleRedo, handleAddContainer, handleAddObject } =
-    useEditDeploymentController([deploymentStore, undoStore, listStore]);
+  const {
+    handleUndo,
+    handleRedo,
+    handleAddContainer,
+    handleAddObject,
+    handleCopyDiagram,
+  } = useEditDeploymentController([deploymentStore, undoStore, listStore]);
   const { allowRedo, allowUndo } = useStore(
     undoStore,
     (state) => ({
@@ -51,15 +53,7 @@ function Toolbar(props: {
       ]),
     shallow
   );
-  const currentObject = useStore(
-    deploymentStore,
-    (state) =>
-      !state.deployment?.root
-        ? undefined
-        : findObject(state.deployment?.root, state.currentObjectId),
-    shallow
-  );
-  const isRoot = currentObject?.type === ContainerObjectType.diagram;
+
   return (
     <>
       <Tooltip title="撤销">
@@ -86,49 +80,6 @@ function Toolbar(props: {
           onClick={allowRedo && handleRedo}
         />
       </Tooltip>
-
-      <Tooltip title="复制 PlantUML">
-        <CopyOutlined
-          className={classNames(
-            "cursor-pointer text-gray-500 hover:text-gray-900",
-            {}
-          )}
-          onClick={() => {
-            copy(uml);
-            message.success("复制成功");
-          }}
-        />
-      </Tooltip>
-      <Dropdown
-        menu={{
-          items: [
-            {
-              label: (
-                <a href={pngUrl} target="_blank">
-                  PNG
-                </a>
-              ),
-              key: "1",
-            },
-            {
-              label: (
-                <a href={svgUrl} target="_blank">
-                  SVG
-                </a>
-              ),
-              key: "2",
-            },
-          ] as MenuProps["items"],
-        }}
-        trigger={["hover"]}
-      >
-        <DownloadOutlined
-          className={classNames(
-            "cursor-pointer text-gray-500 hover:text-gray-900",
-            {}
-          )}
-        />
-      </Dropdown>
       <Popover
         showArrow={false}
         content={
@@ -164,6 +115,61 @@ function Toolbar(props: {
           )}
         />
       </Popover>
+      <Dropdown
+        menu={{
+          items: [
+            {
+              label: (
+                <div
+                  onClick={() => {
+                    copy(uml);
+                    message.success("复制成功");
+                  }}
+                >
+                  PlantUML
+                </div>
+              ),
+              key: "0",
+            },
+            {
+              label: (
+                <a href={pngUrl} target="_blank">
+                  PNG
+                </a>
+              ),
+              key: "1",
+            },
+            {
+              label: (
+                <a href={svgUrl} target="_blank">
+                  SVG
+                </a>
+              ),
+              key: "2",
+            },
+          ] as MenuProps["items"],
+        }}
+        trigger={["hover"]}
+      >
+        <DownloadOutlined
+          className={classNames(
+            "cursor-pointer text-gray-500 hover:text-gray-900",
+            {}
+          )}
+        />
+      </Dropdown>
+      <Tooltip title="复制图表">
+        <CopyOutlined
+          className={classNames(
+            "cursor-pointer text-gray-500 hover:text-gray-900",
+            {}
+          )}
+          onClick={() => {
+            handleCopyDiagram();
+            message.success("复制成功");
+          }}
+        />
+      </Tooltip>
     </>
   );
 }
