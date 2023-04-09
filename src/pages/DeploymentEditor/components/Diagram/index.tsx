@@ -44,7 +44,6 @@ function Diagram(props: {
     handleAddRelation,
     handleMoveObject,
     handleDelete,
-    handleCopy,
   } = useEditDeploymentController([deploymentStore, undoStore, listStore]);
   const isRoot = currentObjectId === deployment?.root?.id;
   const ref = useRef(null);
@@ -102,12 +101,6 @@ function Diagram(props: {
               handleAddRelation(currentObjectId, objectId);
               ref.current.style.display = "none";
             }
-          }}
-        />
-        <CopyOutlined
-          className="mt-3 cursor-pointer"
-          onClick={() => {
-            handleCopy(currentObjectId);
           }}
         />
         <div className="mt-3 cursor-pointer">

@@ -170,11 +170,11 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         });
       },
       copyObject(objectId) {
-        const targetObject = findObject(get().deployment.root, objectId);
-        const newObject = cloneDeep(targetObject);
-        newObject.id = `object_${getId()}`;
-        insertObject(get().deployment.root, newObject);
-        updateDiagram();
+        // const targetObject = findObject(get().deployment.root, objectId);
+        // const newObject = cloneDeep(targetObject);
+        // newObject.id = `object_${getId()}`;
+        // insertObject(get().deployment.root, newObject);
+        // updateDiagram();
       },
       moveObject(originId, targetId) {
         const targetObject = findObject(get().deployment.root, targetId);
