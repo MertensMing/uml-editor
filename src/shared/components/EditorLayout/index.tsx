@@ -15,8 +15,6 @@ export function EditorLayout(props: {
   onDelete?: () => void;
   onAdd?: (name: string) => void;
 }) {
-  const navigate = useNavigate();
-
   return (
     <div data-theme="winter" className="h-full flex flex-col bg-slate-100">
       <div className="border-b navbar bg-white">
@@ -27,7 +25,6 @@ export function EditorLayout(props: {
           <SelectDiagram onDelete={props.onDelete} onAdd={props.onAdd} />
         </div>
       </div>
-
       <div className="flex flex-grow w-full relative overflow-hidden">
         <div className="p-2 px-8 shadow-lg bg-white space-x-8 flex items-center h-12 absolute top-0 left-0 w-full z-10">
           {props.toolbar}

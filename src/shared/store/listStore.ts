@@ -21,10 +21,10 @@ export type ListStore = State & Actions;
 export const listStore = createListStore();
 
 export function createListStore(): StoreApi<ListStore> {
-  return createStore((set, get) => {
+  return createStore((set) => {
     return {
       list: [],
-      type: DiagramType.activity,
+      type: DiagramType.deployment,
       setCurrentType(type) {
         set({ type });
       },
