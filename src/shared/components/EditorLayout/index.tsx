@@ -20,65 +20,8 @@ export function EditorLayout(props: {
   return (
     <div data-theme="winter" className="h-full flex flex-col bg-slate-100">
       <div className="border-b navbar bg-white">
-        <div className="flex-none">
-          <div className="dropdown">
-            <label tabIndex={0} className="btn btn-ghost btn-circle">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h7"
-                />
-              </svg>
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
-            >
-              <li>
-                <a
-                  className={classNames({
-                    active: props.currentDiagram === DiagramType.activity,
-                  })}
-                  onClick={() => {
-                    navigate(`/${DiagramType.activity}`);
-                  }}
-                >
-                  活动图
-                </a>
-              </li>
-              <li>
-                <a
-                  className={classNames({
-                    active: props.currentDiagram === DiagramType.deployment,
-                  })}
-                  onClick={() => {
-                    navigate(`/${DiagramType.deployment}`);
-                  }}
-                >
-                  部署图
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
         <div className="flex-1">
-          <a className="btn btn-ghost normal-case text-xl">
-            PlantUML Editor{" "}
-            {
-              {
-                [DiagramType.deployment]: "部署图",
-                [DiagramType.activity]: "活动图",
-              }[props.currentDiagram]
-            }
-          </a>
+          <a className="btn btn-ghost normal-case text-xl">PlantUML Editor</a>
         </div>
         <div className="flex-none gap-2">
           <SelectDiagram onDelete={props.onDelete} onAdd={props.onAdd} />

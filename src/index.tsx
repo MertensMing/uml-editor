@@ -1,25 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Editor as ActivityEditor } from "./pages/ActivityEditor";
 import { DeploymentEditor } from "./pages/DeploymentEditor";
 import { createHashRouter, RouterProvider } from "react-router-dom";
-
-import "./App.scss";
 import { ConfigProvider } from "antd";
-import { SequenceEditor } from "./pages/SequenceEditor";
+import "./App.scss";
 
 const router = createHashRouter([
   {
-    path: "/activity",
-    element: <ActivityEditor />,
-  },
-  {
-    path: "/activity/:id",
-    element: <ActivityEditor />,
-  },
-  {
     path: "/",
-    element: <ActivityEditor />,
+    element: <DeploymentEditor />,
   },
   {
     path: "/deployment/:id",
@@ -28,10 +17,6 @@ const router = createHashRouter([
   {
     path: "/deployment",
     element: <DeploymentEditor />,
-  },
-  {
-    path: "/sequence",
-    element: <SequenceEditor />,
   },
 ]);
 
