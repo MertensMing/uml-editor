@@ -142,11 +142,7 @@ export function SelectDiagram(props: {
                       await Promise.all(
                         Object.keys(diagrams).map(async (key) => {
                           const item = diagrams[key];
-                          if (type === DiagramType.activity) {
-                            await db.activities.put(item);
-                          } else {
-                            await db.deployments.put(item);
-                          }
+                          await db.deployments.put(item);
                         })
                       );
                       message.success("导入成功");

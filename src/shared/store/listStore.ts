@@ -29,13 +29,7 @@ export function createListStore(): StoreApi<ListStore> {
         set({ type });
       },
       async fetchList() {
-        const res = await db[
-          {
-            [DiagramType.activity]: "activities",
-            [DiagramType.deployment]: "deployments",
-          }[get().type]
-        ].toArray();
-        const r = await db.activities.toArray();
+        const res = await db.deployments.toArray();
         set({
           list: res.map((item) => ({
             id: item.id,
