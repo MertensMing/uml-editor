@@ -7,18 +7,18 @@ import {
   BaseObject,
   ContainerObjectType,
   createDiagram,
-  Deployment,
   LineType,
   ObjectType,
   Relation,
 } from "../../../core/entities/Deployment";
-import { UndoStore } from "../../../shared/store/undo";
+import { deploymentUndoStoreIdentifier } from "../../../shared/store/undo";
 import { createController } from "../../../shared/utils/createController";
 import { useAction } from "../../../shared/hooks/useAction";
 import { db } from "../../../db";
-import { ListStore } from "../../../shared/store/listStore";
+import { listStoreIdentifier } from "../../../shared/store/listStore";
 import { DiagramType } from "../../../shared/constants";
-import { DeploymentStore } from "../store/deploymentStore";
+import { deploymentStoreIdentifier } from "../store/deploymentStore";
+import { useService } from "../../../shared/libs/di/react/useService";
 
 type Handlers = {
   // 图表
@@ -58,196 +58,199 @@ type Handlers = {
   handleCopyDiagram(): void;
 };
 
-export const useEditDeploymentController = createController<
-  [DeploymentStore, UndoStore<Deployment>, ListStore],
-  Handlers
->(([deploymentStore, undoStore, listStore]) => {
-  const saveChanged = useRef(
-    debounce((needSaveUndo?: boolean) => {
-      needSaveUndo = needSaveUndo ?? true;
-      const state = deploymentStore.getState();
-      const deployment = state.deployment;
-      if (needSaveUndo) {
-        undoStore.getState().save(deployment);
-      }
-      db.deployments.update(deployment.id, {
-        diagram: JSON.stringify(deployment),
-        name: deployment.root.name,
-      });
-      listStore.getState().fetchList();
-    }, 1000)
-  ).current;
+export const useEditDeploymentController = createController<[], Handlers>(
+  () => {
+    const deploymentStore = useService(deploymentStoreIdentifier);
+    const listStore = useService(listStoreIdentifier);
+    const undoStore = useService(deploymentUndoStoreIdentifier);
 
-  const params = useParams();
-  const navigate = useNavigate();
+    const saveChanged = useRef(
+      debounce((needSaveUndo?: boolean) => {
+        needSaveUndo = needSaveUndo ?? true;
+        const state = deploymentStore.getState();
+        const deployment = state.deployment;
+        if (needSaveUndo) {
+          undoStore.getState().save(deployment);
+        }
+        db.deployments.update(deployment.id, {
+          diagram: JSON.stringify(deployment),
+          name: deployment.root.name,
+        });
+        listStore.getState().fetchList();
+      }, 1000)
+    ).current;
 
-  const actions = useAction(deploymentStore, [
-    "setLineType",
-    "initializeDeployment",
-    "copyDiagram",
-  ]);
-  const undoActions = useAction(undoStore, [
-    "initialize",
-    "redo",
-    "save",
-    "undo",
-  ]);
+    const params = useParams();
+    const navigate = useNavigate();
 
-  return {
-    async handleInit() {
-      const id = params.id;
-      const diagram = await db.deployments.get(id ?? "");
-      const diagramList = await db.deployments.toArray();
-      const currentDiagram = diagram || diagramList[0];
+    const actions = useAction(deploymentStore, [
+      "setLineType",
+      "initializeDeployment",
+      "copyDiagram",
+    ]);
+    const undoActions = useAction(undoStore, [
+      "initialize",
+      "redo",
+      "save",
+      "undo",
+    ]);
 
-      listStore.getState().setCurrentType(DiagramType.deployment);
-      listStore.getState().fetchList();
+    return {
+      async handleInit() {
+        const id = params.id;
+        const diagram = await db.deployments.get(id ?? "");
+        const diagramList = await db.deployments.toArray();
+        const currentDiagram = diagram || diagramList[0];
 
-      if (!currentDiagram) {
-        // 创建新图表
-        const diagram = createDiagram();
+        listStore.getState().setCurrentType(DiagramType.deployment);
+        listStore.getState().fetchList();
+
+        if (!currentDiagram) {
+          // 创建新图表
+          const diagram = createDiagram();
+          await db.deployments.add({
+            id: diagram.id,
+            diagram: JSON.stringify(diagram),
+            name: diagram.root.name,
+          });
+          navigate(`/${DiagramType.deployment}/${diagram.id}`, {
+            replace: true,
+          });
+          return;
+        }
+
+        if (id) {
+          // 初始化 store
+          actions.initializeDeployment(JSON.parse(currentDiagram.diagram));
+          undoActions.initialize([JSON.parse(currentDiagram.diagram)]);
+        } else {
+          navigate(`/${DiagramType.deployment}/${currentDiagram.id}`, {
+            replace: true,
+          });
+        }
+      },
+      async handleCopyDiagram() {
+        actions.copyDiagram();
+        await db.deployments.add({
+          id: deploymentStore.getState().deployment.id,
+          diagram: JSON.stringify(deploymentStore.getState().deployment),
+          name: deploymentStore.getState().deployment.root.name,
+        });
+        navigate(
+          `/${DiagramType.deployment}/${
+            deploymentStore.getState().deployment.id
+          }`,
+          {
+            replace: true,
+          }
+        );
+      },
+      async handleDeleteDiagram() {
+        if (listStore.getState().list.length <= 1) {
+          message.warning("不能删除最后一个图表");
+          return;
+        }
+        await db.deployments.delete(deploymentStore.getState().deployment.id);
+        await listStore.getState().fetchList();
+        navigate(
+          `/${DiagramType.deployment}/${listStore.getState().list[0].id}`,
+          {
+            replace: true,
+          }
+        );
+      },
+      async handleAddDiagram(name) {
+        const diagram = createDiagram(name);
         await db.deployments.add({
           id: diagram.id,
           diagram: JSON.stringify(diagram),
           name: diagram.root.name,
         });
+        await listStore.getState().fetchList();
         navigate(`/${DiagramType.deployment}/${diagram.id}`, {
           replace: true,
         });
-        return;
-      }
-
-      if (id) {
-        // 初始化 store
-        actions.initializeDeployment(JSON.parse(currentDiagram.diagram));
-        undoActions.initialize([JSON.parse(currentDiagram.diagram)]);
-      } else {
-        navigate(`/${DiagramType.deployment}/${currentDiagram.id}`, {
-          replace: true,
-        });
-      }
-    },
-    async handleCopyDiagram() {
-      actions.copyDiagram();
-      await db.deployments.add({
-        id: deploymentStore.getState().deployment.id,
-        diagram: JSON.stringify(deploymentStore.getState().deployment),
-        name: deploymentStore.getState().deployment.root.name,
-      });
-      navigate(
-        `/${DiagramType.deployment}/${
-          deploymentStore.getState().deployment.id
-        }`,
-        {
-          replace: true,
-        }
-      );
-    },
-    async handleDeleteDiagram() {
-      if (listStore.getState().list.length <= 1) {
-        message.warning("不能删除最后一个图表");
-        return;
-      }
-      await db.deployments.delete(deploymentStore.getState().deployment.id);
-      await listStore.getState().fetchList();
-      navigate(
-        `/${DiagramType.deployment}/${listStore.getState().list[0].id}`,
-        {
-          replace: true,
-        }
-      );
-    },
-    async handleAddDiagram(name) {
-      const diagram = createDiagram(name);
-      await db.deployments.add({
-        id: diagram.id,
-        diagram: JSON.stringify(diagram),
-        name: diagram.root.name,
-      });
-      await listStore.getState().fetchList();
-      navigate(`/${DiagramType.deployment}/${diagram.id}`, {
-        replace: true,
-      });
-    },
-    handleCopy(id) {
-      deploymentStore.getState().copyObject(id);
-    },
-    handleDiagramChange() {
-      deploymentStore.getState().updateUmlUrl();
-    },
-    handleAddContainer(id, type) {
-      deploymentStore.getState().addContainer(id, type);
-      saveChanged();
-    },
-    handleAddObject(id, type) {
-      deploymentStore.getState().addObject(id, type);
-      saveChanged();
-    },
-    handleObjectSelect(id) {
-      deploymentStore.getState().updateCurrentObject(id);
-      saveChanged();
-    },
-    handleAddRelation(origin, target) {
-      deploymentStore.getState().addRelation(origin, target);
-      saveChanged();
-    },
-    handleMoveObject(origin, target) {
-      deploymentStore.getState().moveObject(origin, target);
-      saveChanged();
-    },
-    handleObjectNameChange(id, name) {
-      deploymentStore.getState().setObjectField(id, "name", name);
-      saveChanged();
-    },
-    handleDelete(id) {
-      deploymentStore.getState().deleteObject(id);
-      saveChanged();
-    },
-    handleToggleAllowDragRelation(allow) {
-      deploymentStore.getState().toggleAllowDragRelation(allow);
-      saveChanged();
-    },
-    handleDeleteRelation(origin, to) {
-      deploymentStore.getState().deleteRelation(origin, to);
-      saveChanged();
-    },
-    handleSelectObjectBgColor(id, color) {
-      deploymentStore.getState().setObjectField(id, "bgColor", color);
-      saveChanged();
-    },
-    handleObjectChange(id, type, value) {
-      deploymentStore.getState().setObjectField(id, type, value);
-      saveChanged();
-    },
-    handleContentChange(id, content) {
-      deploymentStore.getState().setObjectField(id, "content", content);
-      saveChanged();
-    },
-    handleSelectObjectTextColor(id, color) {
-      deploymentStore.getState().setObjectField(id, "textColor", color);
-      saveChanged();
-    },
-    handleRelationChange(id, relationId, field, value) {
-      deploymentStore.getState().updateRelation(id, relationId, field, value);
-      saveChanged();
-    },
-    handleRedo() {
-      undoStore.getState().redo();
-      deploymentStore
-        .getState()
-        .setDiagram(cloneDeep(undoStore.getState().current));
-      saveChanged(false);
-    },
-    handleUndo() {
-      undoStore.getState().undo();
-      deploymentStore
-        .getState()
-        .setDiagram(cloneDeep(undoStore.getState().current));
-      saveChanged(false);
-    },
-    handleLineTypeChange(linetype) {
-      actions.setLineType(linetype);
-      saveChanged();
-    },
-  };
-});
+      },
+      handleCopy(id) {
+        deploymentStore.getState().copyObject(id);
+      },
+      handleDiagramChange() {
+        deploymentStore.getState().updateUmlUrl();
+      },
+      handleAddContainer(id, type) {
+        deploymentStore.getState().addContainer(id, type);
+        saveChanged();
+      },
+      handleAddObject(id, type) {
+        deploymentStore.getState().addObject(id, type);
+        saveChanged();
+      },
+      handleObjectSelect(id) {
+        deploymentStore.getState().updateCurrentObject(id);
+        saveChanged();
+      },
+      handleAddRelation(origin, target) {
+        deploymentStore.getState().addRelation(origin, target);
+        saveChanged();
+      },
+      handleMoveObject(origin, target) {
+        deploymentStore.getState().moveObject(origin, target);
+        saveChanged();
+      },
+      handleObjectNameChange(id, name) {
+        deploymentStore.getState().setObjectField(id, "name", name);
+        saveChanged();
+      },
+      handleDelete(id) {
+        deploymentStore.getState().deleteObject(id);
+        saveChanged();
+      },
+      handleToggleAllowDragRelation(allow) {
+        deploymentStore.getState().toggleAllowDragRelation(allow);
+        saveChanged();
+      },
+      handleDeleteRelation(origin, to) {
+        deploymentStore.getState().deleteRelation(origin, to);
+        saveChanged();
+      },
+      handleSelectObjectBgColor(id, color) {
+        deploymentStore.getState().setObjectField(id, "bgColor", color);
+        saveChanged();
+      },
+      handleObjectChange(id, type, value) {
+        deploymentStore.getState().setObjectField(id, type, value);
+        saveChanged();
+      },
+      handleContentChange(id, content) {
+        deploymentStore.getState().setObjectField(id, "content", content);
+        saveChanged();
+      },
+      handleSelectObjectTextColor(id, color) {
+        deploymentStore.getState().setObjectField(id, "textColor", color);
+        saveChanged();
+      },
+      handleRelationChange(id, relationId, field, value) {
+        deploymentStore.getState().updateRelation(id, relationId, field, value);
+        saveChanged();
+      },
+      handleRedo() {
+        undoStore.getState().redo();
+        deploymentStore
+          .getState()
+          .setDiagram(cloneDeep(undoStore.getState().current));
+        saveChanged(false);
+      },
+      handleUndo() {
+        undoStore.getState().undo();
+        deploymentStore
+          .getState()
+          .setDiagram(cloneDeep(undoStore.getState().current));
+        saveChanged(false);
+      },
+      handleLineTypeChange(linetype) {
+        actions.setLineType(linetype);
+        saveChanged();
+      },
+    };
+  }
+);

@@ -1,21 +1,16 @@
-import { StoreApi, useStore } from "zustand";
+import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import { findObject, RelationType } from "../../../../core/entities/Deployment";
-import { ListStore } from "../../../../shared/store/listStore";
-import { UndoStore } from "../../../../shared/store/undo";
+import { useService } from "../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../shared/utils/pick";
 import { useEditDeploymentController } from "../../controller/useEditDeploymentController";
-import { DeploymentStore } from "../../store/deploymentStore";
+import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 import { ColorPicker } from "../ColorPicker";
 
-function Relations(props: {
-  deploymentStore: StoreApi<DeploymentStore>;
-  undoStore: StoreApi<UndoStore<any>>;
-  listStore: StoreApi<ListStore>;
-}) {
-  const { deploymentStore, undoStore, listStore } = props;
+function Relations() {
+  const deploymentStore = useService(deploymentStoreIdentifier);
   const { handleDeleteRelation, handleRelationChange } =
-    useEditDeploymentController([deploymentStore, undoStore, listStore]);
+    useEditDeploymentController([]);
 
   const { currentObjectId, deployment } = useStore(
     deploymentStore,

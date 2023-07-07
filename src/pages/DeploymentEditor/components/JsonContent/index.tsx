@@ -1,23 +1,14 @@
-import { StoreApi, useStore } from "zustand";
+import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import { findObject, ObjectType } from "../../../../core/entities/Deployment";
-import { ListStore } from "../../../../shared/store/listStore";
-import { UndoStore } from "../../../../shared/store/undo";
+import { useService } from "../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../shared/utils/pick";
 import { useEditDeploymentController } from "../../controller/useEditDeploymentController";
-import { DeploymentStore } from "../../store/deploymentStore";
+import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 
-function JsonContent(props: {
-  deploymentStore: StoreApi<DeploymentStore>;
-  undoStore: StoreApi<UndoStore<any>>;
-  listStore: StoreApi<ListStore>;
-}) {
-  const { deploymentStore, undoStore, listStore } = props;
-  const { handleContentChange } = useEditDeploymentController([
-    deploymentStore,
-    undoStore,
-    listStore,
-  ]);
+function JsonContent() {
+  const deploymentStore = useService(deploymentStoreIdentifier);
+  const { handleContentChange } = useEditDeploymentController([]);
   const { currentObjectId } = useStore(
     deploymentStore,
     (state) => pick(state, ["currentObjectId"]),

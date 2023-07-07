@@ -1,19 +1,19 @@
 import {
   ArrowRightOutlined,
-  CopyOutlined,
   DeleteOutlined,
   DragOutlined,
 } from "@ant-design/icons";
 import classNames from "classnames";
 import { useEffect, useRef } from "react";
 import { ReactSVG } from "react-svg";
-import { StoreApi, useStore } from "zustand";
+import { useStore } from "zustand";
 import shallow from "zustand/shallow";
-import { ListStore } from "../../../../shared/store/listStore";
-import { UndoStore } from "../../../../shared/store/undo";
+import { useService } from "../../../../shared/libs/di/react/useService";
+import { listStoreIdentifier } from "../../../../shared/store/listStore";
+import { deploymentUndoStoreIdentifier } from "../../../../shared/store/undo";
 import { pick } from "../../../../shared/utils/pick";
 import { useEditDeploymentController } from "../../controller/useEditDeploymentController";
-import { DeploymentStore } from "../../store/deploymentStore";
+import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 import Background from "../Background";
 
 function getObjectId(e: any) {
@@ -28,23 +28,20 @@ function getObjectId(e: any) {
   return objectId;
 }
 
-function Diagram(props: {
-  deploymentStore: StoreApi<DeploymentStore>;
-  undoStore: StoreApi<UndoStore<any>>;
-  listStore: StoreApi<ListStore>;
-}) {
-  const { deploymentStore, undoStore, listStore } = props;
+function Diagram() {
+  const deploymentStore = useService(deploymentStoreIdentifier);
   const { svgUrl, currentObjectId, deployment } = useStore(
     deploymentStore,
     (state) => pick(state, ["svgUrl", "currentObjectId", "deployment"]),
     shallow
   );
+
   const {
     handleObjectSelect,
     handleAddRelation,
     handleMoveObject,
     handleDelete,
-  } = useEditDeploymentController([deploymentStore, undoStore, listStore]);
+  } = useEditDeploymentController([]);
   const isRoot = currentObjectId === deployment?.root?.id;
   const ref = useRef(null);
 
@@ -104,11 +101,7 @@ function Diagram(props: {
           }}
         />
         <div className="mt-3 cursor-pointer">
-          <Background
-            deploymentStore={deploymentStore}
-            undoStore={undoStore}
-            listStore={listStore}
-          />
+          <Background />
         </div>
       </div>
       <div

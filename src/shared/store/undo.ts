@@ -2,6 +2,8 @@ import { createStore, StoreApi } from "zustand";
 import remove from "lodash/remove";
 import throttle from "lodash/throttle";
 import cloneDeep from "lodash/cloneDeep";
+import { createServiceIdentifier } from "../libs/di/utils/createServiceIdentifier";
+import { Deployment } from "../../core/entities/Deployment";
 
 type State<T> = {
   queue: T[];
@@ -17,6 +19,10 @@ type Actions<T> = {
 };
 
 export type UndoStore<T> = State<T> & Actions<T>;
+
+export const deploymentUndoStoreIdentifier = createServiceIdentifier<
+  StoreApi<UndoStore<Deployment>>
+>("deploymentUndoStoreIdentifier");
 
 export function createUndoStore<T>(): StoreApi<UndoStore<T>> {
   return createStore((set, get) => {

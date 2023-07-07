@@ -8,29 +8,26 @@ import {
 import { Dropdown, MenuProps, message, Popover, Tooltip } from "antd";
 import classNames from "classnames";
 import copy from "copy-to-clipboard";
-import { StoreApi, useStore } from "zustand";
+import { useStore } from "zustand";
 import shallow from "zustand/shallow";
-import { ListStore } from "../../../../shared/store/listStore";
-import { UndoStore } from "../../../../shared/store/undo";
+import { useService } from "../../../../shared/libs/di/react/useService";
+import { deploymentUndoStoreIdentifier } from "../../../../shared/store/undo";
 import { pick } from "../../../../shared/utils/pick";
 import { useEditDeploymentController } from "../../controller/useEditDeploymentController";
-import { DeploymentStore } from "../../store/deploymentStore";
+import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 import { AddContainer } from "../AddContainer";
 import { AddObject } from "../AddObject";
 
-function Toolbar(props: {
-  deploymentStore: StoreApi<DeploymentStore>;
-  undoStore: StoreApi<UndoStore<any>>;
-  listStore: StoreApi<ListStore>;
-}) {
-  const { deploymentStore, undoStore, listStore } = props;
+function Toolbar() {
+  const deploymentStore = useService(deploymentStoreIdentifier);
+  const undoStore = useService(deploymentUndoStoreIdentifier);
   const {
     handleUndo,
     handleRedo,
     handleAddContainer,
     handleAddObject,
     handleCopyDiagram,
-  } = useEditDeploymentController([deploymentStore, undoStore, listStore]);
+  } = useEditDeploymentController([]);
   const { allowRedo, allowUndo } = useStore(
     undoStore,
     (state) => ({

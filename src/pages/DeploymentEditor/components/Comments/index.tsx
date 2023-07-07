@@ -1,27 +1,17 @@
-import { StoreApi, useStore } from "zustand";
+import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import {
   ContainerObjectType,
   findObject,
-  ObjectType,
 } from "../../../../core/entities/Deployment";
-import { ListStore } from "../../../../shared/store/listStore";
-import { UndoStore } from "../../../../shared/store/undo";
+import { useService } from "../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../shared/utils/pick";
 import { useEditDeploymentController } from "../../controller/useEditDeploymentController";
-import { DeploymentStore } from "../../store/deploymentStore";
+import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 
-function Comments(props: {
-  deploymentStore: StoreApi<DeploymentStore>;
-  undoStore: StoreApi<UndoStore<any>>;
-  listStore: StoreApi<ListStore>;
-}) {
-  const { deploymentStore, undoStore, listStore } = props;
-  const { handleObjectChange } = useEditDeploymentController([
-    deploymentStore,
-    undoStore,
-    listStore,
-  ]);
+function Comments() {
+  const deploymentStore = useService(deploymentStoreIdentifier);
+  const { handleObjectChange } = useEditDeploymentController([]);
 
   const { currentObjectId } = useStore(
     deploymentStore,

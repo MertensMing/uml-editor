@@ -10,8 +10,11 @@ import {
   createDeploymentStore,
   deploymentStoreIdentifier,
 } from "./store/deploymentStore";
-import { createUndoStore } from "../../shared/store/undo";
-import { listStore } from "../../shared/store/listStore";
+import {
+  createUndoStore,
+  deploymentUndoStoreIdentifier,
+} from "../../shared/store/undo";
+import { listStore, listStoreIdentifier } from "../../shared/store/listStore";
 import Diagram from "./components/Diagram";
 import Toolbar from "./components/Toolbar";
 import Relations from "./components/Relations";
@@ -28,10 +31,9 @@ import { Container } from "inversify";
 import { useService } from "../../shared/libs/di/react/useService";
 
 export const DeploymentEditor = connect(
-  function DeploymentEditor() {
+  function () {
     const deploymentStore = useService(deploymentStoreIdentifier);
-    console.log(deploymentStore);
-    const undoStore = useRef(createUndoStore<Deployment>()).current;
+    const undoStore = useService(deploymentUndoStoreIdentifier);
 
     const {
       handleInit,
@@ -40,7 +42,7 @@ export const DeploymentEditor = connect(
       handleLineTypeChange,
       handleDeleteDiagram,
       handleAddDiagram,
-    } = useEditDeploymentController([deploymentStore, undoStore, listStore]);
+    } = useEditDeploymentController([]);
 
     const { currentObjectId, svgUrl, deployment, uml, pngUrl } = useStore(
       deploymentStore,
@@ -87,13 +89,7 @@ export const DeploymentEditor = connect(
         svgUrl={svgUrl}
         onDelete={handleDeleteDiagram}
         onAdd={handleAddDiagram}
-        diagram={
-          <Diagram
-            deploymentStore={deploymentStore}
-            undoStore={undoStore}
-            listStore={listStore}
-          />
-        }
+        diagram={<Diagram />}
         operation={
           <div>
             <div className="">
@@ -132,30 +128,12 @@ export const DeploymentEditor = connect(
                 </div>
               </div>
             </div>
-            <JsonContent
-              deploymentStore={deploymentStore}
-              undoStore={undoStore}
-              listStore={listStore}
-            />
-            <Comments
-              deploymentStore={deploymentStore}
-              undoStore={undoStore}
-              listStore={listStore}
-            />
-            <Relations
-              deploymentStore={deploymentStore}
-              undoStore={undoStore}
-              listStore={listStore}
-            />
+            <JsonContent />
+            <Comments />
+            <Relations />
           </div>
         }
-        toolbar={
-          <Toolbar
-            deploymentStore={deploymentStore}
-            undoStore={undoStore}
-            listStore={listStore}
-          />
-        }
+        toolbar={<Toolbar />}
       />
     );
   },
@@ -164,6 +142,10 @@ export const DeploymentEditor = connect(
     container
       .bind(deploymentStoreIdentifier)
       .toDynamicValue(() => createDeploymentStore());
+    container
+      .bind(deploymentUndoStoreIdentifier)
+      .toDynamicValue(() => createUndoStore<Deployment>());
+    container.bind(listStoreIdentifier).toDynamicValue(() => listStore);
     return container;
   }
 );
