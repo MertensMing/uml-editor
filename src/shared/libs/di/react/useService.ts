@@ -4,6 +4,9 @@ import { context } from "./connect";
 
 export function useService<T>(serviceIdentifier: ServiceIdentifier<T>): T {
   const container = useContext(context);
-  const service = useMemo(() => container.get<T>(serviceIdentifier), []);
+  const service = useMemo(
+    () => container.get<T>(serviceIdentifier),
+    [container, serviceIdentifier]
+  );
   return service;
 }
