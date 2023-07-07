@@ -23,6 +23,7 @@ import { deploymentStorage } from "../../../shared/storage/deployment";
 import { deploymentParser } from "../../../core/parser/deployment";
 import { drawPng, drawSvg } from "../../../shared/utils/uml";
 import { containerMap, objectMap } from "../const";
+import { createServiceIdentifier } from "../../../shared/libs/di/utils/createServiceIdentifier";
 
 type State = {
   deployment?: Deployment;
@@ -62,6 +63,9 @@ type Actions = {
 };
 
 export type DeploymentStore = State & Actions;
+
+export const deploymentStoreIdentifier =
+  createServiceIdentifier<StoreApi<DeploymentStore>>("DeploymentStore");
 
 export function createDeploymentStore(): StoreApi<DeploymentStore> {
   return createStore((set, get) => {
