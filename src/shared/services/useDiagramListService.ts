@@ -1,6 +1,11 @@
 import { PlantUMLEditorDatabaseIdentifier } from "../../db";
 import { useService } from "../libs/di/react/useService";
+import { createServiceIdentifier } from "../libs/di/utils/createServiceIdentifier";
 import { listStoreIdentifier } from "../store/listStore";
+
+export const useDiagramListServiceIdentifier = createServiceIdentifier<
+  typeof useDiagramListService
+>("useDiagramListService");
 
 export function useDiagramListService() {
   const listStore = useService(listStoreIdentifier);

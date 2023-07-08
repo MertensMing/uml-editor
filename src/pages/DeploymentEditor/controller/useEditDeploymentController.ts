@@ -11,7 +11,7 @@ import { createController } from "../../../shared/utils/createController";
 import { db } from "../../../db";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
-import { useDiagramListService } from "../../../shared/services/useDiagramListService";
+import { useDiagramListServiceIdentifier } from "../../../shared/services/useDiagramListService";
 
 type Handlers = {
   handleToggleAllowDragRelation(allow: boolean): void;
@@ -46,6 +46,7 @@ export const useEditDeploymentController = createController<[], Handlers>(
   () => {
     const deploymentStore = useService(deploymentStoreIdentifier);
     const undoStore = useService(deploymentUndoStoreIdentifier);
+    const useDiagramListService = useService(useDiagramListServiceIdentifier);
     const listService = useDiagramListService();
 
     const saveChanged = useRef(

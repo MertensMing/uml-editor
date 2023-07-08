@@ -31,6 +31,10 @@ import { Container } from "inversify";
 import { useService } from "../../shared/libs/di/react/useService";
 import { db, PlantUMLEditorDatabaseIdentifier } from "../../db";
 import { useDiagramController } from "./controller/useDiagramController";
+import {
+  useDiagramListService,
+  useDiagramListServiceIdentifier,
+} from "../../shared/services/useDiagramListService";
 
 export const DeploymentEditor = connect(
   function () {
@@ -147,6 +151,9 @@ export const DeploymentEditor = connect(
       .toConstantValue(createUndoStore<Deployment>());
     container.bind(listStoreIdentifier).toConstantValue(listStore);
     container.bind(PlantUMLEditorDatabaseIdentifier).toConstantValue(db);
+    container
+      .bind(useDiagramListServiceIdentifier)
+      .toConstantValue(useDiagramListService);
     return container;
   }
 );
