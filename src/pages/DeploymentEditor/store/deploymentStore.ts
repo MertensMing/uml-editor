@@ -3,20 +3,14 @@ import cloneDeep from "lodash/cloneDeep";
 import {
   addRelation,
   BaseObject,
-  ContainerObject,
   correctDeployment,
-  createContainer,
-  createObject,
   Deployment,
-  findObject,
-  insertObject,
   NormalObject,
   Relation,
   removeRelation,
 } from "../../../core/entities/Deployment";
 import { deploymentParser } from "../../../core/parser/deployment";
 import { drawPng, drawSvg } from "../../../shared/utils/uml";
-import { containerMap, objectMap } from "../const";
 import { createServiceIdentifier } from "../../../shared/libs/di/utils/createServiceIdentifier";
 
 type State = {
@@ -30,7 +24,6 @@ type State = {
 
 type Actions = {
   initializeDeployment(deployment?: State["deployment"]): void;
-  addObject(containerId: string, type: NormalObject["type"]): void;
   updateUmlUrl(): void;
   updateCurrentObject(id: BaseObject["id"]): void;
   addRelation(originId: string, targetId: string): void;
@@ -100,17 +93,6 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
           deployment: storage,
           currentObjectId: storage.root.id,
         });
-      },
-      addObject(containerId, type) {
-        const container = findObject(
-          get().deployment.root,
-          containerId
-        ) as ContainerObject;
-        if (container) {
-          const target = createObject(objectMap[type], type);
-          insertObject(container, target);
-          updateDiagram();
-        }
       },
     };
   });
