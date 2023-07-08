@@ -1,8 +1,5 @@
 import React from "react";
 import { SelectDiagram } from "../SelectDiagram";
-import { useNavigate } from "react-router-dom";
-import classNames from "classnames";
-import { DiagramType } from "../../constants";
 
 export function EditorLayout(props: {
   uml: string;
