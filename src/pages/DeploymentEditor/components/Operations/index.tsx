@@ -10,15 +10,15 @@ import {
   LineType,
 } from "../../../../core/entities/Deployment";
 import { useDiagramController } from "../../controller/useDiagramController";
-import { useObjectController } from "../../controller/useObjectController";
 import { useService } from "../../../../shared/libs/di/react/useService";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 import { pick } from "../../../../shared/utils/pick";
 import { Comments } from "../Comments";
+import { useObjectDetailController } from "../../controller/useObjectDetailController";
 
 export const Opreations = function () {
   const { handleObjectNameChange, handleLineTypeChange } =
-    useObjectController();
+    useObjectDetailController();
   const { handleDiagramInit, handleDiagramChange } = useDiagramController([]);
 
   const deploymentStore = useService(deploymentStoreIdentifier);

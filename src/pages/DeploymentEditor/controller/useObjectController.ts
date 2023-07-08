@@ -70,15 +70,6 @@ export const useObjectController = () => {
         })
       );
     },
-    handleObjectNameChange(id, name) {
-      deploymentStore.setState((state) =>
-        produce(state, (draft) => {
-          const object = findObject(draft.deployment?.root, id);
-          if (!object) return;
-          object.name = name;
-        })
-      );
-    },
     handleDelete(id) {
       deploymentStore.setState((state) =>
         produce(state, (draft) => {
@@ -88,49 +79,6 @@ export const useObjectController = () => {
           removeAllRelation(draft.deployment, id);
         })
       );
-    },
-    handleSelectObjectBgColor(id, color) {
-      deploymentStore.setState((state) =>
-        produce(state, (draft) => {
-          const object = findObject(draft.deployment?.root, id);
-          if (!object) return;
-          object.bgColor = color;
-        })
-      );
-    },
-    handleCommentChange(id, comment) {
-      deploymentStore.setState((state) =>
-        produce(state, (draft) => {
-          const object = findObject(draft.deployment?.root, id);
-          if (!object) return;
-          object.comment = comment;
-        })
-      );
-    },
-    handleContentChange(id, content) {
-      deploymentStore.setState((state) =>
-        produce(state, (draft) => {
-          const object = findObject(draft.deployment?.root, id);
-          if (!object) return;
-          object.content = content;
-        })
-      );
-    },
-    handleSelectObjectTextColor(id, color) {
-      deploymentStore.setState((state) =>
-        produce(state, (draft) => {
-          const object = findObject(draft.deployment?.root, id);
-          if (!object) return;
-          object.textColor = color;
-        })
-      );
-    },
-    handleLineTypeChange(linetype) {
-      deploymentStore.setState((state) => {
-        return produce(state, (draft) => {
-          draft.deployment.linetype = linetype;
-        });
-      });
     },
   };
 };

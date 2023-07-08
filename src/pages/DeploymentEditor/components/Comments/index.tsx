@@ -6,12 +6,12 @@ import {
 } from "../../../../core/entities/Deployment";
 import { useService } from "../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../shared/utils/pick";
-import { useObjectController } from "../../controller/useObjectController";
+import { useObjectDetailController } from "../../controller/useObjectDetailController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 
 export function Comments() {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const { handleCommentChange } = useObjectController();
+  const { handleCommentChange } = useObjectDetailController();
 
   const { currentObjectId } = useStore(
     deploymentStore,

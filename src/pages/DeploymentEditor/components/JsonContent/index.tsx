@@ -3,12 +3,12 @@ import shallow from "zustand/shallow";
 import { findObject, ObjectType } from "../../../../core/entities/Deployment";
 import { useService } from "../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../shared/utils/pick";
-import { useObjectController } from "../../controller/useObjectController";
+import { useObjectDetailController } from "../../controller/useObjectDetailController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 
 function JsonContent() {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const { handleContentChange } = useObjectController();
+  const { handleContentChange } = useObjectDetailController();
   const { currentObjectId } = useStore(
     deploymentStore,
     (state) => pick(state, ["currentObjectId"]),
