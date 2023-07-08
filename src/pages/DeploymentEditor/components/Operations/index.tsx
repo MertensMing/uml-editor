@@ -9,7 +9,6 @@ import {
   findObject,
   LineType,
 } from "../../../../core/entities/Deployment";
-import { useDiagramController } from "../../controller/useDiagramController";
 import { useService } from "../../../../shared/libs/di/react/useService";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 import { pick } from "../../../../shared/utils/pick";
@@ -19,13 +18,11 @@ import { useObjectDetailController } from "../../controller/useObjectDetailContr
 export const Opreations = function () {
   const { handleObjectNameChange, handleLineTypeChange } =
     useObjectDetailController();
-  const { handleDiagramInit, handleDiagramChange } = useDiagramController([]);
 
   const deploymentStore = useService(deploymentStoreIdentifier);
   const { currentObjectId, deployment } = useStore(
     deploymentStore,
-    (state) =>
-      pick(state, ["currentObjectId", "deployment", "svgUrl", "uml", "pngUrl"]),
+    (state) => pick(state, ["currentObjectId", "deployment"]),
     shallow
   );
   const currentObject = useStore(
@@ -36,16 +33,6 @@ export const Opreations = function () {
         : findObject(state.deployment?.root, state.currentObjectId),
     shallow
   );
-
-  const { id } = useParams();
-
-  useEffect(() => {
-    handleDiagramInit();
-  }, [id]);
-
-  useEffect(() => {
-    handleDiagramChange();
-  }, [deployment]);
 
   return (
     <div>
