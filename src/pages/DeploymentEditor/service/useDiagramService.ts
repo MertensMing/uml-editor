@@ -8,7 +8,6 @@ import { useSubscription } from "observable-hooks";
 import { useNavigate, useParams } from "react-router";
 import { createDiagram } from "../../../core/entities/Deployment";
 import { DiagramType } from "../../../shared/constants";
-import { produce } from "immer";
 
 export const useDiagramService = () => {
   const deploymentStore = useService(deploymentStoreIdentifier);
