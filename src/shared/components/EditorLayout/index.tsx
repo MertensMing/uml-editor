@@ -1,5 +1,6 @@
 import React from "react";
 import { SelectDiagram } from "../SelectDiagram";
+import { Icon } from "./components/Icon";
 
 export function EditorLayout(props: {
   uml: string;
@@ -16,7 +17,12 @@ export function EditorLayout(props: {
     <div data-theme="winter" className="h-full flex flex-col bg-slate-100">
       <div className="border-b navbar bg-white">
         <div className="flex-1">
-          <a className="btn btn-ghost normal-case text-xl">PlantUML Editor</a>
+          <div className="ml-8">
+            <Icon />
+          </div>
+          <a className="btn btn-ghost normal-case text-xl text-purple-900">
+            PlantUML Editor
+          </a>
         </div>
         <div className="flex-none gap-2">
           <SelectDiagram onDelete={props.onDelete} onAdd={props.onAdd} />
