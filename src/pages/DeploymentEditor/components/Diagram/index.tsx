@@ -29,16 +29,17 @@ function getObjectId(e: any) {
 
 function Diagram() {
   const deploymentStore = useService(deploymentStoreIdentifier);
+  const { handleAddRelation } = useObjectRelationController([]);
+  const { handleObjectSelect, handleMoveObject, handleDelete } =
+    useObjectController([]);
+  const ref = useRef(null);
+
   const { svgUrl, currentObjectId, deployment } = useStore(
     deploymentStore,
     (state) => pick(state, ["svgUrl", "currentObjectId", "deployment"]),
     shallow
   );
-  const { handleAddRelation } = useObjectRelationController([]);
-  const { handleObjectSelect, handleMoveObject, handleDelete } =
-    useObjectController([]);
   const isRoot = currentObjectId === deployment?.root?.id;
-  const ref = useRef(null);
 
   const onClick = useCallback(function onClick(e) {
     const id = getObjectId(e);
@@ -104,9 +105,10 @@ function Diagram() {
         style={{
           touchAction: "none",
         }}
-        onClick={(e: any) => {
-          const objectId = e.target?.attributes?.objectId?.value;
-          const rect = e.target.getBoundingClientRect();
+        onClick={(e) => {
+          const target = e.target as any;
+          const objectId = target?.attributes?.objectId?.value;
+          const rect = target.getBoundingClientRect();
           const left = rect.left;
           const top = rect.top;
           const width = rect.width;
@@ -117,10 +119,10 @@ function Diagram() {
             ref.current.style.left = `${left + width + 10}px`;
             ref.current.style.top = `${top - 20}px`;
           } else if (
-            e.target.nodeName === "text" &&
-            `${e.target.parentNode.id}`.startsWith("elem_object")
+            target.nodeName === "text" &&
+            `${target.parentNode.id}`.startsWith("elem_object")
           ) {
-            handleObjectSelect(e.target.parentNode.id.replace("elem_", ""));
+            handleObjectSelect(target.parentNode.id.replace("elem_", ""));
             ref.current.style.display = "flex";
             ref.current.style.left = `${left + width + 10}px`;
             ref.current.style.top = `${top - 20}px`;
