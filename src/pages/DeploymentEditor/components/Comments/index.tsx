@@ -6,11 +6,10 @@ import {
 } from "../../../../core/entities/Deployment";
 import { useService } from "../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../shared/utils/pick";
-import { useObjectRelationController } from "../../controller/useObjectRelationController";
 import { useObjectController } from "../../controller/useObjectController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 
-function Comments() {
+export function Comments() {
   const deploymentStore = useService(deploymentStoreIdentifier);
   const { handleObjectChange } = useObjectController([]);
 
@@ -75,5 +74,3 @@ function Comments() {
     </>
   );
 }
-
-export default Comments;

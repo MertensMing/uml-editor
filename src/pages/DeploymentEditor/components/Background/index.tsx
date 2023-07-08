@@ -10,7 +10,7 @@ import { useObjectController } from "../../controller/useObjectController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 import { ColorPicker } from "../ColorPicker";
 
-function Comments() {
+function Background() {
   const deploymentStore = useService(deploymentStoreIdentifier);
   const { handleSelectObjectBgColor } = useObjectController([]);
   const { currentObjectId } = useStore(
@@ -44,4 +44,4 @@ function Comments() {
   );
 }
 
-export default Comments;
+export default Background;

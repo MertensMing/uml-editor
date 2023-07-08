@@ -3,7 +3,6 @@ import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import { useParams } from "react-router-dom";
 import JsonContent from "../JsonContent";
-import Comments from "../Background";
 import Relations from "../Relations";
 import {
   DEFAULT_NAME,
@@ -15,16 +14,12 @@ import { useObjectController } from "../../controller/useObjectController";
 import { useService } from "../../../../shared/libs/di/react/useService";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 import { pick } from "../../../../shared/utils/pick";
+import { Comments } from "../Comments";
 
 export const Opreations = function () {
   const { handleObjectNameChange } = useObjectController([]);
-  const {
-    handleDiagramInit,
-    handleDiagramChange,
-    handleDeleteDiagram,
-    handleAddDiagram,
-    handleLineTypeChange,
-  } = useDiagramController([]);
+  const { handleDiagramInit, handleDiagramChange, handleLineTypeChange } =
+    useDiagramController([]);
 
   const deploymentStore = useService(deploymentStoreIdentifier);
   const { currentObjectId, deployment } = useStore(
