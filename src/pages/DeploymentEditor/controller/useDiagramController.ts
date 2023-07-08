@@ -15,6 +15,8 @@ import { debounceTime, Subject } from "rxjs";
 import { useSubscription } from "observable-hooks";
 import { UseDiagramServiceIdentifier } from "../service/useDiagramService";
 import { produce } from "immer";
+import { deploymentParser } from "../../../core/parser/deployment";
+import { drawPng, drawSvg } from "../../../shared/utils/uml";
 
 type Handlers = {
   handleDiagramInit(): Promise<void>;
@@ -42,7 +44,14 @@ export const useDiagramController = createController<[], Handlers>(() => {
 
   useSubscription(debounceChange$, {
     next: () => {
-      deploymentStore.getState().updateUmlUrl();
+      deploymentStore.setState((state) =>
+        produce(state, (draft) => {
+          const uml = deploymentParser.parseDiagram(draft.deployment);
+          draft.svgUrl = drawSvg(uml);
+          draft.pngUrl = drawPng(uml);
+          draft.uml = uml;
+        })
+      );
       diagramService.save();
     },
   });
@@ -50,7 +59,6 @@ export const useDiagramController = createController<[], Handlers>(() => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const actions = useAction(deploymentStore, ["initializeDeployment"]);
   const undoActions = useAction(undoStore, [
     "initialize",
     "redo",
@@ -80,11 +88,14 @@ export const useDiagramController = createController<[], Handlers>(() => {
         });
         return;
       }
-
       if (id) {
-        // 初始化 store
-        actions.initializeDeployment(JSON.parse(currentDiagram.diagram));
-        undoActions.initialize([JSON.parse(currentDiagram.diagram)]);
+        deploymentStore.setState((state) =>
+          produce(state, (draft) => {
+            const storage = JSON.parse(currentDiagram.diagram);
+            draft.deployment = storage;
+            draft.currentObjectId = storage.root.id;
+          })
+        );
       } else {
         navigate(`/${DiagramType.deployment}/${currentDiagram.id}`, {
           replace: true,

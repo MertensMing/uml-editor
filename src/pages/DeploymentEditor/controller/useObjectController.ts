@@ -45,7 +45,11 @@ export const useObjectController = () => {
       );
     },
     handleObjectSelect(id) {
-      deploymentStore.getState().updateCurrentObject(id);
+      deploymentStore.setState((state) =>
+        produce(state, (draft) => {
+          draft.currentObjectId = id;
+        })
+      );
     },
     handleMoveObject(origin, target) {
       deploymentStore.setState((state) =>
