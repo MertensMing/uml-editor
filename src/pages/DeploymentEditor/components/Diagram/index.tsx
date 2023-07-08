@@ -4,7 +4,7 @@ import {
   DragOutlined,
 } from "@ant-design/icons";
 import classNames from "classnames";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { ReactSVG } from "react-svg";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
@@ -40,16 +40,15 @@ function Diagram() {
   const isRoot = currentObjectId === deployment?.root?.id;
   const ref = useRef(null);
 
-  function onClick(e) {
+  const onClick = useCallback(function onClick(e) {
     const id = getObjectId(e);
     if (!id) {
       ref.current.style.display = "none";
     }
-  }
+  }, []);
 
   useEffect(() => {
     window.addEventListener("click", onClick);
-
     return () => {
       window.removeEventListener("click", onClick);
     };
