@@ -3,15 +3,12 @@ import debounce from "lodash/debounce";
 import {
   BaseObject,
   ContainerObjectType,
-  LineType,
   ObjectType,
   Relation,
 } from "../../../core/entities/Deployment";
 import { deploymentUndoStoreIdentifier } from "../../../shared/store/undo";
 import { createController } from "../../../shared/utils/createController";
-import { useAction } from "../../../shared/hooks/useAction";
 import { db } from "../../../db";
-import { listStoreIdentifier } from "../../../shared/store/listStore";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
 import { useDiagramListService } from "../../../shared/services/useDiagramListService";
@@ -48,7 +45,6 @@ type Handlers = {
 export const useEditDeploymentController = createController<[], Handlers>(
   () => {
     const deploymentStore = useService(deploymentStoreIdentifier);
-    const listStore = useService(listStoreIdentifier);
     const undoStore = useService(deploymentUndoStoreIdentifier);
     const listService = useDiagramListService();
 
@@ -67,12 +63,6 @@ export const useEditDeploymentController = createController<[], Handlers>(
         listService.fetchList();
       }, 1000)
     ).current;
-
-    const actions = useAction(deploymentStore, [
-      "setLineType",
-      "initializeDeployment",
-      "copyDiagram",
-    ]);
 
     return {
       handleCopy(id) {

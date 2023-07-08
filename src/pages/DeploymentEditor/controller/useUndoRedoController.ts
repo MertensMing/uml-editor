@@ -4,7 +4,6 @@ import debounce from "lodash/debounce";
 import { deploymentUndoStoreIdentifier } from "../../../shared/store/undo";
 import { createController } from "../../../shared/utils/createController";
 import { PlantUMLEditorDatabaseIdentifier } from "../../../db";
-import { listStoreIdentifier } from "../../../shared/store/listStore";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
 import { useDiagramListService } from "../../../shared/services/useDiagramListService";
