@@ -9,9 +9,7 @@ import {
   createObject,
   Deployment,
   findObject,
-  getId,
   insertObject,
-  LineType,
   NormalObject,
   Relation,
   removeRelation,
@@ -33,7 +31,6 @@ type State = {
 type Actions = {
   initializeDeployment(deployment?: State["deployment"]): void;
   addObject(containerId: string, type: NormalObject["type"]): void;
-  addContainer(containerId: string, type: ContainerObject["type"]): void;
   updateUmlUrl(): void;
   updateCurrentObject(id: BaseObject["id"]): void;
   addRelation(originId: string, targetId: string): void;
@@ -44,8 +41,6 @@ type Actions = {
     field: T,
     value: Relation[T]
   ): void;
-  setDiagram(diagram: Deployment): void;
-  setLineType(linetype: LineType): void;
 };
 
 export type DeploymentStore = State & Actions;
@@ -63,30 +58,12 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
       });
     }
 
-    function resetCurrent() {
-      set({
-        currentObjectId: get().deployment.root.id,
-      });
-    }
-
     return {
       deployment: undefined,
       currentObjectId: undefined,
       svgUrl: undefined,
       pngUrl: undefined,
       allowDragRelation: false,
-
-      setLineType(linetype) {
-        const diagram = get().deployment;
-        diagram.linetype = linetype;
-        updateDiagram();
-      },
-      setDiagram(diagram: Deployment) {
-        set({
-          deployment: diagram,
-        });
-        updateDiagram();
-      },
       addRelation(originId, targetId) {
         if ([originId, targetId].includes(get().deployment.root.id)) {
           return;
@@ -131,17 +108,6 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         ) as ContainerObject;
         if (container) {
           const target = createObject(objectMap[type], type);
-          insertObject(container, target);
-          updateDiagram();
-        }
-      },
-      addContainer(containerId, type) {
-        const container = findObject(
-          get().deployment.root,
-          containerId
-        ) as ContainerObject;
-        if (container) {
-          const target = createContainer(containerMap[type], type);
           insertObject(container, target);
           updateDiagram();
         }

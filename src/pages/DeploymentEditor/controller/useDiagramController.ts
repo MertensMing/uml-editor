@@ -50,10 +50,7 @@ export const useDiagramController = createController<[], Handlers>(() => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const actions = useAction(deploymentStore, [
-    "setLineType",
-    "initializeDeployment",
-  ]);
+  const actions = useAction(deploymentStore, ["initializeDeployment"]);
   const undoActions = useAction(undoStore, [
     "initialize",
     "redo",

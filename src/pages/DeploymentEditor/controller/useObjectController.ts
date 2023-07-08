@@ -1,4 +1,6 @@
 import {
+  ContainerObject,
+  createContainer,
   findObject,
   insertObject,
   removeAllRelation,
@@ -7,13 +9,25 @@ import {
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
 import { produce } from "immer";
+import { containerMap } from "../const";
 
 export const useObjectController = () => {
   const deploymentStore = useService(deploymentStoreIdentifier);
 
   return {
     handleAddContainer(id, type) {
-      deploymentStore.getState().addContainer(id, type);
+      deploymentStore.setState((state) =>
+        produce(state, (draft) => {
+          const container = findObject(
+            draft.deployment.root,
+            id
+          ) as ContainerObject;
+          if (container) {
+            const target = createContainer(containerMap[type], type);
+            insertObject(container, target);
+          }
+        })
+      );
     },
     handleAddObject(id, type) {
       deploymentStore.getState().addObject(id, type);
