@@ -6,13 +6,13 @@ import {
 } from "../../../../core/entities/Deployment";
 import { useService } from "../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../shared/utils/pick";
-import { useEditDeploymentController } from "../../controller/useEditDeploymentController";
+import { useObjectController } from "../../controller/useObjectController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 import { ColorPicker } from "../ColorPicker";
 
 function Comments() {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const { handleSelectObjectBgColor } = useEditDeploymentController([]);
+  const { handleSelectObjectBgColor } = useObjectController([]);
   const { currentObjectId } = useStore(
     deploymentStore,
     (state) => pick(state, ["currentObjectId"]),

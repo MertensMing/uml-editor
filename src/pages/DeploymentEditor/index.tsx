@@ -39,10 +39,11 @@ import {
   useDiagramService,
   UseDiagramServiceIdentifier,
 } from "./service/useDiagramService";
+import { useObjectController } from "./controller/useObjectController";
 
 export const DeploymentEditor = connect(
   function () {
-    const { handleObjectNameChange } = useEditDeploymentController([]);
+    const { handleObjectNameChange } = useObjectController([]);
     const {
       handleDiagramInit,
       handleDiagramChange,
