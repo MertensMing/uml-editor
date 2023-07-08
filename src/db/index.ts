@@ -1,4 +1,5 @@
 import Dexie from "dexie";
+import { createServiceIdentifier } from "../shared/libs/di/utils/createServiceIdentifier";
 
 class PlantUMLEditorDatabase extends Dexie {
   deployments!: Dexie.Table<
@@ -15,3 +16,6 @@ class PlantUMLEditorDatabase extends Dexie {
 }
 
 export const db = new PlantUMLEditorDatabase();
+
+export const PlantUMLEditorDatabaseIdentifier =
+  createServiceIdentifier<PlantUMLEditorDatabase>("PlantUMLEditorDatabase");

@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useRef } from "react";
-import cloneDeep from "lodash/cloneDeep";
 import debounce from "lodash/debounce";
 import { message } from "antd";
 import {
@@ -27,8 +26,6 @@ type Handlers = {
   handleDeleteDiagram(): Promise<void>;
   handleAddDiagram(name: string): Promise<void>;
   handleToggleAllowDragRelation(allow: boolean): void;
-  handleRedo(): void;
-  handleUndo(): void;
   // 对象和容器
   handleAddContainer(containerId: string, type: ContainerObjectType): void;
   handleAddObject(containerId: string, type: ObjectType): void;
@@ -232,20 +229,6 @@ export const useEditDeploymentController = createController<[], Handlers>(
       handleRelationChange(id, relationId, field, value) {
         deploymentStore.getState().updateRelation(id, relationId, field, value);
         saveChanged();
-      },
-      handleRedo() {
-        undoStore.getState().redo();
-        deploymentStore
-          .getState()
-          .setDiagram(cloneDeep(undoStore.getState().current));
-        saveChanged(false);
-      },
-      handleUndo() {
-        undoStore.getState().undo();
-        deploymentStore
-          .getState()
-          .setDiagram(cloneDeep(undoStore.getState().current));
-        saveChanged(false);
       },
       handleLineTypeChange(linetype) {
         actions.setLineType(linetype);

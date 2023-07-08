@@ -29,11 +29,11 @@ import {
 import { connect } from "../../shared/libs/di/react/connect";
 import { Container } from "inversify";
 import { useService } from "../../shared/libs/di/react/useService";
+import { db, PlantUMLEditorDatabaseIdentifier } from "../../db";
 
 export const DeploymentEditor = connect(
   function () {
     const deploymentStore = useService(deploymentStoreIdentifier);
-    const undoStore = useService(deploymentUndoStoreIdentifier);
 
     const {
       handleInit,
@@ -141,11 +141,12 @@ export const DeploymentEditor = connect(
     const container = new Container();
     container
       .bind(deploymentStoreIdentifier)
-      .toDynamicValue(() => createDeploymentStore());
+      .toConstantValue(createDeploymentStore());
     container
       .bind(deploymentUndoStoreIdentifier)
-      .toDynamicValue(() => createUndoStore<Deployment>());
-    container.bind(listStoreIdentifier).toDynamicValue(() => listStore);
+      .toConstantValue(createUndoStore<Deployment>());
+    container.bind(listStoreIdentifier).toConstantValue(listStore);
+    container.bind(PlantUMLEditorDatabaseIdentifier).toConstantValue(db);
     return container;
   }
 );

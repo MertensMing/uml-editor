@@ -9,8 +9,6 @@ import { ReactSVG } from "react-svg";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import { useService } from "../../../../shared/libs/di/react/useService";
-import { listStoreIdentifier } from "../../../../shared/store/listStore";
-import { deploymentUndoStoreIdentifier } from "../../../../shared/store/undo";
 import { pick } from "../../../../shared/utils/pick";
 import { useEditDeploymentController } from "../../controller/useEditDeploymentController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
