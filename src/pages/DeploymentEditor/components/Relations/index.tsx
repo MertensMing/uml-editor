@@ -11,7 +11,6 @@ function Relations() {
   const deploymentStore = useService(deploymentStoreIdentifier);
   const { handleDeleteRelation, handleRelationChange } =
     useObjectRelationController([]);
-
   const { currentObjectId, deployment } = useStore(
     deploymentStore,
     (state) => pick(state, ["currentObjectId", "deployment"]),
