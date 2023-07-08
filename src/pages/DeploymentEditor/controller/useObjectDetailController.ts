@@ -1,16 +1,7 @@
-import {
-  ContainerObject,
-  createContainer,
-  createObject,
-  findObject,
-  insertObject,
-  removeAllRelation,
-  removeObject,
-} from "../../../core/entities/Deployment";
+import { findObject } from "../../../core/entities/Deployment";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
 import { produce } from "immer";
-import { containerMap, objectMap } from "../const";
 
 export const useObjectDetailController = () => {
   const deploymentStore = useService(deploymentStoreIdentifier);

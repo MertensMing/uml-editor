@@ -59,13 +59,6 @@ export const useDiagramController = createController<[], Handlers>(() => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const undoActions = useAction(undoStore, [
-    "initialize",
-    "redo",
-    "save",
-    "undo",
-  ]);
-
   return {
     async handleDiagramInit() {
       const id = params.id;
