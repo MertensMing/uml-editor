@@ -1,17 +1,13 @@
-import { useRef } from "react";
-import debounce from "lodash/debounce";
 import {
   BaseObject,
   ContainerObjectType,
   ObjectType,
   Relation,
 } from "../../../core/entities/Deployment";
-import { deploymentUndoStoreIdentifier } from "../../../shared/store/undo";
 import { createController } from "../../../shared/utils/createController";
-import { db } from "../../../db";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
-import { useDiagramListServiceIdentifier } from "../../../shared/services/useDiagramListService";
+import { UseDiagramServiceIdentifier } from "../service/useDiagramService";
 
 type Handlers = {
   handleToggleAllowDragRelation(allow: boolean): void;
@@ -45,25 +41,8 @@ type Handlers = {
 export const useEditDeploymentController = createController<[], Handlers>(
   () => {
     const deploymentStore = useService(deploymentStoreIdentifier);
-    const undoStore = useService(deploymentUndoStoreIdentifier);
-    const useDiagramListService = useService(useDiagramListServiceIdentifier);
-    const listService = useDiagramListService();
-
-    const saveChanged = useRef(
-      debounce((needSaveUndo?: boolean) => {
-        needSaveUndo = needSaveUndo ?? true;
-        const state = deploymentStore.getState();
-        const deployment = state.deployment;
-        if (needSaveUndo) {
-          undoStore.getState().save(deployment);
-        }
-        db.deployments.update(deployment.id, {
-          diagram: JSON.stringify(deployment),
-          name: deployment.root.name,
-        });
-        listService.fetchList();
-      }, 1000)
-    ).current;
+    const useDiagramService = useService(UseDiagramServiceIdentifier);
+    const diagramService = useDiagramService();
 
     return {
       handleCopy(id) {
@@ -71,59 +50,59 @@ export const useEditDeploymentController = createController<[], Handlers>(
       },
       handleAddContainer(id, type) {
         deploymentStore.getState().addContainer(id, type);
-        saveChanged();
+        diagramService.save();
       },
       handleAddObject(id, type) {
         deploymentStore.getState().addObject(id, type);
-        saveChanged();
+        diagramService.save();
       },
       handleObjectSelect(id) {
         deploymentStore.getState().updateCurrentObject(id);
-        saveChanged();
+        diagramService.save();
       },
       handleAddRelation(origin, target) {
         deploymentStore.getState().addRelation(origin, target);
-        saveChanged();
+        diagramService.save();
       },
       handleMoveObject(origin, target) {
         deploymentStore.getState().moveObject(origin, target);
-        saveChanged();
+        diagramService.save();
       },
       handleObjectNameChange(id, name) {
         deploymentStore.getState().setObjectField(id, "name", name);
-        saveChanged();
+        diagramService.save();
       },
       handleDelete(id) {
         deploymentStore.getState().deleteObject(id);
-        saveChanged();
+        diagramService.save();
       },
       handleToggleAllowDragRelation(allow) {
         deploymentStore.getState().toggleAllowDragRelation(allow);
-        saveChanged();
+        diagramService.save();
       },
       handleDeleteRelation(origin, to) {
         deploymentStore.getState().deleteRelation(origin, to);
-        saveChanged();
+        diagramService.save();
       },
       handleSelectObjectBgColor(id, color) {
         deploymentStore.getState().setObjectField(id, "bgColor", color);
-        saveChanged();
+        diagramService.save();
       },
       handleObjectChange(id, type, value) {
         deploymentStore.getState().setObjectField(id, type, value);
-        saveChanged();
+        diagramService.save();
       },
       handleContentChange(id, content) {
         deploymentStore.getState().setObjectField(id, "content", content);
-        saveChanged();
+        diagramService.save();
       },
       handleSelectObjectTextColor(id, color) {
         deploymentStore.getState().setObjectField(id, "textColor", color);
-        saveChanged();
+        diagramService.save();
       },
       handleRelationChange(id, relationId, field, value) {
         deploymentStore.getState().updateRelation(id, relationId, field, value);
-        saveChanged();
+        diagramService.save();
       },
     };
   }

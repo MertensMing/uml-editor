@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import { useDebounceCallback } from "@react-hook/debounce";
@@ -35,6 +35,10 @@ import {
   useDiagramListService,
   useDiagramListServiceIdentifier,
 } from "../../shared/services/useDiagramListService";
+import {
+  useDiagramService,
+  UseDiagramServiceIdentifier,
+} from "./service/useDiagramService";
 
 export const DeploymentEditor = connect(
   function () {
@@ -154,6 +158,9 @@ export const DeploymentEditor = connect(
     container
       .bind(useDiagramListServiceIdentifier)
       .toConstantValue(useDiagramListService);
+    container
+      .bind(UseDiagramServiceIdentifier)
+      .toConstantValue(useDiagramService);
     return container;
   }
 );
