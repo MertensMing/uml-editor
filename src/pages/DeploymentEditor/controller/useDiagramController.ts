@@ -29,6 +29,7 @@ export const useDiagramController = createController<[], Handlers>(() => {
   const undoStore = useService(deploymentUndoStoreIdentifier);
   const db = useService(PlantUMLEditorDatabaseIdentifier);
   const listService = useDiagramListService();
+
   const [diagramChange$] = useState(new Subject<void>());
   const [debounceChange$] = useState(
     diagramChange$.pipe(
@@ -113,12 +114,10 @@ export const useDiagramController = createController<[], Handlers>(() => {
       }
       await db.deployments.delete(deploymentStore.getState().deployment.id);
       await listService.fetchList();
-      navigate(
-        `/${DiagramType.deployment}/${listStore.getState().list[0].id}`,
-        {
-          replace: true,
-        }
-      );
+      const firstId = listStore.getState().list[0].id;
+      navigate(`/${DiagramType.deployment}/${firstId}`, {
+        replace: true,
+      });
     },
     async handleAddDiagram(name) {
       const diagram = createDiagram(name);
@@ -136,7 +135,10 @@ export const useDiagramController = createController<[], Handlers>(() => {
       diagramChange$.next();
     },
     handleLineTypeChange(linetype) {
-      actions.setLineType(linetype);
+      deploymentStore.setState((state) => {
+        state.deployment.linetype = linetype;
+        return state;
+      });
     },
   };
 });
