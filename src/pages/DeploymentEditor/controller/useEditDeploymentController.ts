@@ -20,13 +20,7 @@ import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
 
 type Handlers = {
-  // 图表
-  handleInit(): Promise<void>;
-  handleDiagramChange(): void;
-  handleDeleteDiagram(): Promise<void>;
-  handleAddDiagram(name: string): Promise<void>;
   handleToggleAllowDragRelation(allow: boolean): void;
-  // 对象和容器
   handleAddContainer(containerId: string, type: ContainerObjectType): void;
   handleAddObject(containerId: string, type: ObjectType): void;
   handleObjectNameChange(objectId: string, name: string): void;
@@ -52,7 +46,6 @@ type Handlers = {
     field: T,
     value: Relation[T]
   ): void;
-  handleCopyDiagram(): void;
 };
 
 export const useEditDeploymentController = createController<[], Handlers>(
@@ -93,86 +86,8 @@ export const useEditDeploymentController = createController<[], Handlers>(
     ]);
 
     return {
-      async handleInit() {
-        const id = params.id;
-        const diagram = await db.deployments.get(id ?? "");
-        const diagramList = await db.deployments.toArray();
-        const currentDiagram = diagram || diagramList[0];
-
-        listStore.getState().setCurrentType(DiagramType.deployment);
-        listStore.getState().fetchList();
-
-        if (!currentDiagram) {
-          // 创建新图表
-          const diagram = createDiagram();
-          await db.deployments.add({
-            id: diagram.id,
-            diagram: JSON.stringify(diagram),
-            name: diagram.root.name,
-          });
-          navigate(`/${DiagramType.deployment}/${diagram.id}`, {
-            replace: true,
-          });
-          return;
-        }
-
-        if (id) {
-          // 初始化 store
-          actions.initializeDeployment(JSON.parse(currentDiagram.diagram));
-          undoActions.initialize([JSON.parse(currentDiagram.diagram)]);
-        } else {
-          navigate(`/${DiagramType.deployment}/${currentDiagram.id}`, {
-            replace: true,
-          });
-        }
-      },
-      async handleCopyDiagram() {
-        actions.copyDiagram();
-        await db.deployments.add({
-          id: deploymentStore.getState().deployment.id,
-          diagram: JSON.stringify(deploymentStore.getState().deployment),
-          name: deploymentStore.getState().deployment.root.name,
-        });
-        navigate(
-          `/${DiagramType.deployment}/${
-            deploymentStore.getState().deployment.id
-          }`,
-          {
-            replace: true,
-          }
-        );
-      },
-      async handleDeleteDiagram() {
-        if (listStore.getState().list.length <= 1) {
-          message.warning("不能删除最后一个图表");
-          return;
-        }
-        await db.deployments.delete(deploymentStore.getState().deployment.id);
-        await listStore.getState().fetchList();
-        navigate(
-          `/${DiagramType.deployment}/${listStore.getState().list[0].id}`,
-          {
-            replace: true,
-          }
-        );
-      },
-      async handleAddDiagram(name) {
-        const diagram = createDiagram(name);
-        await db.deployments.add({
-          id: diagram.id,
-          diagram: JSON.stringify(diagram),
-          name: diagram.root.name,
-        });
-        await listStore.getState().fetchList();
-        navigate(`/${DiagramType.deployment}/${diagram.id}`, {
-          replace: true,
-        });
-      },
       handleCopy(id) {
         deploymentStore.getState().copyObject(id);
-      },
-      handleDiagramChange() {
-        deploymentStore.getState().updateUmlUrl();
       },
       handleAddContainer(id, type) {
         deploymentStore.getState().addContainer(id, type);

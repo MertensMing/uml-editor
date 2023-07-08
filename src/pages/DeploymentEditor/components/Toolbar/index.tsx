@@ -13,6 +13,7 @@ import shallow from "zustand/shallow";
 import { useService } from "../../../../shared/libs/di/react/useService";
 import { deploymentUndoStoreIdentifier } from "../../../../shared/store/undo";
 import { pick } from "../../../../shared/utils/pick";
+import { useDiagramController } from "../../controller/useDiagramController";
 import { useEditDeploymentController } from "../../controller/useEditDeploymentController";
 import { useUndoRedoController } from "../../controller/useUndoRedoController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
@@ -22,8 +23,10 @@ import { AddObject } from "../AddObject";
 function Toolbar() {
   const deploymentStore = useService(deploymentStoreIdentifier);
   const undoStore = useService(deploymentUndoStoreIdentifier);
-  const { handleAddContainer, handleAddObject, handleCopyDiagram } =
-    useEditDeploymentController([]);
+  const { handleAddContainer, handleAddObject } = useEditDeploymentController(
+    []
+  );
+  const { handleCopyDiagram } = useDiagramController([]);
   const { handleRedo, handleUndo } = useUndoRedoController([]);
   const { allowRedo, allowUndo } = useStore(
     undoStore,

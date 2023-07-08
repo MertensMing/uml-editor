@@ -30,19 +30,20 @@ import { connect } from "../../shared/libs/di/react/connect";
 import { Container } from "inversify";
 import { useService } from "../../shared/libs/di/react/useService";
 import { db, PlantUMLEditorDatabaseIdentifier } from "../../db";
+import { useDiagramController } from "./controller/useDiagramController";
 
 export const DeploymentEditor = connect(
   function () {
     const deploymentStore = useService(deploymentStoreIdentifier);
 
+    const { handleObjectNameChange, handleLineTypeChange } =
+      useEditDeploymentController([]);
     const {
-      handleInit,
+      handleDiagramInit,
       handleDiagramChange,
-      handleObjectNameChange,
-      handleLineTypeChange,
       handleDeleteDiagram,
       handleAddDiagram,
-    } = useEditDeploymentController([]);
+    } = useDiagramController([]);
 
     const { currentObjectId, svgUrl, deployment, uml, pngUrl } = useStore(
       deploymentStore,
@@ -74,7 +75,7 @@ export const DeploymentEditor = connect(
     );
 
     useEffect(() => {
-      handleInit();
+      handleDiagramInit();
     }, [id]);
 
     useEffect(() => {
