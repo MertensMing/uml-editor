@@ -15,15 +15,7 @@ import {
 import { listStore, listStoreIdentifier } from "../../shared/store/listStore";
 import Diagram from "./components/Diagram";
 import Toolbar from "./components/Toolbar";
-import Relations from "./components/Relations";
-import JsonContent from "./components/JsonContent";
-import Comments from "./components/Comments";
-import {
-  DEFAULT_NAME,
-  Deployment,
-  findObject,
-  LineType,
-} from "../../core/entities/Deployment";
+import { Deployment } from "../../core/entities/Deployment";
 import { connect } from "../../shared/libs/di/react/connect";
 import { Container } from "inversify";
 import { useService } from "../../shared/libs/di/react/useService";
@@ -37,39 +29,28 @@ import {
   useDiagramService,
   UseDiagramServiceIdentifier,
 } from "./service/useDiagramService";
-import { useObjectController } from "./controller/useObjectController";
+import { Opreations } from "./components/Operations";
 
 export const DeploymentEditor = connect(
   function () {
-    const { handleObjectNameChange } = useObjectController([]);
     const {
       handleDiagramInit,
       handleDiagramChange,
       handleDeleteDiagram,
       handleAddDiagram,
-      handleLineTypeChange,
     } = useDiagramController([]);
 
     const deploymentStore = useService(deploymentStoreIdentifier);
-    const { currentObjectId, svgUrl, deployment, uml, pngUrl } = useStore(
+    const { svgUrl, deployment, uml, pngUrl } = useStore(
       deploymentStore,
       (state) =>
         pick(state, [
-          "currentObjectId",
           "deployment",
           "svgUrl",
           "allowDragRelation",
           "uml",
           "pngUrl",
         ]),
-      shallow
-    );
-    const currentObject = useStore(
-      deploymentStore,
-      (state) =>
-        !state.deployment?.root
-          ? undefined
-          : findObject(state.deployment?.root, state.currentObjectId),
       shallow
     );
 
@@ -92,49 +73,7 @@ export const DeploymentEditor = connect(
         onDelete={handleDeleteDiagram}
         onAdd={handleAddDiagram}
         diagram={<Diagram />}
-        operation={
-          <div>
-            <div className="">
-              <h3 className="pb-2 text-sm font-bold">连线样式</h3>
-              <div className="flex items-center">
-                <div className="form-control">
-                  <label className="input-group input-group-sm">
-                    <span>类型</span>
-                    <select
-                      value={deployment?.linetype}
-                      className="select select-bordered select-sm"
-                      onChange={(e) => {
-                        handleLineTypeChange(e.target.value as LineType);
-                      }}
-                    >
-                      <option value={"default" as LineType}>Default</option>
-                      <option value={"ortho" as LineType}>Ortho</option>
-                      <option value={"polyline" as LineType}>Polyline</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div className="pt-8">
-              <h3 className="pb-2 text-sm font-bold">名称</h3>
-              <div>
-                <div>
-                  <input
-                    type="text"
-                    className="input input-bordered input-sm"
-                    value={currentObject?.name || DEFAULT_NAME}
-                    onChange={(e) =>
-                      handleObjectNameChange(currentObjectId, e.target.value)
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-            <JsonContent />
-            <Comments />
-            <Relations />
-          </div>
-        }
+        operation={<Opreations />}
         toolbar={<Toolbar />}
       />
     );

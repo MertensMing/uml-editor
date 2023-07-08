@@ -18,6 +18,7 @@ type Handlers = {
 export const useObjectRelationController = createController<[], Handlers>(
   () => {
     const deploymentStore = useService(deploymentStoreIdentifier);
+
     const useDiagramService = useService(UseDiagramServiceIdentifier);
     const diagramService = useDiagramService();
 

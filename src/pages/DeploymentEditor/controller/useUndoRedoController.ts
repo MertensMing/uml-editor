@@ -17,6 +17,7 @@ export const useUndoRedoController = createController<[], Handlers>(() => {
   const deploymentStore = useService(deploymentStoreIdentifier);
   const undoStore = useService(deploymentUndoStoreIdentifier);
   const db = useService(PlantUMLEditorDatabaseIdentifier);
+
   const useDiagramListService = useService(useDiagramListServiceIdentifier);
   const listService = useDiagramListService();
 
