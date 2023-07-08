@@ -1,11 +1,8 @@
-import { useNavigate, useParams } from "react-router-dom";
 import { useRef } from "react";
 import debounce from "lodash/debounce";
-import { message } from "antd";
 import {
   BaseObject,
   ContainerObjectType,
-  createDiagram,
   LineType,
   ObjectType,
   Relation,
@@ -15,7 +12,6 @@ import { createController } from "../../../shared/utils/createController";
 import { useAction } from "../../../shared/hooks/useAction";
 import { db } from "../../../db";
 import { listStoreIdentifier } from "../../../shared/store/listStore";
-import { DiagramType } from "../../../shared/constants";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
 
@@ -37,7 +33,7 @@ type Handlers = {
     value: unknown
   ): void;
   handleSelectObjectTextColor(objectId: string, color: string): void;
-  handleLineTypeChange(linetype: LineType): void;
+
   // 关系
   handleDeleteRelation(origin: string, target: string): void;
   handleRelationChange<T extends keyof Relation>(
@@ -70,19 +66,10 @@ export const useEditDeploymentController = createController<[], Handlers>(
       }, 1000)
     ).current;
 
-    const params = useParams();
-    const navigate = useNavigate();
-
     const actions = useAction(deploymentStore, [
       "setLineType",
       "initializeDeployment",
       "copyDiagram",
-    ]);
-    const undoActions = useAction(undoStore, [
-      "initialize",
-      "redo",
-      "save",
-      "undo",
     ]);
 
     return {
@@ -143,10 +130,6 @@ export const useEditDeploymentController = createController<[], Handlers>(
       },
       handleRelationChange(id, relationId, field, value) {
         deploymentStore.getState().updateRelation(id, relationId, field, value);
-        saveChanged();
-      },
-      handleLineTypeChange(linetype) {
-        actions.setLineType(linetype);
         saveChanged();
       },
     };

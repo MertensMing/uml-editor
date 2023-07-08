@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
-import { createDiagram } from "../../../core/entities/Deployment";
+import { createDiagram, LineType } from "../../../core/entities/Deployment";
 import { deploymentUndoStoreIdentifier } from "../../../shared/store/undo";
 import { createController } from "../../../shared/utils/createController";
 import { useAction } from "../../../shared/hooks/useAction";
@@ -16,6 +16,7 @@ type Handlers = {
   handleDeleteDiagram(): Promise<void>;
   handleAddDiagram(name: string): Promise<void>;
   handleCopyDiagram(): void;
+  handleLineTypeChange(linetype: LineType): void;
 };
 
 export const useDiagramController = createController<[], Handlers>(() => {
@@ -116,6 +117,9 @@ export const useDiagramController = createController<[], Handlers>(() => {
     },
     handleDiagramChange() {
       deploymentStore.getState().updateUmlUrl();
+    },
+    handleLineTypeChange(linetype) {
+      actions.setLineType(linetype);
     },
   };
 });

@@ -34,17 +34,16 @@ import { useDiagramController } from "./controller/useDiagramController";
 
 export const DeploymentEditor = connect(
   function () {
-    const deploymentStore = useService(deploymentStoreIdentifier);
-
-    const { handleObjectNameChange, handleLineTypeChange } =
-      useEditDeploymentController([]);
+    const { handleObjectNameChange } = useEditDeploymentController([]);
     const {
       handleDiagramInit,
       handleDiagramChange,
       handleDeleteDiagram,
       handleAddDiagram,
+      handleLineTypeChange,
     } = useDiagramController([]);
 
+    const deploymentStore = useService(deploymentStoreIdentifier);
     const { currentObjectId, svgUrl, deployment, uml, pngUrl } = useStore(
       deploymentStore,
       (state) =>
