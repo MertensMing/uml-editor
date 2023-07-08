@@ -6,7 +6,6 @@ import {
   ContainerObject,
   correctDeployment,
   createContainer,
-  createDiagram,
   createObject,
   Deployment,
   findObject,

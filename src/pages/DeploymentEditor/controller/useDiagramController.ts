@@ -10,6 +10,9 @@ import { DiagramType } from "../../../shared/constants";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
 import { useDiagramListService } from "../../../shared/services/useDiagramListService";
+import { useState } from "react";
+import { debounceTime, Subject } from "rxjs";
+import { useSubscription } from "observable-hooks";
 
 type Handlers = {
   handleDiagramInit(): Promise<void>;
@@ -26,6 +29,18 @@ export const useDiagramController = createController<[], Handlers>(() => {
   const undoStore = useService(deploymentUndoStoreIdentifier);
   const db = useService(PlantUMLEditorDatabaseIdentifier);
   const listService = useDiagramListService();
+  const [diagramChange$] = useState(new Subject<void>());
+  const [debounceChange$] = useState(
+    diagramChange$.pipe(
+      debounceTime(500) // 500ms 的防抖间隔
+    )
+  );
+
+  useSubscription(debounceChange$, {
+    next: () => {
+      deploymentStore.getState().updateUmlUrl();
+    },
+  });
 
   const params = useParams();
   const navigate = useNavigate();
@@ -118,7 +133,7 @@ export const useDiagramController = createController<[], Handlers>(() => {
       });
     },
     handleDiagramChange() {
-      deploymentStore.getState().updateUmlUrl();
+      diagramChange$.next();
     },
     handleLineTypeChange(linetype) {
       actions.setLineType(linetype);

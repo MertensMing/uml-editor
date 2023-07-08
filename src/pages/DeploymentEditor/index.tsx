@@ -1,11 +1,9 @@
 import { useEffect } from "react";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
-import { useDebounceCallback } from "@react-hook/debounce";
 import { useParams } from "react-router-dom";
 import { EditorLayout } from "../../shared/components/EditorLayout";
 import { pick } from "../../shared/utils/pick";
-import { useObjectRelationController } from "./controller/useObjectRelationController";
 import {
   createDeploymentStore,
   deploymentStoreIdentifier,
@@ -77,17 +75,12 @@ export const DeploymentEditor = connect(
 
     const { id } = useParams();
 
-    const boundHandleDiagramChange = useDebounceCallback(
-      handleDiagramChange,
-      500
-    );
-
     useEffect(() => {
       handleDiagramInit();
     }, [id]);
 
     useEffect(() => {
-      boundHandleDiagramChange();
+      handleDiagramChange();
     }, [deployment]);
 
     return (
