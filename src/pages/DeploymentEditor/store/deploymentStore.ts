@@ -14,8 +14,6 @@ import {
   LineType,
   NormalObject,
   Relation,
-  removeAllRelation,
-  removeObject,
   removeRelation,
 } from "../../../core/entities/Deployment";
 import { deploymentParser } from "../../../core/parser/deployment";
@@ -147,14 +145,6 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
           insertObject(container, target);
           updateDiagram();
         }
-      },
-      copyDiagram() {
-        const newDeployment = cloneDeep(get().deployment);
-        newDeployment.id = `deployment_${getId()}`;
-        newDeployment.root.name = `${newDeployment.root.name}（副本）`;
-        set({
-          deployment: newDeployment,
-        });
       },
     };
   });

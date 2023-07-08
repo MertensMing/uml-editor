@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
-import { createDiagram, LineType } from "../../../core/entities/Deployment";
+import { createDiagram, getId } from "../../../core/entities/Deployment";
 import { deploymentUndoStoreIdentifier } from "../../../shared/store/undo";
 import { createController } from "../../../shared/utils/createController";
 import { useAction } from "../../../shared/hooks/useAction";
@@ -14,6 +14,7 @@ import { useState } from "react";
 import { debounceTime, Subject } from "rxjs";
 import { useSubscription } from "observable-hooks";
 import { UseDiagramServiceIdentifier } from "../service/useDiagramService";
+import { produce } from "immer";
 
 type Handlers = {
   handleDiagramInit(): Promise<void>;
@@ -94,18 +95,22 @@ export const useDiagramController = createController<[], Handlers>(() => {
       }
     },
     async handleCopyDiagram() {
-      await db.deployments.add({
-        id: deploymentStore.getState().deployment.id,
-        diagram: JSON.stringify(deploymentStore.getState().deployment),
-        name: deploymentStore.getState().deployment.root.name,
-      });
-      navigate(
-        `/${DiagramType.deployment}/${
-          deploymentStore.getState().deployment.id
-        }`,
-        {
-          replace: true,
-        }
+      deploymentStore.setState((state) =>
+        produce(state, (draft) => {
+          draft.deployment.id = `deployment_${getId()}`;
+          draft.deployment.root.name = `${draft.deployment.root.name}（副本）`;
+          db.deployments
+            .add({
+              id: draft.deployment.id,
+              diagram: JSON.stringify(draft.deployment),
+              name: draft.deployment.root.name,
+            })
+            .then(() => {
+              navigate(`/${DiagramType.deployment}/${draft.deployment.id}`, {
+                replace: true,
+              });
+            });
+        })
       );
     },
     async handleDeleteDiagram() {
