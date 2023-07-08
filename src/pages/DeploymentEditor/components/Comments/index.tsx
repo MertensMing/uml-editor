@@ -6,7 +6,7 @@ import {
 } from "../../../../core/entities/Deployment";
 import { useService } from "../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../shared/utils/pick";
-import { useEditDeploymentController } from "../../controller/useEditDeploymentController";
+import { useObjectRelationController } from "../../controller/useObjectRelationController";
 import { useObjectController } from "../../controller/useObjectController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 

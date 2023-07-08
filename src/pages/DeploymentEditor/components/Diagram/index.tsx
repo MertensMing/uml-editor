@@ -10,7 +10,7 @@ import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import { useService } from "../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../shared/utils/pick";
-import { useEditDeploymentController } from "../../controller/useEditDeploymentController";
+import { useObjectRelationController } from "../../controller/useObjectRelationController";
 import { useObjectController } from "../../controller/useObjectController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 import Background from "../Background";
@@ -34,7 +34,7 @@ function Diagram() {
     (state) => pick(state, ["svgUrl", "currentObjectId", "deployment"]),
     shallow
   );
-  const { handleAddRelation } = useEditDeploymentController([]);
+  const { handleAddRelation } = useObjectRelationController([]);
   const { handleObjectSelect, handleMoveObject, handleDelete } =
     useObjectController([]);
   const isRoot = currentObjectId === deployment?.root?.id;

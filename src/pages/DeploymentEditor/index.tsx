@@ -5,7 +5,7 @@ import { useDebounceCallback } from "@react-hook/debounce";
 import { useParams } from "react-router-dom";
 import { EditorLayout } from "../../shared/components/EditorLayout";
 import { pick } from "../../shared/utils/pick";
-import { useEditDeploymentController } from "./controller/useEditDeploymentController";
+import { useObjectRelationController } from "./controller/useObjectRelationController";
 import {
   createDeploymentStore,
   deploymentStoreIdentifier,
