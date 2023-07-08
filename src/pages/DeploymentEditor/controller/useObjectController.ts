@@ -28,8 +28,6 @@ type Handlers = {
 
 export const useObjectController = createController<[], Handlers>(() => {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const useDiagramService = useService(UseDiagramServiceIdentifier);
-  const diagramService = useDiagramService();
 
   return {
     handleCopy(id) {
@@ -37,42 +35,33 @@ export const useObjectController = createController<[], Handlers>(() => {
     },
     handleAddContainer(id, type) {
       deploymentStore.getState().addContainer(id, type);
-      diagramService.save();
     },
     handleAddObject(id, type) {
       deploymentStore.getState().addObject(id, type);
-      diagramService.save();
     },
     handleObjectSelect(id) {
       deploymentStore.getState().updateCurrentObject(id);
     },
     handleMoveObject(origin, target) {
       deploymentStore.getState().moveObject(origin, target);
-      diagramService.save();
     },
     handleObjectNameChange(id, name) {
       deploymentStore.getState().setObjectField(id, "name", name);
-      diagramService.save();
     },
     handleDelete(id) {
       deploymentStore.getState().deleteObject(id);
-      diagramService.save();
     },
     handleSelectObjectBgColor(id, color) {
       deploymentStore.getState().setObjectField(id, "bgColor", color);
-      diagramService.save();
     },
     handleObjectChange(id, type, value) {
       deploymentStore.getState().setObjectField(id, type, value);
-      diagramService.save();
     },
     handleContentChange(id, content) {
       deploymentStore.getState().setObjectField(id, "content", content);
-      diagramService.save();
     },
     handleSelectObjectTextColor(id, color) {
       deploymentStore.getState().setObjectField(id, "textColor", color);
-      diagramService.save();
     },
   };
 });

@@ -13,6 +13,7 @@ import { useDiagramListService } from "../../../shared/services/useDiagramListSe
 import { useState } from "react";
 import { debounceTime, Subject } from "rxjs";
 import { useSubscription } from "observable-hooks";
+import { UseDiagramServiceIdentifier } from "../service/useDiagramService";
 
 type Handlers = {
   handleDiagramInit(): Promise<void>;
@@ -29,6 +30,8 @@ export const useDiagramController = createController<[], Handlers>(() => {
   const undoStore = useService(deploymentUndoStoreIdentifier);
   const db = useService(PlantUMLEditorDatabaseIdentifier);
   const listService = useDiagramListService();
+  const useDiagramService = useService(UseDiagramServiceIdentifier);
+  const diagramService = useDiagramService();
 
   const [diagramChange$] = useState(new Subject<void>());
   const [debounceChange$] = useState(
@@ -40,6 +43,7 @@ export const useDiagramController = createController<[], Handlers>(() => {
   useSubscription(debounceChange$, {
     next: () => {
       deploymentStore.getState().updateUmlUrl();
+      diagramService.save();
     },
   });
 
