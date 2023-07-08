@@ -1,9 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
 import { createDiagram, getId } from "../../../core/entities/Deployment";
-import { deploymentUndoStoreIdentifier } from "../../../shared/store/undo";
 import { createController } from "../../../shared/utils/createController";
-import { useAction } from "../../../shared/hooks/useAction";
 import { PlantUMLEditorDatabaseIdentifier } from "../../../db";
 import { listStoreIdentifier } from "../../../shared/store/listStore";
 import { DiagramType } from "../../../shared/constants";
@@ -29,7 +27,6 @@ type Handlers = {
 export const useDiagramController = createController<[], Handlers>(() => {
   const deploymentStore = useService(deploymentStoreIdentifier);
   const listStore = useService(listStoreIdentifier);
-  const undoStore = useService(deploymentUndoStoreIdentifier);
   const db = useService(PlantUMLEditorDatabaseIdentifier);
   const listService = useDiagramListService();
   const useDiagramService = useService(UseDiagramServiceIdentifier);
@@ -56,44 +53,12 @@ export const useDiagramController = createController<[], Handlers>(() => {
     },
   });
 
-  const params = useParams();
   const navigate = useNavigate();
 
   return {
     async handleDiagramInit() {
-      const id = params.id;
-      const diagram = await db.deployments.get(id ?? "");
-      const diagramList = await db.deployments.toArray();
-      const currentDiagram = diagram || diagramList[0];
-
       listService.fetchList();
-
-      if (!currentDiagram) {
-        // 创建新图表
-        const diagram = createDiagram();
-        await db.deployments.add({
-          id: diagram.id,
-          diagram: JSON.stringify(diagram),
-          name: diagram.root.name,
-        });
-        navigate(`/${DiagramType.deployment}/${diagram.id}`, {
-          replace: true,
-        });
-        return;
-      }
-      if (id) {
-        deploymentStore.setState((state) =>
-          produce(state, (draft) => {
-            const storage = JSON.parse(currentDiagram.diagram);
-            draft.deployment = storage;
-            draft.currentObjectId = storage.root.id;
-          })
-        );
-      } else {
-        navigate(`/${DiagramType.deployment}/${currentDiagram.id}`, {
-          replace: true,
-        });
-      }
+      diagramService.init();
     },
     async handleCopyDiagram() {
       deploymentStore.setState((state) =>
