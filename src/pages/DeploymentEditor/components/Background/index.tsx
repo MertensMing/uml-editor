@@ -12,7 +12,7 @@ import { ColorPicker } from "../ColorPicker";
 
 function Background() {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const { handleSelectObjectBgColor } = useObjectController([]);
+  const { handleSelectObjectBgColor } = useObjectController();
   const { currentObjectId } = useStore(
     deploymentStore,
     (state) => pick(state, ["currentObjectId"]),

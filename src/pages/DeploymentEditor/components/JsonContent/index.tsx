@@ -8,7 +8,7 @@ import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 
 function JsonContent() {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const { handleContentChange } = useObjectController([]);
+  const { handleContentChange } = useObjectController();
   const { currentObjectId } = useStore(
     deploymentStore,
     (state) => pick(state, ["currentObjectId"]),

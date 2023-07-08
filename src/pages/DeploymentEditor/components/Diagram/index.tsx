@@ -31,7 +31,7 @@ function Diagram() {
   const deploymentStore = useService(deploymentStoreIdentifier);
   const { handleAddRelation } = useObjectRelationController([]);
   const { handleObjectSelect, handleMoveObject, handleDelete } =
-    useObjectController([]);
+    useObjectController();
   const ref = useRef(null);
 
   const { svgUrl, currentObjectId, deployment } = useStore(

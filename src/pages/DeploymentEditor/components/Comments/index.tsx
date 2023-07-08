@@ -11,7 +11,7 @@ import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 
 export function Comments() {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const { handleObjectChange } = useObjectController([]);
+  const { handleCommentChange } = useObjectController();
 
   const { currentObjectId } = useStore(
     deploymentStore,
@@ -39,7 +39,7 @@ export function Comments() {
               value={currentObject?.comment?.direction || "right"}
               className="select select-bordered select-xs ml-3"
               onChange={(e) => {
-                handleObjectChange(currentObjectId, "comment", {
+                handleCommentChange(currentObjectId, {
                   direction: e.target.value,
                   content: currentObject?.comment?.content,
                 });
@@ -55,7 +55,7 @@ export function Comments() {
             className="textarea textarea-bordered leading-4 scrollbar-thin scrollbar-thumb-slate-300"
             value={currentObject?.comment?.content || ""}
             onChange={(e) => {
-              handleObjectChange(currentObjectId, "comment", {
+              handleCommentChange(currentObjectId, {
                 direction: currentObject?.comment?.direction || "right",
                 content: e.target.value,
               });

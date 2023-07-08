@@ -35,17 +35,9 @@ type State = {
 type Actions = {
   initializeDeployment(deployment?: State["deployment"]): void;
   addObject(containerId: string, type: NormalObject["type"]): void;
-  deleteObject(id: BaseObject["id"]): void;
-  moveObject(originId: string, targetId: string): void;
   addContainer(containerId: string, type: ContainerObject["type"]): void;
   updateUmlUrl(): void;
   updateCurrentObject(id: BaseObject["id"]): void;
-  setObjectField(
-    objectId: BaseObject["id"],
-    field: keyof ContainerObject | keyof NormalObject,
-    value: unknown
-  ): void;
-  copyObject(id: string): void;
   addRelation(originId: string, targetId: string): void;
   deleteRelation(originId: string, targetId: string): void;
   updateRelation<T extends keyof Relation>(
@@ -56,7 +48,6 @@ type Actions = {
   ): void;
   setDiagram(diagram: Deployment): void;
   setLineType(linetype: LineType): void;
-  copyDiagram(): void;
 };
 
 export type DeploymentStore = State & Actions;
@@ -164,42 +155,6 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         set({
           deployment: newDeployment,
         });
-      },
-      copyObject(objectId) {
-        // const targetObject = findObject(get().deployment.root, objectId);
-        // const newObject = cloneDeep(targetObject);
-        // newObject.id = `object_${getId()}`;
-        // insertObject(get().deployment.root, newObject);
-        // updateDiagram();
-      },
-      moveObject(originId, targetId) {
-        const targetObject = findObject(get().deployment.root, targetId);
-        if (!targetObject || !targetObject?.isContainer) {
-          throw new Error(`targetId ${targetId} 不是容器`);
-        }
-        const originObject = findObject(get().deployment.root, originId);
-        if (originObject?.isContainer && findObject(originObject, targetId)) {
-          throw new Error(`父对象 ${originId} 不能移动到子对象 ${targetId} 中`);
-        }
-        const removed = removeObject(get().deployment.root, originId);
-        if (!removed) {
-          throw new Error(`找不到对象 ${targetId}`);
-        }
-        insertObject(targetObject, removed);
-        updateDiagram();
-      },
-      setObjectField(objectId, field, value) {
-        const object = findObject(get().deployment?.root, objectId);
-        if (!object) return;
-        object[field] = value;
-        updateDiagram();
-      },
-      deleteObject(id) {
-        const removed = removeObject(get().deployment.root, id);
-        if (!removed) return;
-        resetCurrent();
-        removeAllRelation(get().deployment, id);
-        updateDiagram();
       },
     };
   });

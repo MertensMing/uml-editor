@@ -17,9 +17,9 @@ import { pick } from "../../../../shared/utils/pick";
 import { Comments } from "../Comments";
 
 export const Opreations = function () {
-  const { handleObjectNameChange } = useObjectController([]);
-  const { handleDiagramInit, handleDiagramChange, handleLineTypeChange } =
-    useDiagramController([]);
+  const { handleObjectNameChange, handleLineTypeChange } =
+    useObjectController();
+  const { handleDiagramInit, handleDiagramChange } = useDiagramController([]);
 
   const deploymentStore = useService(deploymentStoreIdentifier);
   const { currentObjectId, deployment } = useStore(

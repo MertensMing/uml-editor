@@ -20,7 +20,7 @@ import { AddObject } from "../AddObject";
 
 function Toolbar() {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const { handleAddContainer, handleAddObject } = useObjectController([]);
+  const { handleAddContainer, handleAddObject } = useObjectController();
   const { handleCopyDiagram } = useDiagramController([]);
   const { svgUrl, deployment, uml, pngUrl } = useStore(
     deploymentStore,

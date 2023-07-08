@@ -21,7 +21,6 @@ type Handlers = {
   handleDeleteDiagram(): Promise<void>;
   handleAddDiagram(name: string): Promise<void>;
   handleCopyDiagram(): void;
-  handleLineTypeChange(linetype: LineType): void;
 };
 
 export const useDiagramController = createController<[], Handlers>(() => {
@@ -53,7 +52,6 @@ export const useDiagramController = createController<[], Handlers>(() => {
   const actions = useAction(deploymentStore, [
     "setLineType",
     "initializeDeployment",
-    "copyDiagram",
   ]);
   const undoActions = useAction(undoStore, [
     "initialize",
@@ -96,7 +94,6 @@ export const useDiagramController = createController<[], Handlers>(() => {
       }
     },
     async handleCopyDiagram() {
-      actions.copyDiagram();
       await db.deployments.add({
         id: deploymentStore.getState().deployment.id,
         diagram: JSON.stringify(deploymentStore.getState().deployment),
@@ -137,12 +134,6 @@ export const useDiagramController = createController<[], Handlers>(() => {
     },
     handleDiagramChange() {
       diagramChange$.next();
-    },
-    handleLineTypeChange(linetype) {
-      deploymentStore.setState((state) => {
-        state.deployment.linetype = linetype;
-        return state;
-      });
     },
   };
 });
