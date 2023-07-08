@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { db } from "../../../db";
+import { PlantUMLEditorDatabaseIdentifier } from "../../../db";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
 import { createServiceIdentifier } from "../../../shared/libs/di/utils/createServiceIdentifier";
@@ -13,6 +13,7 @@ export const useDiagramService = () => {
   const deploymentStore = useService(deploymentStoreIdentifier);
   const params = useParams();
   const navigate = useNavigate();
+  const db = useService(PlantUMLEditorDatabaseIdentifier);
   const [save$] = useState(new Subject<void>());
   const [debouncedSave$] = useState(save$.pipe(debounceTime(500)));
 

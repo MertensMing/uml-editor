@@ -1,7 +1,5 @@
-import { useEffect } from "react";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
-import { useParams } from "react-router-dom";
 import JsonContent from "../JsonContent";
 import Relations from "../Relations";
 import {

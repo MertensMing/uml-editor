@@ -24,8 +24,7 @@ function Toolbar() {
   const { handleCopyDiagram } = useDiagramController([]);
   const { svgUrl, deployment, uml, pngUrl } = useStore(
     deploymentStore,
-    (state) =>
-      pick(state, ["currentObjectId", "deployment", "svgUrl", "uml", "pngUrl"]),
+    (state) => pick(state, ["deployment", "svgUrl", "uml", "pngUrl"]),
     shallow
   );
 

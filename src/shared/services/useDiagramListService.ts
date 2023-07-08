@@ -3,7 +3,7 @@ import { useService } from "../libs/di/react/useService";
 import { createServiceIdentifier } from "../libs/di/utils/createServiceIdentifier";
 import { listStoreIdentifier } from "../store/listStore";
 
-export const useDiagramListServiceIdentifier = createServiceIdentifier<
+export const UseDiagramListServiceIdentifier = createServiceIdentifier<
   typeof useDiagramListService
 >("useDiagramListService");
 

@@ -23,7 +23,7 @@ import { db, PlantUMLEditorDatabaseIdentifier } from "../../db";
 import { useDiagramController } from "./controller/useDiagramController";
 import {
   useDiagramListService,
-  useDiagramListServiceIdentifier,
+  UseDiagramListServiceIdentifier,
 } from "../../shared/services/useDiagramListService";
 import {
   useDiagramService,
@@ -82,7 +82,7 @@ export const DeploymentEditor = connect(
     container.bind(listStoreIdentifier).toConstantValue(listStore);
     container.bind(PlantUMLEditorDatabaseIdentifier).toConstantValue(db);
     container
-      .bind(useDiagramListServiceIdentifier)
+      .bind(UseDiagramListServiceIdentifier)
       .toConstantValue(useDiagramListService);
     container
       .bind(UseDiagramServiceIdentifier)
