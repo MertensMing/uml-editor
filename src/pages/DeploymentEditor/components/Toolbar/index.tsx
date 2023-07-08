@@ -11,40 +11,21 @@ import copy from "copy-to-clipboard";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import { useService } from "../../../../shared/libs/di/react/useService";
-import { deploymentUndoStoreIdentifier } from "../../../../shared/store/undo";
 import { pick } from "../../../../shared/utils/pick";
 import { useDiagramController } from "../../controller/useDiagramController";
 import { useObjectController } from "../../controller/useObjectController";
-import { useUndoRedoController } from "../../controller/useUndoRedoController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 import { AddContainer } from "../AddContainer";
 import { AddObject } from "../AddObject";
 
 function Toolbar() {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const undoStore = useService(deploymentUndoStoreIdentifier);
   const { handleAddContainer, handleAddObject } = useObjectController([]);
   const { handleCopyDiagram } = useDiagramController([]);
-  const { handleRedo, handleUndo } = useUndoRedoController([]);
-  const { allowRedo, allowUndo } = useStore(
-    undoStore,
-    (state) => ({
-      allowUndo: state.undoIndex < state.queue.length - 1,
-      allowRedo: state.undoIndex !== 0,
-    }),
-    shallow
-  );
   const { svgUrl, deployment, uml, pngUrl } = useStore(
     deploymentStore,
     (state) =>
-      pick(state, [
-        "currentObjectId",
-        "deployment",
-        "svgUrl",
-        "allowDragRelation",
-        "uml",
-        "pngUrl",
-      ]),
+      pick(state, ["currentObjectId", "deployment", "svgUrl", "uml", "pngUrl"]),
     shallow
   );
 
@@ -55,11 +36,10 @@ function Toolbar() {
           className={classNames(
             "cursor-pointer text-gray-500 hover:text-gray-900",
             {
-              "opacity-30": !allowUndo,
+              "opacity-30": true,
             }
           )}
-          disabled={!allowUndo}
-          onClick={allowUndo && handleUndo}
+          disabled={false}
         />
       </Tooltip>
 
@@ -68,10 +48,9 @@ function Toolbar() {
           className={classNames(
             "cursor-pointer text-gray-500 hover:text-gray-900",
             {
-              "opacity-30": !allowRedo,
+              "opacity-30": true,
             }
           )}
-          onClick={allowRedo && handleRedo}
         />
       </Tooltip>
       <Popover

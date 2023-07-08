@@ -16,14 +16,7 @@ export function Comments() {
   const { currentObjectId } = useStore(
     deploymentStore,
     (state) =>
-      pick(state, [
-        "currentObjectId",
-        "deployment",
-        "svgUrl",
-        "allowDragRelation",
-        "uml",
-        "pngUrl",
-      ]),
+      pick(state, ["currentObjectId", "deployment", "svgUrl", "uml", "pngUrl"]),
     shallow
   );
   const currentObject = useStore(

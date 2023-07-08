@@ -43,14 +43,7 @@ export const DeploymentEditor = connect(
     const deploymentStore = useService(deploymentStoreIdentifier);
     const { svgUrl, deployment, uml, pngUrl } = useStore(
       deploymentStore,
-      (state) =>
-        pick(state, [
-          "deployment",
-          "svgUrl",
-          "allowDragRelation",
-          "uml",
-          "pngUrl",
-        ]),
+      (state) => pick(state, ["deployment", "svgUrl", "uml", "pngUrl"]),
       shallow
     );
 

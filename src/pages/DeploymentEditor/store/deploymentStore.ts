@@ -54,7 +54,6 @@ type Actions = {
     field: T,
     value: Relation[T]
   ): void;
-  toggleAllowDragRelation(allow: boolean): void;
   setDiagram(diagram: Deployment): void;
   setLineType(linetype: LineType): void;
   copyDiagram(): void;
@@ -134,11 +133,6 @@ export function createDeploymentStore(): StoreApi<DeploymentStore> {
         set({
           deployment: storage,
           currentObjectId: storage.root.id,
-        });
-      },
-      toggleAllowDragRelation(allow) {
-        set({
-          allowDragRelation: allow,
         });
       },
       addObject(containerId, type) {

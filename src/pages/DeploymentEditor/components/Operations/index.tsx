@@ -25,14 +25,7 @@ export const Opreations = function () {
   const { currentObjectId, deployment } = useStore(
     deploymentStore,
     (state) =>
-      pick(state, [
-        "currentObjectId",
-        "deployment",
-        "svgUrl",
-        "allowDragRelation",
-        "uml",
-        "pngUrl",
-      ]),
+      pick(state, ["currentObjectId", "deployment", "svgUrl", "uml", "pngUrl"]),
     shallow
   );
   const currentObject = useStore(
