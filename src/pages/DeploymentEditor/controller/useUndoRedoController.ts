@@ -6,7 +6,7 @@ import { createController } from "../../../shared/utils/createController";
 import { PlantUMLEditorDatabaseIdentifier } from "../../../db";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
-import { useDiagramListService } from "../../../shared/services/useDiagramListService";
+import { useDiagramListServiceIdentifier } from "../../../shared/services/useDiagramListService";
 
 type Handlers = {
   handleRedo(): void;
@@ -17,6 +17,7 @@ export const useUndoRedoController = createController<[], Handlers>(() => {
   const deploymentStore = useService(deploymentStoreIdentifier);
   const undoStore = useService(deploymentUndoStoreIdentifier);
   const db = useService(PlantUMLEditorDatabaseIdentifier);
+  const useDiagramListService = useService(useDiagramListServiceIdentifier);
   const listService = useDiagramListService();
 
   const saveChanged = useRef(
