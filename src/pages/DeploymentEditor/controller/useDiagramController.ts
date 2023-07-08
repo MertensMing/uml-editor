@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { createDiagram, getId } from "../../../core/entities/Deployment";
 import { createController } from "../../../shared/utils/createController";
@@ -58,7 +58,16 @@ export const useDiagramController = createController<[], Handlers>(() => {
   return {
     async handleDiagramInit() {
       listService.fetchList();
-      diagramService.init();
+      diagramService.init().then((currentDiagram) => {
+        if (!currentDiagram) return;
+        deploymentStore.setState((state) =>
+          produce(state, (draft) => {
+            const storage = JSON.parse(currentDiagram.diagram);
+            draft.deployment = storage;
+            draft.currentObjectId = storage.root.id;
+          })
+        );
+      });
     },
     async handleCopyDiagram() {
       deploymentStore.setState((state) =>

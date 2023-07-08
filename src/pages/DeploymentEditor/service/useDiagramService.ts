@@ -51,18 +51,11 @@ export const useDiagramService = () => {
         return;
       }
       if (id) {
-        deploymentStore.setState((state) =>
-          produce(state, (draft) => {
-            const storage = JSON.parse(currentDiagram.diagram);
-            draft.deployment = storage;
-            draft.currentObjectId = storage.root.id;
-          })
-        );
-      } else {
-        navigate(`/${DiagramType.deployment}/${currentDiagram.id}`, {
-          replace: true,
-        });
+        return currentDiagram;
       }
+      navigate(`/${DiagramType.deployment}/${currentDiagram.id}`, {
+        replace: true,
+      });
     },
   };
 };
