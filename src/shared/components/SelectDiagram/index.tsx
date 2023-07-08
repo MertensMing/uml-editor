@@ -6,6 +6,7 @@ import { listStore } from "../../store/listStore";
 import { useDiagramListContrller } from "../../controller/useDiagramListContrller";
 import { DiagramType } from "../../constants";
 import { db } from "../../../db";
+import { useDiagramListService } from "../../services/useDiagramListService";
 
 const DropdownIcon = () => (
   <label tabIndex={10} className="btn btn-ghost btn-circle">
@@ -29,13 +30,12 @@ export function SelectDiagram(props: {
   onDelete?: () => void;
   onAdd?: (name: string) => void;
 }) {
-  const { handleInit, handleSelectDiagram } = useDiagramListContrller([
-    listStore,
-  ]);
+  const { handleInit, handleSelectDiagram } = useDiagramListContrller([]);
   const { id } = useParams();
   const diagramList = useStore(listStore, (state) => state.list);
   const type = useStore(listStore, (state) => state.type);
   const [name, setName] = useState("");
+  const listService = useDiagramListService();
 
   useEffect(() => {
     handleInit();
@@ -149,7 +149,7 @@ export function SelectDiagram(props: {
                     })
                   );
                   message.success("导入成功");
-                  listStore.getState().fetchList();
+                  listService.fetchList();
                 };
                 reader.readAsText(file);
               }

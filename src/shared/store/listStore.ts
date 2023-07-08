@@ -1,5 +1,4 @@
 import { createStore, StoreApi } from "zustand";
-import { db } from "../../db";
 import { DiagramType } from "../constants";
 import { createServiceIdentifier } from "../libs/di/utils/createServiceIdentifier";
 
@@ -13,7 +12,6 @@ type State = {
 };
 
 type Actions = {
-  fetchList(): Promise<void>;
   setCurrentType(type: DiagramType): void;
 };
 
@@ -32,16 +30,6 @@ export function createListStore(): StoreApi<ListStore> {
       type: DiagramType.deployment,
       setCurrentType(type) {
         set({ type });
-      },
-      async fetchList() {
-        const res = await db.deployments.toArray();
-        set({
-          list: res.map((item) => ({
-            id: item.id,
-            name: item.name,
-            diagram: item.diagram,
-          })),
-        });
       },
     };
   });

@@ -19,7 +19,6 @@ import {
   removeObject,
   removeRelation,
 } from "../../../core/entities/Deployment";
-import { deploymentStorage } from "../../../shared/storage/deployment";
 import { deploymentParser } from "../../../core/parser/deployment";
 import { drawPng, drawSvg } from "../../../shared/utils/uml";
 import { containerMap, objectMap } from "../const";

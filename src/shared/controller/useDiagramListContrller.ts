@@ -1,21 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import { useAction } from "../hooks/useAction";
-import { listStore, ListStore } from "../store/listStore";
+import { useDiagramListService } from "../services/useDiagramListService";
+import { listStore } from "../store/listStore";
 import { createController } from "../utils/createController";
 
 export const useDiagramListContrller = createController<
-  [ListStore],
+  [],
   {
     handleInit(): void;
     handleSelectDiagram(id: string): void;
   }
->(([store]) => {
-  const actions = useAction(store, ["fetchList"]);
+>(([]) => {
   const navigate = useNavigate();
+  const listService = useDiagramListService();
 
   return {
     handleInit() {
-      actions.fetchList();
+      listService.fetchList();
     },
     handleSelectDiagram(id: string) {
       navigate(`/${listStore.getState().type}/${id}`);

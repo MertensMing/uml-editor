@@ -14,6 +14,7 @@ import { db } from "../../../db";
 import { listStoreIdentifier } from "../../../shared/store/listStore";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
+import { useDiagramListService } from "../../../shared/services/useDiagramListService";
 
 type Handlers = {
   handleToggleAllowDragRelation(allow: boolean): void;
@@ -49,6 +50,7 @@ export const useEditDeploymentController = createController<[], Handlers>(
     const deploymentStore = useService(deploymentStoreIdentifier);
     const listStore = useService(listStoreIdentifier);
     const undoStore = useService(deploymentUndoStoreIdentifier);
+    const listService = useDiagramListService();
 
     const saveChanged = useRef(
       debounce((needSaveUndo?: boolean) => {
@@ -62,7 +64,7 @@ export const useEditDeploymentController = createController<[], Handlers>(
           diagram: JSON.stringify(deployment),
           name: deployment.root.name,
         });
-        listStore.getState().fetchList();
+        listService.fetchList();
       }, 1000)
     ).current;
 

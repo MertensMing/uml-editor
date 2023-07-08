@@ -9,6 +9,7 @@ import { listStoreIdentifier } from "../../../shared/store/listStore";
 import { DiagramType } from "../../../shared/constants";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
+import { useDiagramListService } from "../../../shared/services/useDiagramListService";
 
 type Handlers = {
   handleDiagramInit(): Promise<void>;
@@ -24,6 +25,7 @@ export const useDiagramController = createController<[], Handlers>(() => {
   const listStore = useService(listStoreIdentifier);
   const undoStore = useService(deploymentUndoStoreIdentifier);
   const db = useService(PlantUMLEditorDatabaseIdentifier);
+  const listService = useDiagramListService();
 
   const params = useParams();
   const navigate = useNavigate();
@@ -47,7 +49,7 @@ export const useDiagramController = createController<[], Handlers>(() => {
       const diagramList = await db.deployments.toArray();
       const currentDiagram = diagram || diagramList[0];
 
-      listStore.getState().fetchList();
+      listService.fetchList();
 
       if (!currentDiagram) {
         // 创建新图表
@@ -95,7 +97,7 @@ export const useDiagramController = createController<[], Handlers>(() => {
         return;
       }
       await db.deployments.delete(deploymentStore.getState().deployment.id);
-      await listStore.getState().fetchList();
+      await listService.fetchList();
       navigate(
         `/${DiagramType.deployment}/${listStore.getState().list[0].id}`,
         {
@@ -110,7 +112,7 @@ export const useDiagramController = createController<[], Handlers>(() => {
         diagram: JSON.stringify(diagram),
         name: diagram.root.name,
       });
-      await listStore.getState().fetchList();
+      await listService.fetchList();
       navigate(`/${DiagramType.deployment}/${diagram.id}`, {
         replace: true,
       });

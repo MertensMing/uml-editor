@@ -7,6 +7,7 @@ import { PlantUMLEditorDatabaseIdentifier } from "../../../db";
 import { listStoreIdentifier } from "../../../shared/store/listStore";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
+import { useDiagramListService } from "../../../shared/services/useDiagramListService";
 
 type Handlers = {
   handleRedo(): void;
@@ -15,9 +16,9 @@ type Handlers = {
 
 export const useUndoRedoController = createController<[], Handlers>(() => {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const listStore = useService(listStoreIdentifier);
   const undoStore = useService(deploymentUndoStoreIdentifier);
   const db = useService(PlantUMLEditorDatabaseIdentifier);
+  const listService = useDiagramListService();
 
   const saveChanged = useRef(
     debounce((needSaveUndo?: boolean) => {
@@ -31,7 +32,7 @@ export const useUndoRedoController = createController<[], Handlers>(() => {
         diagram: JSON.stringify(deployment),
         name: deployment.root.name,
       });
-      listStore.getState().fetchList();
+      listService.fetchList();
     }, 1000)
   ).current;
 
