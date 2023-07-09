@@ -5,14 +5,12 @@ import { useService } from "../../../shared/libs/di/react/useService";
 import { createServiceIdentifier } from "../../../shared/libs/di/utils/createServiceIdentifier";
 import { debounceTime, Subject } from "rxjs";
 import { useSubscription } from "observable-hooks";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { createDiagram } from "../../../core/entities/Deployment";
-import { DiagramType } from "../../../shared/constants";
 
 export const useDiagramService = () => {
   const deploymentStore = useService(deploymentStoreIdentifier);
   const params = useParams();
-  const navigate = useNavigate();
   const db = useService(PlantUMLEditorDatabaseIdentifier);
   const [save$] = useState(new Subject<void>());
   const [debouncedSave$] = useState(save$.pipe(debounceTime(500)));
@@ -45,17 +43,12 @@ export const useDiagramService = () => {
           diagram: JSON.stringify(diagram),
           name: diagram.root.name,
         });
-        navigate(`/${DiagramType.deployment}/${diagram.id}`, {
-          replace: true,
-        });
-        return;
+        return diagram.id;
       }
       if (id) {
         return currentDiagram;
       }
-      navigate(`/${DiagramType.deployment}/${currentDiagram.id}`, {
-        replace: true,
-      });
+      return currentDiagram.id;
     },
   };
 };

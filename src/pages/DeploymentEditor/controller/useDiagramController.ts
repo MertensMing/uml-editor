@@ -60,6 +60,12 @@ export const useDiagramController = createController<[], Handlers>(() => {
       listService.fetchList();
       diagramService.init().then((currentDiagram) => {
         if (!currentDiagram) return;
+        if (typeof currentDiagram === "string") {
+          navigate(`/${DiagramType.deployment}/${currentDiagram}`, {
+            replace: true,
+          });
+          return;
+        }
         deploymentStore.setState((state) =>
           produce(state, (draft) => {
             const storage = JSON.parse(currentDiagram.diagram);
