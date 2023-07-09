@@ -25,6 +25,7 @@ import {
   UseDiagramServiceIdentifier,
 } from "./service/useDiagramService";
 import { SideOperations } from "./components/SideOperations";
+import { Modal } from "antd";
 
 export const DeploymentEditor = connect(
   function () {
@@ -58,7 +59,19 @@ export const DeploymentEditor = connect(
         uml={uml}
         pngUrl={pngUrl}
         svgUrl={svgUrl}
-        onDelete={handleDeleteDiagram}
+        onDelete={() => {
+          Modal.confirm({
+            cancelText: "取消",
+            okText: "确认",
+            content: "确认删除吗？",
+            title: "提醒",
+            onOk: handleDeleteDiagram,
+            okButtonProps: {
+              danger: true,
+            },
+            centered: true,
+          });
+        }}
         onAdd={handleAddDiagram}
         diagram={<Diagram />}
         operation={<SideOperations />}
