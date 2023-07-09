@@ -5,7 +5,10 @@ import { PlantUMLEditorDatabaseIdentifier } from "../../../db";
 import { listStoreIdentifier } from "../../../shared/store/listStore";
 import { DiagramType } from "../../../shared/constants";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
-import { useService } from "../../../shared/libs/di/react/useService";
+import {
+  useAsyncService,
+  useService,
+} from "../../../shared/libs/di/react/useService";
 import { useDiagramListService } from "../../../shared/service/useDiagramListService";
 import { useState } from "react";
 import { debounceTime, Subject } from "rxjs";
@@ -14,7 +17,7 @@ import { UseDiagramServiceIdentifier } from "../service/useDiagramService";
 import { produce } from "immer";
 import { deploymentParser } from "../../../core/parser/deployment";
 import { drawPng, drawSvg } from "../../../shared/utils/uml";
-import { message } from "antd";
+import { MessageIdentifier } from "../components/antd";
 
 type Handlers = {
   handleDiagramInit(): Promise<void>;
@@ -31,7 +34,7 @@ export const useDiagramController = createController<[], Handlers>(() => {
   const listService = useDiagramListService();
   const useDiagramService = useService(UseDiagramServiceIdentifier);
   const diagramService = useDiagramService();
-
+  const messageService = useAsyncService(MessageIdentifier);
   const [diagramChange$] = useState(new Subject<void>());
   const [debounceChange$] = useState(
     diagramChange$.pipe(
@@ -93,7 +96,9 @@ export const useDiagramController = createController<[], Handlers>(() => {
     },
     async handleDeleteDiagram() {
       if (listStore.getState().list.length <= 1) {
-        message.warning("不能删除最后一个图表");
+        messageService().then((service) => {
+          service.default.warning("不能删除最后一个图表");
+        });
         return;
       }
       await db.deployments.delete(deploymentStore.getState().deployment.id);
