@@ -8,14 +8,9 @@ import {
   createDeploymentStore,
   deploymentStoreIdentifier,
 } from "./store/deploymentStore";
-import {
-  createUndoStore,
-  deploymentUndoStoreIdentifier,
-} from "../../shared/store/undo";
 import { listStore, listStoreIdentifier } from "../../shared/store/listStore";
 import Diagram from "./components/Diagram";
 import Toolbar from "./components/Toolbar";
-import { Deployment } from "../../core/entities/Deployment";
 import { connect } from "../../shared/libs/di/react/connect";
 import { Container } from "inversify";
 import { useService } from "../../shared/libs/di/react/useService";
@@ -76,9 +71,6 @@ export const DeploymentEditor = connect(
     container
       .bind(deploymentStoreIdentifier)
       .toConstantValue(createDeploymentStore());
-    container
-      .bind(deploymentUndoStoreIdentifier)
-      .toConstantValue(createUndoStore<Deployment>());
     container.bind(listStoreIdentifier).toConstantValue(listStore);
     container.bind(PlantUMLEditorDatabaseIdentifier).toConstantValue(db);
     container
