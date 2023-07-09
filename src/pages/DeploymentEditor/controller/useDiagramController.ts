@@ -57,24 +57,23 @@ export const useDiagramController = createController<[], Handlers>(() => {
 
   return {
     async handleDiagramInit() {
-      diagramService.init().then((currentDiagram) => {
-        if (!currentDiagram) return;
-        if (typeof currentDiagram === "string") {
-          navigate(`/${DiagramType.deployment}/${currentDiagram}`, {
-            replace: true,
-          });
-          return;
-        }
-        deploymentStore.setState((state) =>
-          produce(state, (draft) => {
-            const storage = JSON.parse(currentDiagram.diagram);
-            draft.deployment = storage;
-            draft.currentObjectId = storage.root.id;
-          })
-        );
-      });
+      const currentDiagram = await diagramService.init();
+      if (!currentDiagram) return;
+      if (typeof currentDiagram === "string") {
+        navigate(`/${DiagramType.deployment}/${currentDiagram}`, {
+          replace: true,
+        });
+        return;
+      }
+      deploymentStore.setState((state) =>
+        produce(state, (draft) => {
+          const storage = JSON.parse(currentDiagram.diagram);
+          draft.deployment = storage;
+          draft.currentObjectId = storage.root.id;
+        })
+      );
     },
-    async handleCopyDiagram() {
+    handleCopyDiagram() {
       deploymentStore.setState((state) =>
         produce(state, (draft) => {
           draft.deployment.id = `deployment_${getId()}`;
