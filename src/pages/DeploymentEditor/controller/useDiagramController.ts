@@ -57,7 +57,6 @@ export const useDiagramController = createController<[], Handlers>(() => {
 
   return {
     async handleDiagramInit() {
-      listService.fetchList();
       diagramService.init().then((currentDiagram) => {
         if (!currentDiagram) return;
         if (typeof currentDiagram === "string") {
