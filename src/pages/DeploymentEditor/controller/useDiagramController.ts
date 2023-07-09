@@ -73,24 +73,23 @@ export const useDiagramController = createController<[], Handlers>(() => {
         })
       );
     },
-    handleCopyDiagram() {
+    async handleCopyDiagram() {
       deploymentStore.setState((state) =>
         produce(state, (draft) => {
           draft.deployment.id = `deployment_${getId()}`;
           draft.deployment.root.name = `${draft.deployment.root.name}（副本）`;
-          db.deployments
-            .add({
-              id: draft.deployment.id,
-              diagram: JSON.stringify(draft.deployment),
-              name: draft.deployment.root.name,
-            })
-            .then(() => {
-              navigate(`/${DiagramType.deployment}/${draft.deployment.id}`, {
-                replace: true,
-              });
-            });
         })
       );
+      const state = deploymentStore.getState();
+      await db.deployments.add({
+        id: state.deployment.id,
+        diagram: JSON.stringify(state.deployment),
+        name: state.deployment.root.name,
+      });
+      await listService.fetchList();
+      navigate(`/${DiagramType.deployment}/${state.deployment.id}`, {
+        replace: true,
+      });
     },
     async handleDeleteDiagram() {
       if (listStore.getState().list.length <= 1) {
