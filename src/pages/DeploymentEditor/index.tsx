@@ -13,7 +13,10 @@ import Diagram from "./components/Diagram";
 import Toolbar from "./components/Toolbar";
 import { connect } from "../../shared/libs/di/react/connect";
 import { Container } from "inversify";
-import { useService } from "../../shared/libs/di/react/useService";
+import {
+  useAsyncService,
+  useService,
+} from "../../shared/libs/di/react/useService";
 import { db, PlantUMLEditorDatabaseIdentifier } from "../../db";
 import { useDiagramController } from "./controller/useDiagramController";
 import {
@@ -41,7 +44,7 @@ export const DeploymentEditor = connect(
       handleDeleteDiagram,
       handleAddDiagram,
     } = useDiagramController([]);
-    const modalService = useService(ModalIdentifier);
+    const modalService = useAsyncService(ModalIdentifier);
 
     const deploymentStore = useService(deploymentStoreIdentifier);
     const { svgUrl, deployment, uml, pngUrl } = useStore(
@@ -67,7 +70,7 @@ export const DeploymentEditor = connect(
         pngUrl={pngUrl}
         svgUrl={svgUrl}
         onDelete={() => {
-          modalService.then((res) => {
+          modalService().then((res) => {
             res.default.confirm({
               cancelText: "取消",
               okText: "确认",
@@ -105,8 +108,12 @@ export const DeploymentEditor = connect(
     container
       .bind(UseDiagramServiceIdentifier)
       .toConstantValue(useDiagramService);
-    container.bind(ModalIdentifier).toConstantValue(modal);
-    container.bind(MessageIdentifier).toConstantValue(message);
+    container.bind(ModalIdentifier).toProvider(() => {
+      return () => modal;
+    });
+    container.bind(MessageIdentifier).toProvider(() => {
+      return () => message;
+    });
     return container;
   }
 );

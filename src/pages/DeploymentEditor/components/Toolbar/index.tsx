@@ -10,7 +10,10 @@ import copy from "copy-to-clipboard";
 import { Suspense } from "react";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
-import { useService } from "../../../../shared/libs/di/react/useService";
+import {
+  useAsyncService,
+  useService,
+} from "../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../shared/utils/pick";
 import { useDiagramController } from "../../controller/useDiagramController";
 import { useObjectController } from "../../controller/useObjectController";
@@ -28,7 +31,7 @@ function Toolbar() {
     (state) => pick(state, ["deployment", "svgUrl", "uml", "pngUrl"]),
     shallow
   );
-  const messageService = useService(MessageIdentifier);
+  const messageService = useAsyncService(MessageIdentifier);
 
   return (
     <>
@@ -104,7 +107,7 @@ function Toolbar() {
                   <div
                     onClick={() => {
                       copy(uml);
-                      messageService.then((res) => {
+                      messageService().then((res) => {
                         res.default.success("复制成功");
                       });
                     }}
@@ -151,7 +154,7 @@ function Toolbar() {
             )}
             onClick={() => {
               handleCopyDiagram();
-              messageService.then((res) => {
+              messageService().then((res) => {
                 res.default.success("复制成功");
               });
             }}
