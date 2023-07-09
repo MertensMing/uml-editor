@@ -24,7 +24,12 @@ import {
   useDiagramService,
   UseDiagramServiceIdentifier,
 } from "./service/useDiagramService";
-import { modal } from "./components/antd";
+import {
+  message,
+  MessageIdentifier,
+  modal,
+  ModalIdentifier,
+} from "./components/antd";
 
 const SideOperations = lazy(() => import("./components/SideOperations"));
 
@@ -36,6 +41,7 @@ export const DeploymentEditor = connect(
       handleDeleteDiagram,
       handleAddDiagram,
     } = useDiagramController([]);
+    const modalService = useService(ModalIdentifier);
 
     const deploymentStore = useService(deploymentStoreIdentifier);
     const { svgUrl, deployment, uml, pngUrl } = useStore(
@@ -61,7 +67,7 @@ export const DeploymentEditor = connect(
         pngUrl={pngUrl}
         svgUrl={svgUrl}
         onDelete={() => {
-          modal.then((res) => {
+          modalService.then((res) => {
             res.default.confirm({
               cancelText: "取消",
               okText: "确认",
@@ -99,6 +105,8 @@ export const DeploymentEditor = connect(
     container
       .bind(UseDiagramServiceIdentifier)
       .toConstantValue(useDiagramService);
+    container.bind(ModalIdentifier).toConstantValue(modal);
+    container.bind(MessageIdentifier).toConstantValue(message);
     return container;
   }
 );

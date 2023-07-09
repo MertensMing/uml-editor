@@ -15,7 +15,7 @@ import { pick } from "../../../../shared/utils/pick";
 import { useDiagramController } from "../../controller/useDiagramController";
 import { useObjectController } from "../../controller/useObjectController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
-import { Dropdown, message, Popover, Tooltip } from "../antd";
+import { Dropdown, MessageIdentifier, Popover, Tooltip } from "../antd";
 import { AddContainer } from "./components/AddContainer";
 import { AddObject } from "./components/AddObject";
 
@@ -28,6 +28,7 @@ function Toolbar() {
     (state) => pick(state, ["deployment", "svgUrl", "uml", "pngUrl"]),
     shallow
   );
+  const messageService = useService(MessageIdentifier);
 
   return (
     <>
@@ -103,7 +104,7 @@ function Toolbar() {
                   <div
                     onClick={() => {
                       copy(uml);
-                      message.then((res) => {
+                      messageService.then((res) => {
                         res.default.success("复制成功");
                       });
                     }}
@@ -150,7 +151,7 @@ function Toolbar() {
             )}
             onClick={() => {
               handleCopyDiagram();
-              message.then((res) => {
+              messageService.then((res) => {
                 res.default.success("复制成功");
               });
             }}

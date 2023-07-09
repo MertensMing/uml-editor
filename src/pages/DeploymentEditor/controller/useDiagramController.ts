@@ -14,7 +14,7 @@ import { UseDiagramServiceIdentifier } from "../service/useDiagramService";
 import { produce } from "immer";
 import { deploymentParser } from "../../../core/parser/deployment";
 import { drawPng, drawSvg } from "../../../shared/utils/uml";
-import { message } from "../components/antd";
+import { message } from "antd";
 
 type Handlers = {
   handleDiagramInit(): Promise<void>;
@@ -93,9 +93,7 @@ export const useDiagramController = createController<[], Handlers>(() => {
     },
     async handleDeleteDiagram() {
       if (listStore.getState().list.length <= 1) {
-        message.then((res) => {
-          res.default.warning("不能删除最后一个图表");
-        });
+        message.warning("不能删除最后一个图表");
         return;
       }
       await db.deployments.delete(deploymentStore.getState().deployment.id);
