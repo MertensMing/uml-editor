@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useContext, useRef } from "react";
 import { Container } from "inversify";
 
 export const context = createContext<Container>(new Container());
@@ -8,9 +8,9 @@ export function connect(Comp: React.ComponentType, factory: () => Container) {
     const parent = useContext(context);
     const container = useRef(factory()).current;
 
-    useEffect(() => {
+    if (parent) {
       container.parent = parent;
-    }, [parent]);
+    }
 
     return (
       <context.Provider value={container}>

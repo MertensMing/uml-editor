@@ -3,12 +3,12 @@ import shallow from "zustand/shallow";
 import {
   ContainerObjectType,
   findObject,
-} from "../../../../core/entities/Deployment";
-import { useService } from "../../../../shared/libs/di/react/useService";
-import { pick } from "../../../../shared/utils/pick";
-import { useObjectDetailController } from "../../controller/useObjectDetailController";
-import { deploymentStoreIdentifier } from "../../store/deploymentStore";
-import { ColorPicker } from "../ColorPicker";
+} from "../../../../../../core/entities/Deployment";
+import { useService } from "../../../../../../shared/libs/di/react/useService";
+import { pick } from "../../../../../../shared/utils/pick";
+import { useObjectDetailController } from "../../../../controller/useObjectDetailController";
+import { deploymentStoreIdentifier } from "../../../../store/deploymentStore";
+import { ColorPicker } from "../../../ColorPicker";
 
 function Background() {
   const deploymentStore = useService(deploymentStoreIdentifier);
