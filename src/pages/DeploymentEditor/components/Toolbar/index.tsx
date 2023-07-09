@@ -15,8 +15,8 @@ import { pick } from "../../../../shared/utils/pick";
 import { useDiagramController } from "../../controller/useDiagramController";
 import { useObjectController } from "../../controller/useObjectController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
-import { AddContainer } from "../AddContainer";
-import { AddObject } from "../AddObject";
+import { AddContainer } from "./components/AddContainer";
+import { AddObject } from "./components/AddObject";
 
 function Toolbar() {
   const deploymentStore = useService(deploymentStoreIdentifier);

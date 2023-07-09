@@ -1,4 +1,7 @@
-import { NormalObject, ObjectType } from "../../../../core/entities/Deployment";
+import {
+  NormalObject,
+  ObjectType,
+} from "../../../../../../core/entities/Deployment";
 
 export function AddObject(props: {
   onClick(type: NormalObject["type"]): void;

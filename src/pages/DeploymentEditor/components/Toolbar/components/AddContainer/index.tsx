@@ -1,4 +1,4 @@
-import { ContainerObjectType } from "../../../../core/entities/Deployment";
+import { ContainerObjectType } from "../../../../../../core/entities/Deployment";
 
 export function AddContainer(props: {
   onClick(type: ContainerObjectType): void;
