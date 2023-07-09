@@ -7,7 +7,7 @@ import { listStoreIdentifier } from "../../../shared/store/listStore";
 import { DiagramType } from "../../../shared/constants";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
-import { useDiagramListService } from "../../../shared/services/useDiagramListService";
+import { useDiagramListService } from "../../../shared/service/useDiagramListService";
 import { useState } from "react";
 import { debounceTime, Subject } from "rxjs";
 import { useSubscription } from "observable-hooks";

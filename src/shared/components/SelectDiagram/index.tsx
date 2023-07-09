@@ -6,7 +6,7 @@ import { listStore } from "../../store/listStore";
 import { useDiagramListContrller } from "../../controller/useDiagramListContrller";
 import { DiagramType } from "../../constants";
 import { db } from "../../../db";
-import { useDiagramListService } from "../../services/useDiagramListService";
+import { useDiagramListService } from "../../service/useDiagramListService";
 
 const DropdownIcon = () => (
   <label tabIndex={10} className="btn btn-ghost btn-circle">

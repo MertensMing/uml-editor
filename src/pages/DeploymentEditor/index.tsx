@@ -24,7 +24,7 @@ import { useDiagramController } from "./controller/useDiagramController";
 import {
   useDiagramListService,
   UseDiagramListServiceIdentifier,
-} from "../../shared/services/useDiagramListService";
+} from "../../shared/service/useDiagramListService";
 import {
   useDiagramService,
   UseDiagramServiceIdentifier,

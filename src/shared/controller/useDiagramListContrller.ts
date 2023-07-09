@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useDiagramListService } from "../services/useDiagramListService";
+import { useDiagramListService } from "../service/useDiagramListService";
 import { listStore } from "../store/listStore";
 import { createController } from "../utils/createController";
 
