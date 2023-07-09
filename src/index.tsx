@@ -1,11 +1,10 @@
 import "reflect-metadata";
-import React, { lazy, Suspense } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import { DeploymentEditor } from "./pages/DeploymentEditor";
 import { createHashRouter, RouterProvider } from "react-router-dom";
+import ConfigProvider from "antd/es/config-provider";
 import "./App.scss";
-
-const ConfigProvider = lazy(() => import("antd/es/config-provider"));
 
 const router = createHashRouter([
   {
@@ -28,16 +27,14 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <Suspense>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: "#f0f0f0",
-          },
-        }}
-      >
-        <RouterProvider router={router} />
-      </ConfigProvider>
-    </Suspense>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#f0f0f0",
+        },
+      }}
+    >
+      <RouterProvider router={router} />
+    </ConfigProvider>
   </React.StrictMode>
 );
