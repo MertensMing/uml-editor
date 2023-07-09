@@ -13,7 +13,7 @@ import { ColorPicker } from "../../../ColorPicker";
 function Relations() {
   const deploymentStore = useService(deploymentStoreIdentifier);
   const { handleDeleteRelation, handleRelationChange } =
-    useObjectRelationController([]);
+    useObjectRelationController();
   const { currentObjectId, deployment } = useStore(
     deploymentStore,
     (state) => pick(state, ["currentObjectId", "deployment"]),

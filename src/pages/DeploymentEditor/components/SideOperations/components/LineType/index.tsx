@@ -3,11 +3,11 @@ import shallow from "zustand/shallow";
 import { LineType as ILineType } from "../../../../../../core/entities/Deployment";
 import { useService } from "../../../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../../../shared/utils/pick";
-import { useObjectDetailController } from "../../../../controller/useObjectDetailController";
+import { useObjectController } from "../../../../controller/useObjectController";
 import { deploymentStoreIdentifier } from "../../../../store/deploymentStore";
 
 export const LineType = function () {
-  const { handleLineTypeChange } = useObjectDetailController();
+  const { handleLineTypeChange } = useObjectController();
   const deploymentStore = useService(deploymentStoreIdentifier);
   const { deployment } = useStore(
     deploymentStore,

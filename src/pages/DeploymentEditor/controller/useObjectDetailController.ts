@@ -1,4 +1,10 @@
-import { findObject } from "../../../core/entities/Deployment";
+import {
+  addRelation,
+  findObject,
+  insertObject,
+  removeAllRelation,
+  removeObject,
+} from "../../../core/entities/Deployment";
 import { deploymentStoreIdentifier } from "../store/deploymentStore";
 import { useService } from "../../../shared/libs/di/react/useService";
 import { produce } from "immer";
@@ -7,15 +13,6 @@ export const useObjectDetailController = () => {
   const deploymentStore = useService(deploymentStoreIdentifier);
 
   return {
-    handleObjectNameChange(id, name) {
-      deploymentStore.setState((state) =>
-        produce(state, (draft) => {
-          const object = findObject(draft.deployment?.root, id);
-          if (!object) return;
-          object.name = name;
-        })
-      );
-    },
     handleSelectObjectBgColor(id, color) {
       deploymentStore.setState((state) =>
         produce(state, (draft) => {
@@ -25,39 +22,44 @@ export const useObjectDetailController = () => {
         })
       );
     },
-    handleCommentChange(id, comment) {
+    handleMoveObject(origin, target) {
       deploymentStore.setState((state) =>
         produce(state, (draft) => {
-          const object = findObject(draft.deployment?.root, id);
-          if (!object) return;
-          object.comment = comment;
+          const targetObject = findObject(draft.deployment.root, target);
+          if (!targetObject || !targetObject?.isContainer) {
+            throw new Error(`targetId ${target} 不是容器`);
+          }
+          const originObject = findObject(draft.deployment.root, origin);
+          if (originObject?.isContainer && findObject(originObject, target)) {
+            throw new Error(`父对象 ${origin} 不能移动到子对象 ${target} 中`);
+          }
+          const removed = removeObject(draft.deployment.root, origin);
+          if (!removed) {
+            throw new Error(`找不到对象 ${target}`);
+          }
+          insertObject(targetObject, removed);
         })
       );
     },
-    handleContentChange(id, content) {
+    handleDelete(id) {
       deploymentStore.setState((state) =>
         produce(state, (draft) => {
-          const object = findObject(draft.deployment?.root, id);
-          if (!object) return;
-          object.content = content;
+          const removed = removeObject(draft.deployment.root, id);
+          if (!removed) return;
+          draft.currentObjectId = draft.deployment.root.id;
+          removeAllRelation(draft.deployment, id);
         })
       );
     },
-    handleSelectObjectTextColor(id, color) {
+    handleAddRelation(origin, target) {
       deploymentStore.setState((state) =>
         produce(state, (draft) => {
-          const object = findObject(draft.deployment?.root, id);
-          if (!object) return;
-          object.textColor = color;
+          if ([origin, target].includes(draft.deployment.root.id)) {
+            return;
+          }
+          addRelation(draft.deployment, origin, target);
         })
       );
-    },
-    handleLineTypeChange(linetype) {
-      deploymentStore.setState((state) => {
-        return produce(state, (draft) => {
-          draft.deployment.linetype = linetype;
-        });
-      });
     },
   };
 };

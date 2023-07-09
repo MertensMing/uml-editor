@@ -109,7 +109,9 @@ export const DeploymentEditor = connect(
       .bind(UseDiagramServiceIdentifier)
       .toConstantValue(useDiagramService);
     container.bind(ModalIdentifier).toProvider(() => {
-      return () => modal;
+      return () => {
+        return modal;
+      };
     });
     container.bind(MessageIdentifier).toProvider(() => {
       return () => message;

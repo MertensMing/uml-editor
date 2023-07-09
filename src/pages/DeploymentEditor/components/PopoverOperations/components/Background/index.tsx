@@ -5,19 +5,12 @@ import {
   findObject,
 } from "../../../../../../core/entities/Deployment";
 import { useService } from "../../../../../../shared/libs/di/react/useService";
-import { pick } from "../../../../../../shared/utils/pick";
-import { useObjectDetailController } from "../../../../controller/useObjectDetailController";
 import { deploymentStoreIdentifier } from "../../../../store/deploymentStore";
 import { ColorPicker } from "../../../ColorPicker";
 
-function Background() {
+function Background(props: { onBgColorChange: (color: string) => void }) {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const { handleSelectObjectBgColor } = useObjectDetailController();
-  const { currentObjectId } = useStore(
-    deploymentStore,
-    (state) => pick(state, ["currentObjectId"]),
-    shallow
-  );
+
   const currentObject = useStore(
     deploymentStore,
     (state) =>
@@ -34,9 +27,7 @@ function Background() {
         <div>
           <ColorPicker
             color={currentObject?.bgColor || "#e5e7eb"}
-            onChange={(color) =>
-              handleSelectObjectBgColor(currentObjectId, color)
-            }
+            onChange={(color) => props.onBgColorChange(color)}
           />
         </div>
       )}

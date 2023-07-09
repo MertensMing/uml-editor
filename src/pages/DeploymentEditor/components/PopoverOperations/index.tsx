@@ -9,12 +9,11 @@ import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import { useService } from "../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../shared/utils/pick";
-import { useObjectRelationController } from "../../controller/useObjectRelationController";
-import { useObjectController } from "../../controller/useObjectController";
 import { deploymentStoreIdentifier } from "../../store/deploymentStore";
 import Background from "./components/Background";
 import { useSubscription } from "observable-hooks";
 import { DiagramClick$Identifier } from "../../event/DiagramClick";
+import { useObjectDetailController } from "../../controller/useObjectDetailController";
 
 function getObjectId(e: any) {
   const hoveredElement: any = document.elementFromPoint(e.clientX, e.clientY);
@@ -30,8 +29,12 @@ function getObjectId(e: any) {
 
 export function PopoverOperations() {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const { handleAddRelation } = useObjectRelationController([]);
-  const { handleMoveObject, handleDelete } = useObjectController();
+  const {
+    handleMoveObject,
+    handleDelete,
+    handleAddRelation,
+    handleSelectObjectBgColor,
+  } = useObjectDetailController();
   const ref = useRef(null);
   const diagramClick$ = useService(DiagramClick$Identifier);
   const { currentObjectId, deployment } = useStore(
@@ -118,7 +121,11 @@ export function PopoverOperations() {
         }}
       />
       <div className="mt-3 cursor-pointer">
-        <Background />
+        <Background
+          onBgColorChange={(color) =>
+            handleSelectObjectBgColor(currentObjectId, color)
+          }
+        />
       </div>
     </div>
   );

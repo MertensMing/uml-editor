@@ -6,12 +6,12 @@ import {
 } from "../../../../../../core/entities/Deployment";
 import { useService } from "../../../../../../shared/libs/di/react/useService";
 import { pick } from "../../../../../../shared/utils/pick";
-import { useObjectDetailController } from "../../../../controller/useObjectDetailController";
+import { useObjectController } from "../../../../controller/useObjectController";
 import { deploymentStoreIdentifier } from "../../../../store/deploymentStore";
 
 function JsonContent() {
   const deploymentStore = useService(deploymentStoreIdentifier);
-  const { handleContentChange } = useObjectDetailController();
+  const { handleContentChange } = useObjectController();
   const { currentObjectId } = useStore(
     deploymentStore,
     (state) => pick(state, ["currentObjectId"]),
