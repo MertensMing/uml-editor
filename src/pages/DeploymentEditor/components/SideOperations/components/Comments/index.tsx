@@ -3,11 +3,11 @@ import shallow from "zustand/shallow";
 import {
   ContainerObjectType,
   findObject,
-} from "../../../../core/entities/Deployment";
-import { useService } from "../../../../shared/libs/di/react/useService";
-import { pick } from "../../../../shared/utils/pick";
-import { useObjectDetailController } from "../../controller/useObjectDetailController";
-import { deploymentStoreIdentifier } from "../../store/deploymentStore";
+} from "../../../../../../core/entities/Deployment";
+import { useService } from "../../../../../../shared/libs/di/react/useService";
+import { pick } from "../../../../../../shared/utils/pick";
+import { useObjectDetailController } from "../../../../controller/useObjectDetailController";
+import { deploymentStoreIdentifier } from "../../../../store/deploymentStore";
 
 export function Comments() {
   const deploymentStore = useService(deploymentStoreIdentifier);

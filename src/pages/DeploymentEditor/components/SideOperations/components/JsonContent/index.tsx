@@ -1,10 +1,13 @@
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
-import { findObject, ObjectType } from "../../../../core/entities/Deployment";
-import { useService } from "../../../../shared/libs/di/react/useService";
-import { pick } from "../../../../shared/utils/pick";
-import { useObjectDetailController } from "../../controller/useObjectDetailController";
-import { deploymentStoreIdentifier } from "../../store/deploymentStore";
+import {
+  findObject,
+  ObjectType,
+} from "../../../../../../core/entities/Deployment";
+import { useService } from "../../../../../../shared/libs/di/react/useService";
+import { pick } from "../../../../../../shared/utils/pick";
+import { useObjectDetailController } from "../../../../controller/useObjectDetailController";
+import { deploymentStoreIdentifier } from "../../../../store/deploymentStore";
 
 function JsonContent() {
   const deploymentStore = useService(deploymentStoreIdentifier);

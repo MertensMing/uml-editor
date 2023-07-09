@@ -1,11 +1,14 @@
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
-import { findObject, RelationType } from "../../../../core/entities/Deployment";
-import { useService } from "../../../../shared/libs/di/react/useService";
-import { pick } from "../../../../shared/utils/pick";
-import { useObjectRelationController } from "../../controller/useObjectRelationController";
-import { deploymentStoreIdentifier } from "../../store/deploymentStore";
-import { ColorPicker } from "../ColorPicker";
+import {
+  findObject,
+  RelationType,
+} from "../../../../../../core/entities/Deployment";
+import { useService } from "../../../../../../shared/libs/di/react/useService";
+import { pick } from "../../../../../../shared/utils/pick";
+import { useObjectRelationController } from "../../../../controller/useObjectRelationController";
+import { deploymentStoreIdentifier } from "../../../../store/deploymentStore";
+import { ColorPicker } from "../../../ColorPicker";
 
 function Relations() {
   const deploymentStore = useService(deploymentStoreIdentifier);
