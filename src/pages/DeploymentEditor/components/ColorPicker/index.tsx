@@ -1,5 +1,6 @@
-import { Popover } from "antd";
+import { Suspense } from "react";
 import { CompactPicker } from "react-color";
+import { Popover } from "../antd";
 
 const colorScheme = [
   "#1abc9c",
@@ -45,31 +46,33 @@ export function ColorPicker(props: {
 }) {
   return (
     <div className="flex items-center relative">
-      <Popover
-        placement="rightBottom"
-        arrowPointAtCenter
-        showArrow={false}
-        style={{
-          padding: 0,
-          boxShadow: "none",
-          border: 0,
-        }}
-        content={
-          <CompactPicker
-            colors={colorScheme}
-            onChange={(e) => {
-              props.onChange?.(e.hex);
+      <Suspense fallback={null}>
+        <Popover
+          placement="rightBottom"
+          arrowPointAtCenter
+          showArrow={false}
+          style={{
+            padding: 0,
+            boxShadow: "none",
+            border: 0,
+          }}
+          content={
+            <CompactPicker
+              colors={colorScheme}
+              onChange={(e) => {
+                props.onChange?.(e.hex);
+              }}
+            />
+          }
+        >
+          <div
+            className="h-4 w-4 rounded cursor-pointer"
+            style={{
+              background: props.color,
             }}
           />
-        }
-      >
-        <div
-          className="h-4 w-4 rounded cursor-pointer"
-          style={{
-            background: props.color,
-          }}
-        />
-      </Popover>
+        </Popover>
+      </Suspense>
     </div>
   );
 }

@@ -1,6 +1,7 @@
-import React from "react";
-import { SelectDiagram } from "../SelectDiagram";
+import React, { lazy } from "react";
 import { Icon } from "./components/Icon";
+
+const SelectDiagram = lazy(() => import("../SelectDiagram"));
 
 export function EditorLayout(props: {
   uml: string;

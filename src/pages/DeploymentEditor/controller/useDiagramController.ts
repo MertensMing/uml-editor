@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { message } from "antd";
 import { createDiagram, getId } from "../../../core/entities/Deployment";
 import { createController } from "../../../shared/utils/createController";
 import { PlantUMLEditorDatabaseIdentifier } from "../../../db";
@@ -15,6 +14,7 @@ import { UseDiagramServiceIdentifier } from "../service/useDiagramService";
 import { produce } from "immer";
 import { deploymentParser } from "../../../core/parser/deployment";
 import { drawPng, drawSvg } from "../../../shared/utils/uml";
+import { message } from "../components/antd";
 
 type Handlers = {
   handleDiagramInit(): Promise<void>;
@@ -93,7 +93,9 @@ export const useDiagramController = createController<[], Handlers>(() => {
     },
     async handleDeleteDiagram() {
       if (listStore.getState().list.length <= 1) {
-        message.warning("不能删除最后一个图表");
+        message.then((res) => {
+          res.default.warning("不能删除最后一个图表");
+        });
         return;
       }
       await db.deployments.delete(deploymentStore.getState().deployment.id);

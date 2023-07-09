@@ -24,7 +24,7 @@ import {
   useDiagramService,
   UseDiagramServiceIdentifier,
 } from "./service/useDiagramService";
-import { Modal } from "antd";
+import { modal } from "./components/antd";
 
 const SideOperations = lazy(() => import("./components/SideOperations"));
 
@@ -61,16 +61,18 @@ export const DeploymentEditor = connect(
         pngUrl={pngUrl}
         svgUrl={svgUrl}
         onDelete={() => {
-          Modal.confirm({
-            cancelText: "取消",
-            okText: "确认",
-            content: "确认删除吗？",
-            title: "提醒",
-            onOk: handleDeleteDiagram,
-            okButtonProps: {
-              danger: true,
-            },
-            centered: true,
+          modal.then((res) => {
+            res.default.confirm({
+              cancelText: "取消",
+              okText: "确认",
+              content: "确认删除吗？",
+              title: "提醒",
+              onOk: handleDeleteDiagram,
+              okButtonProps: {
+                danger: true,
+              },
+              centered: true,
+            });
           });
         }}
         onAdd={handleAddDiagram}

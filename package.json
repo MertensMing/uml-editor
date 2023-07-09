@@ -37,12 +37,14 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "sass": "^1.57.1",
+    "source-map-explorer": "^2.5.3",
     "tailwind-scrollbar": "^2.1.0",
     "tailwindcss": "^3.2.4",
     "typescript": "^4.4.2",
     "zustand": "^4.2.0"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "tailwind": "npx tailwindcss -i ./src/style/input.css -o ./public/output.css --watch",
     "start": "yarn tailwind & REACT_APP_DISABLE_LIVE_RELOAD=true react-scripts start",
     "build": "PUBLIC_URL=/plantuml-editor/ react-scripts build && yarn cp-build && yarn submit-build",

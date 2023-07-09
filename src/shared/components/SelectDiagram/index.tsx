@@ -26,7 +26,7 @@ const DropdownIcon = () => (
   </label>
 );
 
-export function SelectDiagram(props: {
+function SelectDiagram(props: {
   onDelete?: () => void;
   onAdd?: (name: string) => void;
 }) {
@@ -170,3 +170,5 @@ export function SelectDiagram(props: {
     </div>
   );
 }
+
+export default SelectDiagram;
