@@ -15,3 +15,5 @@ export const SideOperations = function () {
     </div>
   );
 };
+
+export default SideOperations;

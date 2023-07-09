@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { lazy, useEffect, Suspense } from "react";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
 import { useParams } from "react-router-dom";
@@ -24,8 +24,9 @@ import {
   useDiagramService,
   UseDiagramServiceIdentifier,
 } from "./service/useDiagramService";
-import { SideOperations } from "./components/SideOperations";
 import { Modal } from "antd";
+
+const SideOperations = lazy(() => import("./components/SideOperations"));
 
 export const DeploymentEditor = connect(
   function () {
@@ -74,7 +75,11 @@ export const DeploymentEditor = connect(
         }}
         onAdd={handleAddDiagram}
         diagram={<Diagram />}
-        operation={<SideOperations />}
+        operation={
+          <Suspense fallback={<div style={{ width: "200px" }}>loading...</div>}>
+            <SideOperations />
+          </Suspense>
+        }
         toolbar={<Toolbar />}
       />
     );
