@@ -29,7 +29,7 @@ import {
   useDiagramService,
   UseDiagramServiceIdentifier,
 } from "./service/useDiagramService";
-import { Opreations } from "./components/Operations";
+import { SideOperations } from "./components/SideOperations";
 
 export const DeploymentEditor = connect(
   function () {
@@ -66,7 +66,7 @@ export const DeploymentEditor = connect(
         onDelete={handleDeleteDiagram}
         onAdd={handleAddDiagram}
         diagram={<Diagram />}
-        operation={<Opreations />}
+        operation={<SideOperations />}
         toolbar={<Toolbar />}
       />
     );

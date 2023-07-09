@@ -13,7 +13,7 @@ import { pick } from "../../../../shared/utils/pick";
 import { Comments } from "../Comments";
 import { useObjectDetailController } from "../../controller/useObjectDetailController";
 
-export const Opreations = function () {
+export const SideOperations = function () {
   const { handleObjectNameChange, handleLineTypeChange } =
     useObjectDetailController();
 
