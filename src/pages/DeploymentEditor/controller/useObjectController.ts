@@ -1,9 +1,11 @@
 import {
   ContainerObject,
+  ContainerObjectType,
   createContainer,
   createObject,
   findObject,
   insertObject,
+  ObjectType,
   removeAllRelation,
   removeObject,
 } from "../../../core/entities/Deployment";
@@ -16,7 +18,7 @@ export const useObjectController = () => {
   const deploymentStore = useService(deploymentStoreIdentifier);
 
   return {
-    handleAddContainer(id, type) {
+    handleAddContainer(id: string, type: ContainerObjectType) {
       deploymentStore.setState((state) =>
         produce(state, (draft) => {
           const container = findObject(
@@ -30,7 +32,7 @@ export const useObjectController = () => {
         })
       );
     },
-    handleAddObject(id, type) {
+    handleAddObject(id: string, type: ObjectType) {
       deploymentStore.setState((state) =>
         produce(state, (draft) => {
           const container = findObject(
