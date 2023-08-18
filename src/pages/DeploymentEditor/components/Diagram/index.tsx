@@ -28,7 +28,7 @@ function Diagram() {
     <div className="pt-4">
       <PopoverOperations />
       <div
-        className="deployment overflow-auto"
+        className="deployment"
         id="deployment-diagram"
         style={{
           touchAction: "none",
@@ -47,11 +47,7 @@ function Diagram() {
           }
         }}
       >
-        {svgUrl && (
-          <div>
-            <ReactSVG src={svgUrl} />
-          </div>
-        )}
+        {svgUrl && <ReactSVG src={svgUrl} />}
       </div>
     </div>
   );

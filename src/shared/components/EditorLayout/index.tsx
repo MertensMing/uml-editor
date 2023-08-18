@@ -37,9 +37,7 @@ export function EditorLayout(props: {
           <div className="bg-white flex-shrink-0 shadow-xl mt-20 mb-8 ml-8 mr-8 rounded p-4 scrollbar-thumb-slate-300 scrollbar-thin overflow-x-hidden overflow-y-auto">
             {props.operation}
           </div>
-          <div className="mr-8 pt-16 flex-grow overflow-auto">
-            {props.diagram}
-          </div>
+          <div className="mr-8 pt-16 flex-grow">{props.diagram}</div>
         </div>
       </div>
     </div>
