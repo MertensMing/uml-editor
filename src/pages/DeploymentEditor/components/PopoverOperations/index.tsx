@@ -110,7 +110,7 @@ export const PopoverOperations = connect(
             }}
           />
           <DragOutlined
-            className={classNames("cursor-move hover:opacity-70 mt-3")}
+            className={classNames("hover:opacity-70 mt-3 cursor-grab")}
             draggable
             onDragEnd={(e) => {
               const objectId = getObjectId(e);

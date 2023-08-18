@@ -28,7 +28,7 @@ function Diagram() {
     <div className="pt-4">
       <PopoverOperations />
       <div
-        className="deployment"
+        className="deployment overflow-auto"
         id="deployment-diagram"
         style={{
           touchAction: "none",
