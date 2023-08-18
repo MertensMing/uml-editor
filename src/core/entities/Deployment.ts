@@ -115,6 +115,9 @@ export function findObject(
   container: ContainerObject,
   target: BaseObject["id"]
 ): NormalObject | ContainerObject | undefined {
+  if (!container) {
+    return undefined;
+  }
   if (container.id === target) {
     return container;
   }

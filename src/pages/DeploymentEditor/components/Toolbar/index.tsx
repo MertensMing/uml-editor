@@ -10,6 +10,7 @@ import copy from "copy-to-clipboard";
 import { Suspense } from "react";
 import { useStore } from "zustand";
 import shallow from "zustand/shallow";
+import { findObject } from "../../../../core/entities/Deployment";
 import {
   useAsyncService,
   useService,
@@ -26,12 +27,17 @@ function Toolbar() {
   const deploymentStore = useService(deploymentStoreIdentifier);
   const { handleAddContainer, handleAddObject } = useObjectController();
   const { handleCopyDiagram } = useDiagramController([]);
-  const { svgUrl, deployment, uml, pngUrl } = useStore(
+  const { svgUrl, deployment, uml, pngUrl, currentObjectId } = useStore(
     deploymentStore,
-    (state) => pick(state, ["deployment", "svgUrl", "uml", "pngUrl"]),
+    (state) =>
+      pick(state, ["deployment", "svgUrl", "uml", "pngUrl", "currentObjectId"]),
     shallow
   );
   const messageService = useAsyncService(MessageIdentifier);
+  const current = findObject(deployment?.root, currentObjectId);
+  const targetContainerId = current?.isContainer
+    ? currentObjectId
+    : deployment?.root?.id;
 
   return (
     <>
@@ -71,7 +77,7 @@ function Toolbar() {
                 <div>
                   <AddContainer
                     onClick={(type) =>
-                      handleAddContainer(deployment?.root?.id, type)
+                      handleAddContainer(targetContainerId, type)
                     }
                   />
                 </div>
@@ -80,9 +86,7 @@ function Toolbar() {
                 <h3 className="pb-2 text-sm font-bold">添加图形</h3>
                 <div>
                   <AddObject
-                    onClick={(type) =>
-                      handleAddObject(deployment?.root?.id, type)
-                    }
+                    onClick={(type) => handleAddObject(targetContainerId, type)}
                   />
                 </div>
               </div>
