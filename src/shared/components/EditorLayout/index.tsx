@@ -33,7 +33,7 @@ export function EditorLayout(props: {
         <div className="p-2 px-8 shadow-lg bg-white space-x-8 flex items-center h-12 absolute top-0 left-0 w-full z-10">
           {props.toolbar}
         </div>
-        <div className="overflow-auto scrollbar-thumb-slate-300 scrollbar flex w-screen">
+        <div className="overflow-auto flex w-screen">
           <div className="bg-white flex-shrink-0 shadow-xl mt-20 mb-8 ml-8 mr-8 rounded p-4 scrollbar-thumb-slate-300 scrollbar-thin overflow-x-hidden overflow-y-auto">
             {props.operation}
           </div>
