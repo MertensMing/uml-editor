@@ -65,7 +65,11 @@ function Relations() {
                     <div className="form-control pb-2">
                       <label className="input-group input-group-sm">
                         <span>目标</span>
-                        <span className="bg-slate-50">{to?.name}</span>
+                        <input
+                          value={to?.name}
+                          disabled
+                          className="bg-slate-50 px-1"
+                        ></input>
                       </label>
                     </div>
                     <div className="form-control pb-2">

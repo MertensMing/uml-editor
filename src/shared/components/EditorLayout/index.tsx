@@ -47,7 +47,7 @@ export function EditorLayout(props: {
         </div>
         <div
           className="w-screen pt-16 pb-16 box-border overflow-auto scrollbar-thumb-slate-300 scrollbar-thin"
-          style={{ paddingLeft: 270, paddingRight: 32 }}
+          style={{ paddingLeft: 300, paddingRight: 32 }}
         >
           {props.diagram}
         </div>
